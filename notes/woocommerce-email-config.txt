@@ -1,0 +1,5 @@
+- Enable/Disable send woocommerce email
+ . WooCommerce -> Settings -> Emails -> Choose Manage -> Uncheck or check Enable this email notification
+- Template woocommerce email
+ . Directory for woocommerce email: wp-content\plugins\woocommerce\templates\emails
+ 

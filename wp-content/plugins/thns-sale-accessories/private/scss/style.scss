@@ -1,0 +1,351 @@
+#sale-accessories {
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        border-top: 1px solid silver;
+        margin-top: 10px;
+        .left-container {
+            width: 35%;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid silver;
+            box-sizing: border-box;
+            #se-groups {
+                border-top: 1px solid silver;
+                border-bottom: 1px solid silver;
+                padding-bottom: 5px;
+                margin-top: 10px;
+            }
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                margin-top: 5px;
+                label {
+                    float: none;
+                    margin: 0;
+                }
+                input, select {
+                    width: 100%;
+                }
+                &.checkbox {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    label {
+                        width: auto;
+                        margin-right: 10px;
+                    }
+                    input {
+                        width: auto;
+                    }
+                }
+            }
+
+            #se-group-items {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                min-height: 290px;
+                overflow: auto;
+                .se-group-item {
+                    margin-bottom: 2px;
+                    background-color: #fafafa;
+                    border-radius: 2px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    min-height: 40px;
+                    flex-wrap: wrap;
+                    &.active {
+                        background-color: #eee;
+                        p {
+                            color: red;
+                        }
+                    }
+                    .form-edit-group {
+                        width: 100%;
+                        padding: 10px 20px;
+                    }
+                    span {
+                        width: 30px;
+                        height: 30px;
+                        cursor: pointer;
+                        &:hover {
+                            color: red;
+                        }
+                        &.delete {
+                            &::before {
+                                content: "\f335";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                        &.move.move_up {
+                            &::before {
+                                content: "\f142";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                        &.move.move_down {
+                            &::before {
+                                content: "\f140";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                    }
+                    p {
+                        width: calc( 100% - 30px );
+                        margin: 0;
+                        padding: 0;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+        .right-container {
+            width: 65%;
+            
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            .search_group {
+                width: 100%;
+                height: 100px;
+                border-bottom: 1px solid silver;
+                box-sizing: border-box;
+                position: relative;
+                padding: 5px;
+                .form-group {
+                    width: 100%;
+                    margin-top: 5px;
+                    position: relative;
+                    label {
+                        float: none;
+                        margin: 0;
+                    }
+                    input, select {
+                        width: 100%;
+                    }
+                    .spinner {
+                        position: absolute;
+                        top: 40px;
+                        right: 0;
+                    }
+                }
+                #close-search {
+                    position: absolute;
+                    right: 10px;
+                    top: 85px;
+                    border-radius: 50%;
+                    width: 25px;
+                    height: 25px;
+                    line-height: 15px;
+                    font-weight: bold;
+                    color: red;
+                    z-index: 999;
+                }
+                #list-products {
+                    position: absolute;
+                    top: 78px;
+                    width: calc(100% - 10px);
+                    height: 300px;
+                    overflow: hidden;
+                    overflow-y: auto;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    border: 1px solid silver;
+                    background-color: white;
+                    box-shadow: 5px 5px 10px 0px silver;
+                    
+                    .item {
+                        width: 100%;
+                        height: 50px;
+                        margin-bottom: 5px;
+                        background-color: #f1f1f1;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: flex-start;
+                        padding: 5px;
+                        cursor: pointer;
+                        &:nth-child(odd) {
+                            background-color: #f1f1f147;
+                        }
+                        img {
+                            width: 40px;
+                            height: 40px;
+                            object-fit: cover;
+                            margin-right: 10px;
+                        }
+                        .pr-detail {
+                            p {
+                                margin: 0;
+                                padding: 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            #btns-update {
+                padding: 10px;
+            }
+
+            #list-product-selected {
+                height: 380px;
+                // overflow: hidden;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                .item {
+                    width: 100%;
+                    height: 50px;
+                    margin-bottom: 5px;
+                    background-color: #f1f1f1;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    padding: 5px;
+                    cursor: pointer;
+                    &:nth-child(odd) {
+                        background-color: #f1f1f147;
+                    }
+                    span {
+                        width: 30px;
+                        height: 30px;
+                        cursor: pointer;
+                        &:hover {
+                            color: red;
+                        }
+                        &.delete {
+                            &::before {
+                                content: "\f335";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                        &.move.move_up {
+                            &::before {
+                                content: "\f142";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                        &.move.move_down {
+                            &::before {
+                                content: "\f140";
+                                font-size: 20px;
+                                font-family: Dashicons;
+                                line-break: 30px;
+
+                            }
+                        }
+                    }
+                    .content {
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: flex-start;
+                        width: calc(100% - 100px);
+                        img {
+                            width: 40px;
+                            height: 40px;
+                            object-fit: cover;
+                            margin-right: 10px;
+                        }
+                        .pr-detail {
+                            p {
+                                margin: 0;
+                                padding: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.gearvn_loading {
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+    // overflow: hidden;
+    height: 100%;
+
+    &:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        display: inherit !important;
+    }
+
+    &:after {
+        -webkit-animation: gearvn_spin_pro 500ms infinite linear;
+        animation: gearvn_spin_pro 500ms infinite linear;
+        border: 3px solid red;
+        border-radius: 32px;
+        border-right-color: transparent !important;
+        border-top-color: transparent !important;
+        content: "";
+        display: block;
+        height: 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: fixed;
+        width: 30px;
+        z-index: 6666;
+    }
+}
+
+
+@-webkit-keyframes gearvn_spin_pro {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes gearvn_spin_pro {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}

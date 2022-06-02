@@ -1,0 +1,495 @@
+@mixin truncate-text($line : 1) {
+    display: -webkit-box!important;
+    -webkit-line-clamp: $line;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+h2.product-title a, 
+.product-inners h2 a,
+.woocommerce ul.products li.product h2 a {
+   @include truncate-text(1);
+}
+/* #primary iframe {
+	max-width: 100%;
+} */
+@media (min-width: 1200px) {
+    .col-mf-5 {
+        width: 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+
+.menu-mobile-icon {
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-right: 5px;
+}
+
+input[type=password], input[type=tel] {
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    padding: 10px;
+}
+
+.product-item {
+    ins, bdi {
+        color : #ff1f1f;
+    }
+    del {
+        bdi {
+            color: #666;
+            margin-left: 20px;
+        }
+    }
+}
+
+.woocommerce .customer-login .password-input {
+    width: 100%;
+}
+.site-content {
+    padding-top: 0!important;
+}
+body {
+    .page-header-page .entry-title {
+        padding-top: 10px;
+    }
+}
+
+button.button {
+    background-color: var(--mf-background-primary-color);
+    color: var(--mf-background-primary-text-color);
+    padding: 0 25px;
+    transition: all 0.5s;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: 3px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 3px;
+    min-width: 150px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+}
+
+body.mobile-version {
+    #primary {
+        width: 100%!important;
+        flex: 0 0 100%!important;
+        max-width: 100%!important;
+    }
+    &.mf-catalog-page.mf-filter-active .catalog-sidebar, &.mobile-version.mf-catalog-page.mf-filter-active .vendor_sidebar {
+        width: 100%!important;
+        flex: 0 0 100%!important;
+        max-width: 100%!important;
+    }
+
+    // embed chat
+    div[id^='embed_'] {
+        display: none;
+    }
+    .zalo-chat-widget {
+        display: none;
+    }
+
+    .communicate {
+        .show-on-mobile {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999999;
+            ul {
+                margin: 10px;
+                padding: 10px;
+                background-color: white;
+                border-radius: 4px;
+                position: absolute;
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                li {
+                    margin: 0;
+                    padding: 10px 0;
+                    position: relative;
+                    border-bottom: 1px solid rgba(192, 192, 192, 0.602);
+                    &::before {
+                        content: '';
+                        width: 40px;
+                        height: 40px;
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                    }
+                    &.vchat {
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-vchat.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    &.fb {
+                        border: none;
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-facebook.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    &.zalo {
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-zalo.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    &.hotline {
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-hotline.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    &.email {
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-email.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    &.showroom {
+                        &::before {
+                            background-image: url('/wp-content/themes/martfury-child/assets/img/icon-location.png');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+                    a {
+                        margin-left: 50px;
+                        color: black;
+                        font-weight: bold;
+                    }
+                }
+                i {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                }
+            }
+            
+        }
+        i.icon-communicate {
+            position: fixed;
+            bottom: 70px;
+            left: 10px;
+            width: 50px;
+            height: 50px;
+            // background: red;
+            z-index: 999998;
+            border-radius: 20px;
+            border: 2px solid red;
+            background-color: white;
+            background: url('/wp-content/themes/martfury-child/assets/img/icon-facebook.png') center;
+            background-size: 40px;
+            -webkit-animation: change_icon 5s infinite ;
+            animation: change_icon 5s infinite ;
+        }
+    }
+    
+}
+
+@-webkit-keyframes change_icon {
+    0% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-facebook.png') center;
+        background-size: 40px;
+    }
+    25% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-hotline.png') center;
+        background-size: 40px;
+    }
+    50% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-location.png') center;
+        background-size: 40px;
+    }
+    75% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-vchat.png') center;
+        background-size: 40px;
+    }
+    100% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-zalo.png') center;
+        background-size: 40px;
+    }
+}
+
+@keyframes change_icon {
+    0% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-facebook.png') center;
+        background-size: 40px;
+    }
+    25% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-hotline.png') center;
+        background-size: 40px;
+    }
+    50% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-location.png') center;
+        background-size: 40px;
+    }
+    75% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-vchat.png') center;
+        background-size: 40px;
+    }
+    100% {
+        background: url('/wp-content/themes/martfury-child/assets/img/icon-zalo.png') center;
+        background-size: 40px;
+    }
+}
+
+.show-on-mobile {
+    display: none;
+}
+
+
+.top-header-promotion {
+    display: none;
+    height: 50px;
+    @media screen and (min-width: 1200px) {
+        display: block;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 9999;
+        .promotion-banner {
+            background-position: center center;
+            background-size: auto 50px;
+            background-repeat: no-repeat;
+            height: 50px;
+        }
+    }
+}
+
+.footer-column-store {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    @media screen and (min-width: 1024px){
+        flex-direction: row;
+    }
+    .store-detail, .warranty-detail{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        @media screen and (min-width: 768px) {
+            width: calc(50% - 20px);
+            margin-right: 20px;
+        }
+    }
+    .warranty-detail {
+        margin-top: 20px;
+        @media screen and (min-width: 768px){
+            margin-top: 0;
+        }
+    }
+}
+
+.flash-sale {
+    .cat-header {
+        display: none!important;
+    }
+    .martfury-countdown {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        .timer {
+            margin: 0!important;
+            padding: 0!important;
+            min-width: 80px!important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .digits {
+            background-color: red;
+            color: white!important;
+            padding: 5px;
+            border-radius: 4px;
+            position: relative;
+            z-index: 10;
+            width: 50px;
+            @media screen and (min-width: 768px) {
+                width: 70px;
+            }
+            &::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                height: 1px;
+                width: 100%;
+                border-top: 1px solid silver;
+                z-index: 0;
+            }
+        }
+        .seconds {
+            .digits {
+                &::before {
+                    content: '00';
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    bottom: 50%;
+                    font-size: 24px;
+                    z-index: 0;
+                    animation: rotateCountdown 1s linear infinite;
+                    background-color: red;
+                    border: 1px solid black;
+                    border-bottom-left-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                    text-align: center;
+                    overflow: hidden;
+                    clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+                    @media screen and (min-width: 768px) {
+                        font-size: 48px;
+                    }
+                }
+            }
+        }
+    }
+    .price {
+        ins {
+            color: #ff3300!important
+        }
+        del {
+            color: black;
+        }
+    }
+    .fsale-stock {
+        display: block;
+        .total-100 {
+            position: relative;
+            width: 95%;
+            height: 23px;
+            border-radius: 4px;
+            background: #c0c0c05c;
+            float: left;
+            padding: 0px 3px;
+            text-align: center;
+            .sale {
+                z-index: 10;
+                position: absolute;
+                width: 100%;
+                float: left;
+                left: 0;
+            }
+            .percent {
+                position: absolute;
+                left: 0;
+                top: 0;
+                background-color: #ffc800;
+                height: 100%;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+.fsale-stock {
+    display: none;
+}
+@keyframes rotateCountdown {
+    0% {
+        transform: translateZ(-300px) rotateY(20deg) translateX(0px)  rotateX( 180deg);
+        opacity: 0;
+        // display: block;
+    } 50% {
+        transform: translateZ(-300px) rotateY(10deg) translateX(1px)  rotateX( 90deg);
+        /* content: ''; */
+    } 100% {
+        transform: translateZ(-300px) rotateY(0deg) translateX(0px)  rotateX( 0deg);
+        opacity: 1;
+        // display: none;
+    }
+}
+
+
+.compare_loading {
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+    // overflow: hidden;
+    height: 100%;
+
+    &:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        display: inherit !important;
+    }
+
+    &:after {
+        -webkit-animation: spin_pro 500ms infinite linear;
+        animation: spin_pro 500ms infinite linear;
+        border: 3px solid red;
+        border-radius: 32px;
+        border-right-color: transparent !important;
+        border-top-color: transparent !important;
+        content: "";
+        display: block;
+        height: 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: fixed;
+        width: 30px;
+        z-index: 999999;
+    }
+}
+
+@-webkit-keyframes spin_pro {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes spin_pro {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}

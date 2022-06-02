@@ -1,0 +1,145 @@
+.checkout-thank {
+  display: flex;
+
+  @media (min-width: 768px) {
+    margin-top: 20px;
+  }
+
+  .woocommerce-order {
+    display: flex;
+    
+    border-radius: 4px;
+    width: 100%;
+    border: none;
+
+    @media (min-width: 768px) {
+      width: 70%;
+      border: 1px solid silver;
+      padding: 15px;
+      margin-right: 20px;
+    }
+
+    > p > img,
+    > img {
+      width: 200px;
+      height: 200px;
+      max-width: 200px;
+      display: none;
+
+      @media (min-width: 992px) {
+        display: block;
+      }
+    }
+
+    .content-page {
+      font-size: 13px;
+
+      @media (min-width: 992px) {
+        padding-left: 20px;
+      }
+
+      p {
+        margin-bottom: 10px;
+      }
+
+      .order-id {
+        display: inline-block;
+        max-width: 200px;
+        background: #58b712;
+        padding: 10px 35px;
+        text-align: center;
+        color: white;
+        font-weight: 600;
+        letter-spacing: 2px;
+        font-size: 25px;
+      }
+
+      .note-quick-shopping {
+        display: flex;
+        padding: 10px;
+        border: 1px solid silver;
+        border-radius: 4px;
+        background: #c0c0c014;
+
+        > img {
+          width: 40px;
+          object-fit: contain;
+          margin-right: 10px;
+        }
+
+        > p {
+          margin-bottom: 0;
+        }
+      }
+
+      .block-faq {
+        margin-top: 20px;
+
+        .title {
+          margin-bottom: 5px;
+        }
+
+        > p {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .content-right {
+    display: none;
+
+    @media (min-width: 768px) {
+      width: 30%;
+      display: block;
+    }
+    .product-cmt {
+      width: 100%;
+      h4 {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .product-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        @media (min-width: 992px) {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+
+        img {
+          width: 120px;
+        }
+        >p {
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          @media (min-width: 992px) {
+            align-items: flex-start;
+          }
+          a {
+            padding: 5px;
+            border: 1px solid yellow;
+            background: yellow;
+            color: black;
+            width: auto;
+            max-width: 130px;
+            text-align: center;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    .promotions {
+      margin-top: 10px;
+    }
+  }
+}

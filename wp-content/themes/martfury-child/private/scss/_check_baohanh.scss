@@ -1,0 +1,126 @@
+body.page-template-check-bao-hanh {
+    .breadcrumbs {
+        margin: 0;
+    }
+}
+
+.check-warranty {
+    width: 100%;
+    .content-noti {
+        ol {
+            color: black;
+        }
+    }
+    .form-search {
+        width: 100%;
+        .error {
+            color: red;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            @media screen and (min-width: 768px) {
+                flex-direction: row;
+                justify-content: space-between;
+                vertical-align: middle;
+                flex-wrap: wrap;
+            }
+            label {
+                color: black;
+            }
+            .input-or {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border: 3px solid red;
+                line-height: 44px;
+                text-align: center;
+                margin: 0;
+            }
+
+            .input-form {
+                width: 100%;
+                margin-bottom: 10px;
+                @media screen and (min-width: 768px) {
+                    width: calc(50% - 100px);
+                }
+                display: flex;
+                flex-direction: column;
+
+                input {
+                    padding: 5px;
+                    border-radius: 4px;
+                    font-size: 15px;
+                    border: 1px solid red;
+                }
+            }
+
+            .submit-form {
+                width: 100%;
+                button {
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    border: 1px solid red;
+                    background-color: transparent;
+                    color: red;
+                }
+            }
+        }
+    }
+
+    .warranty-result-desktop {
+        width: 100%;
+        display: none;
+        @media screen and (min-width: 768px) {
+            display: block;
+        }
+        table {
+            color: black;
+            width: 100%;
+            tbody {
+                tr {
+                    &:nth-child(odd) {
+                        background: #ffffff;
+                    }
+                    &:nth-child(even) {
+                        background: #c0c0c026;
+                    }
+                    &:hover {
+                        background: #ffb3b34f;
+                    }
+                    td {
+                        padding: 10px;
+                    }
+                }
+            }
+        }
+    }
+    .warranty-result-mobile {
+        @media screen and (min-width: 768px) {
+            display: none;
+        }
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin: 10px 0;
+        .item {
+            color: black;
+            p {
+                margin: 2.5px;
+                padding: 0;
+            }
+            &:nth-child(odd) {
+                background: #ffffff;
+            }
+            &:nth-child(even) {
+                background: #c0c0c026;
+            }
+            padding: 5px;
+            width: 100%;
+        }
+    }
+}

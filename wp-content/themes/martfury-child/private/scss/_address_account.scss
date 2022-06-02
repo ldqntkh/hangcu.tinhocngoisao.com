@@ -1,0 +1,182 @@
+.woocommerce form .form-row.address-field .select2-container {
+    width: 100%!important;
+}
+
+.modal-delete-address-wrapper,
+.woocommerce-MyAccount-content {
+    > h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    #saved-addresses {
+        font-size: 13px;
+        .address-item {
+            width: 100% !important;
+            background-color: white;
+            padding: 10px;
+            position: relative;
+            margin-bottom: 5px;
+            border-radius: 0;
+            .info {
+                p {
+                    &:first-child {
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        margin-bottom: 4px;
+                    }
+                    margin: 2.5px 0;
+                    strong {
+                        font-weight: normal;
+                        color: #ea1b25;
+                    }
+                }
+                @media screen and (min-width: 768px) {
+                    max-width: 75%;
+                }
+            }
+        }
+    }
+
+    #my-address-details {
+        max-width: 768px;
+        padding: 10px;
+        background-color: white;
+        @media screen and (min-width: 1024px) {
+            max-width: 100%;
+            padding-right: calc(100% - 768px);
+        }
+        button[type='submit'] {
+            border-radius: 5px;
+            background: white;
+            border: 2px solid #ea1b25;
+            color: #ea1b25;
+            padding: 10px 30px;
+            float: right;
+        }
+    }
+
+    .modal-delete-address {
+        .icon-delete {
+            @extend %center-box;
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border: 1px solid red;
+            border-radius: 50%;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+            margin: auto auto 20px auto;
+
+            &::before,
+            &::after {
+                content: "";
+                background: red;
+                display: block;
+                position: absolute;
+            }
+
+            &:after {
+                width: 2px;
+                height: 30px;
+            }
+
+            &::before {
+                height: 2px;
+                width: 30px;
+            }
+        }
+
+        .modal-footer {
+            @extend %center-box;
+            padding: 0 0 15px 0;
+            border-top: 0;
+
+            .btn {
+                padding: 5px 0;
+                min-width: 125px;
+                border-radius: 3px;
+
+                .fas,
+                .far {
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}
+
+.woocommerce-billing-fields {
+    &__field-wrapper {
+        > .form-row {
+            margin-bottom: 25px;
+
+            &#billing_address_2_field {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+.woocommerce-edit-address {
+    .woocommerce-MyAccount-content {
+        background-color: transparent!important;
+        padding-left: 0;
+        padding-right: 0;
+        > h3 {
+            display: none;
+    
+            @media (min-width: 768px) {
+            display: block;
+            }
+        }
+        .btn-add-new-address {
+            background-color: #ea1b25;
+            color: white;
+            @extend %center-box;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            margin-top: 20px;
+
+            @media screen and (min-width: 1024px) {
+                margin-top: 0;
+            }
+
+            .gearvn-plus-icon {
+                margin-right: 20px;
+                &::before,
+                &::after {
+                    background-color: white;
+                }
+                &::before {
+                    height: 4px;
+                }
+                &::after {
+                    width: 4px;
+                }
+                
+            }
+
+            &.display-1024 {
+                display: none;
+                @media screen and (min-width: 1024px) {
+                    display: flex;
+                }
+            }
+
+            &.display-mobile {
+                display: flex;
+                border-radius: 30px;
+                min-width: 300px;
+                margin: 0 auto;
+                max-width: 500px;
+                padding: 15px;
+                @media screen and (min-width: 1024px) {
+                    display: none;
+                }
+            }
+        }
+    }
+}

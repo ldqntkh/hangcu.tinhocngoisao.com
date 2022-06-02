@@ -1,0 +1,46 @@
+.brands-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    clear: both;
+    .left-container {
+        width: 400px;
+
+        .term-brand-status-wrap {
+            margin-top: 20px;
+            select {
+                margin-right: 10px;
+            }
+        }
+
+        .term-index-wrap {
+            margin-bottom: 10px;
+        }
+    }
+
+    .right-container {
+        flex: 1;
+        table {
+            .colum-action {
+                cursor: pointer;
+                .action {
+                    // display: none;
+                    opacity: 0;
+                }
+                &:hover {
+                    .action {
+                        // display: initial;
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    .spinner {
+        &.hide {
+            display: none;
+        }
+    }
+}

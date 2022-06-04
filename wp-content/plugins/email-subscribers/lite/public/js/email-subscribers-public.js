@@ -29,16 +29,31 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	 $(document).ready(function () {
+
+		$('.es_subscription_form').each(function(){
+			// For the forms which are hidden on page load, we need to use AJAX to handle their submission.
+			if ( $(this).is(':hidden') ) {
+				$(this).on('submit', function(e){
+					e.preventDefault();
+					var form = $(this);
+					handleBindFunction(form);
+				});
+			}
+		});
+
+	});
+
 	function prepareFormData(form, formData) {
 		var list_ids = [];
 		var is_multiple_lists = false;
 		jQuery.each((form.serializeArray() || {}), function (i, field) {
 			// Collect all list ids
-			if(field.name === 'lists[]') {
+			if(field.name === 'esfpx_lists[]') {
 				list_ids.push(field.value);
 				is_multiple_lists = true;
 			} else {
-				formData['esfpx_' + field.name] = field.value;
+				formData[field.name] = field.value;
 			}
 		});
 
@@ -109,40 +124,7 @@
 
 		return false;
 	}
-
-	$(document).ready(function () {
-		// var submitButton = $('.es_subscription_form_submit');
-
-		$(document).on('submit', '.es_subscription_form', function (e) {
-			e.preventDefault();
-			var form = $(this);
-			handleBindFunction(form);
-		});
-
-		let subscription_forms = $('.es_subscription_form');
-		// Check if page contains ES subscription form.
-		if ( subscription_forms.length > 0 ) {
-			// Send an ajax request to get updated nonce value.
-			jQuery.ajax({
-				type: 'POST',
-				url: es_data.es_ajax_url,
-				data: {
-					action: 'ig_es_get_updated_subscription_nonce',
-				},
-				dataType: 'json',
-				success: function(response) {
-					if( true === response.success ) {
-						let data          = response.data;
-						let updated_nonce = data.updated_nonce;
-						// Update nonce field in each subscription form.
-						jQuery(subscription_forms).find('input[name="es-subscribe"]').each(function(){
-							$(this).val(updated_nonce);
-						});
-					}
-				}
-			});
-		}
-	});
+	
 	// Compatibility of ES with IG
 	jQuery( window ).on( "init.icegram", function(e, ig) {
 		if(typeof ig !== 'undefined' && typeof ig.messages !== 'undefined' ) {

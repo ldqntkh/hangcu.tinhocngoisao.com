@@ -252,7 +252,18 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				'ig_es_update_469_alter_wc_guests_table',
 				'ig_es_update_469_db_version',
 			),
-
+			'4.6.13' => array(
+				'ig_es_migrate_4613_sequence_list_settings_into_campaign_rules',
+				'ig_es_update_4613_db_version',
+			),
+			'4.7.8' => array(
+				'ig_es_add_index_to_list_contacts_table',
+				'ig_es_update_478_db_version',
+			),
+			'4.7.9' => array(
+				'ig_es_add_primay_key_to_actions_table',
+				'ig_es_update_479_db_version',
+			),
 		);
 
 		/**
@@ -332,7 +343,10 @@ if ( ! class_exists( 'ES_Install' ) ) {
 		 */
 		public static function install() {
 
-
+			// Create Files
+			self::create_files();
+			
+			
 			if ( ! is_blog_installed() ) {
 				self::$logger->error( 'Blog is not installed.', self::$logger_context );
 
@@ -354,11 +368,6 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				set_transient( 'ig_es_installing', 'yes', MINUTE_IN_SECONDS * 10 );
 
 				ig_es_maybe_define_constant( 'IG_ES_INSTALLING', true );
-
-				// Create Files
-				self::create_files();
-
-				self::$logger->info( 'Create Files.', self::$logger_context );
 
 				// Create Tables
 				self::create_tables();
@@ -815,7 +824,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				'ig_es_disable_wp_cron'                 => array( 'default' => 'no' ),
 				'ig_es_track_email_opens'               => array( 'default' => 'yes' ),
 				'ig_es_show_opt_in_consent'             => array( 'default' => 'yes' ),
-				'ig_es_opt_in_consent_text'             => array( 'default' => '' ),
+				'ig_es_opt_in_consent_text'             => array( 'default' => 'Subscribe to our email updates as well.' ),
 				'ig_es_installed_on'                    => array( 'default' => ig_get_current_date_time(), 'old_option' => '' ),
 				'ig_es_form_submission_success_message' => array( 'default' => __( 'Your subscription was successful! Kindly check your mailbox and confirm your subscription. If you don\'t see the email within a few minutes, check the spam/junk folder.', 'email-subscribers' ), 'old_option' => '' ),
 				'ig_es_db_update_history'               => array( 'default' => $ig_es_db_update_history ),
@@ -972,7 +981,8 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				`subscribed_ip` varchar(45) DEFAULT NULL,
 				`unsubscribed_at` datetime DEFAULT NULL,
 				`unsubscribed_ip` varchar(45) DEFAULT NULL,
-				 PRIMARY KEY  (id)
+				 PRIMARY KEY  (id),
+				 KEY `contact_id` (contact_id)
             ) $collate;
 
             CREATE TABLE `{$wpdb->prefix}ig_mailing_queue` (
@@ -1086,6 +1096,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
             ) $collate;
 
 			CREATE TABLE `{$wpdb->prefix}ig_actions` (
+			  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `contact_id` bigint(20) UNSIGNED DEFAULT NULL,
 			  `message_id` bigint(20) UNSIGNED DEFAULT NULL,
 			  `campaign_id` bigint(20) UNSIGNED DEFAULT NULL,
@@ -1101,11 +1112,12 @@ if ( ! class_exists( 'ES_Install' ) ) {
 			  `os` varchar(50) DEFAULT NULL,
 			  `created_at` int(11) UNSIGNED NOT NULL DEFAULT 0,
 			  `updated_at` int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  PRIMARY KEY (id),
 			  UNIQUE KEY `id` (`contact_id`,`message_id`, `campaign_id`,`type`,`link_id`, `list_id`),
-                KEY `contact_id` (`contact_id`),
-                KEY `message_id` (`message_id`),
-                KEY `campaign_id` (`campaign_id`),
-                KEY `type` (`type`)
+              KEY `contact_id` (`contact_id`),
+              KEY `message_id` (`message_id`),
+              KEY `campaign_id` (`campaign_id`),
+              KEY `type` (`type`)
 			) $collate;
 		";
 
@@ -1451,6 +1463,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 					if ( $file_handle ) {
 						fwrite( $file_handle, $file['content'] );
 						fclose( $file_handle );
+						self::$logger->info( 'Created file ' . $file['file'], self::$logger_context );
 					}
 				}
 			}
@@ -1491,7 +1504,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 
 			$es_roles_default_permission['campaigns'] = $campaigns_permission;
 			$es_roles_default_permission['reports']   = $reports_permission;
-			$es_roles_default_permission['sequence']  = $sequence_permission;
+			$es_roles_default_permission['sequences'] = $sequence_permission;
 			$es_roles_default_permission['audience']  = $audience_permission;
 			$es_roles_default_permission['forms']     = $forms_permission;
 			$es_roles_default_permission['workflows'] = $workflows_permission;

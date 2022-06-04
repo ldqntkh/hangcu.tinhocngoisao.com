@@ -14,8 +14,7 @@ class IG_ES_Workflow_Variable_Parser {
 	/** 
 	 * Variable name
 	 * e.g. wc_order.id, cart.link, user.first_name etc
-	 * 
-	 * 
+	 *
 	 * @var string
 	 */
 	public $name;
@@ -110,6 +109,7 @@ class IG_ES_Workflow_Variable_Parser {
 
 	/**
 	 * Remove single quotes from start and end of a string
+	 *
 	 * @param $string
 	 * @return string
 	 */

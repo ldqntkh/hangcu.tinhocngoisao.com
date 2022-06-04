@@ -33,7 +33,7 @@ class ET_Builder_Module_SmartSlider3 extends ET_Builder_Module {
 
     public function add_styles_scripts() {
         ?>
-        <script type="text/javascript">
+        <script>
             window.SmartSlider3IframeUrl = <?php echo json_encode(site_url('/') . '?n2prerender=1&n2app=smartslider&n2controller=slider&n2action=iframe&h=' . sha1(NONCE_SALT . date('Y-m-d'))); ?>;
 
             <?php
@@ -110,7 +110,7 @@ class ET_Builder_Module_SmartSlider3 extends ET_Builder_Module {
         );
     }
 
-    public function render($attrs, $content = null, $render_slug) {
+    public function render($attrs, $content, $render_slug) {
         if (is_numeric($this->props['slider'])) {
             return do_shortcode('[smartslider3 slider=' . $this->props['slider'] . ']');
         }

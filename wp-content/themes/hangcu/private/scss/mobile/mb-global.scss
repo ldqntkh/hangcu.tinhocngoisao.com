@@ -1,0 +1,19 @@
+body.body-mobile{
+    .container-breadcrumb {
+        margin-top: 60px;
+        .container {
+            padding: 0!important;
+            .woocommerce-breadcrumb {
+                padding: 0 15px;
+            }
+        }
+    }
+    #content {
+        padding-top: 20px;
+        .container {
+            .page-header {
+                display: none;
+            }
+        }
+    }
+}

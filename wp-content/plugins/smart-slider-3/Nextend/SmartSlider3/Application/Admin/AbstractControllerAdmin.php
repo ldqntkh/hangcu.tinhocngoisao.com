@@ -36,10 +36,11 @@ abstract class AbstractControllerAdmin extends AbstractAdminController {
             'exportAllUrl'   => $this->getUrlDashboardExportAll($groupID),
             'ajaxUrl'        => $this->getAjaxUrlSlidesCreate(),
             'previewUrl'     => $this->getUrlPreviewIndex(0),
-            'importUrl'      => $this->getUrlImport($groupID)
+            'importUrl'      => $this->getUrlImport($groupID),
+            'paginationUrl'  => $this->getUrlPaginator()
         );
 
-        Js::addInline("new N2Classes.ManageSliders('" . $groupID . "', " . json_encode($options) . ", " . json_encode(SmartSlider3Info::shouldSkipLicenseModal()) . ");");
+        Js::addInline("new _N2.ManageSliders('" . $groupID . "', " . json_encode($options) . ", " . json_encode(SmartSlider3Info::shouldSkipLicenseModal()) . ");");
 
     }
 

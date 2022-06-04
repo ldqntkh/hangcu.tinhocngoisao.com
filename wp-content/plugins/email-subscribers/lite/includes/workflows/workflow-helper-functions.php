@@ -88,7 +88,8 @@ function ig_es_generate_key( $length = 25, $case_sensitive = true, $more_numbers
 }
 
 /**
- * str_replace but limited to one replacement
+ *  Does str_replace but limited to one replacement
+ *
  * @param string$subject
  * @param string$find
  * @param string $replace
@@ -148,4 +149,33 @@ function ig_es_get_wc_product_image_url( $product, $size = 'shop_catalog' ) {
 		$image_url = wc_placeholder_img_src( $size );
 		return apply_filters( 'ig_es_email_product_placeholder_image_src', $image_url, $size, $product );
 	}
+}
+
+function ig_es_create_list_from_product( $product ) {
+
+	$list_id = 0;
+
+	if ( ! ( $product instanceof WC_Product ) ) {
+		return $list_id;
+	}
+
+	$product_name = $product->get_name();
+	$product_sku  = $product->get_sku();
+	
+	$list_name = $product_name;
+
+	if ( empty( $product_sku ) ) {
+		$list_slug = $product_name;
+	} else {
+		$list_slug = $product_sku;
+	}
+	
+	$list = ES()->lists_db->get_list_by_slug( $list_slug );
+	if ( ! empty( $list ) ) {
+		$list_id = $list['id'];
+	} else {
+		$list_id = ES()->lists_db->add_list( $list_name, $list_slug );
+	}
+
+	return $list_id;
 }

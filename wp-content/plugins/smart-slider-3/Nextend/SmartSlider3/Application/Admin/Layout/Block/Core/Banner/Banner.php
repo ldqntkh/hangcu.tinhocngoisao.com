@@ -11,7 +11,7 @@ $closeUrl = $this->getCloseUrl();
 
 <div id="<?php echo $this->getID(); ?>" class="n2_admin__banner">
     <div class="n2_admin__banner_inner">
-        <img src="<?php echo $this->getImage(); ?>" alt=""/>
+        <img src="<?php echo $this->getImage(); ?>" alt="">
         <div class="n2_admin__banner_inner_title"><?php echo $this->getTitle(); ?></div>
         <div class="n2_admin__banner_inner_description"><?php echo $this->getDescription(); ?></div>
         <a class="n2_admin__banner_inner_button n2_button n2_button--big n2_button--green"
@@ -27,13 +27,14 @@ $closeUrl = $this->getCloseUrl();
         </div>
 
         <script>
-            N2R('documentReady', function ($) {
+            _N2.r(['$', 'documentReady'], function () {
+                var $ = _N2.$;
                 var $banner = $('#<?php echo $this->getID(); ?>');
 
                 $banner.find('.n2_admin__banner_close').on('click', function (e) {
                     e.preventDefault();
 
-                    N2Classes.AjaxHelper.ajax({url: <?php echo json_encode($closeUrl); ?>});
+                    _N2.AjaxHelper.ajax({url: <?php echo json_encode($closeUrl); ?>});
                     $banner.remove();
                 });
             });

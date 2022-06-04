@@ -90,10 +90,6 @@ class ES_Data_Type_User extends ES_Workflow_Data_Type {
 
 			$email = $item->user_email;
 
-			if ( empty( $user_first_name ) ) {
-				$user_first_name = ES_Common::get_name_from_email( $email );
-			}
-
 			// prepare data.
 			$data = array(
 				'first_name' => $user_first_name,

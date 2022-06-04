@@ -62,7 +62,8 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
      */
     protected function cookie($key, $default = null)
     {
-        if ($this->is_admin) {
+        // if we're not allowed to use cookies, just return the default
+        if ($this->is_admin || !mailchimp_allowed_to_use_cookie($key)) {
             return $default;
         }
 
@@ -478,6 +479,10 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
      */
     public function handleCampaignTracking()
     {
+        if (!mailchimp_allowed_to_use_cookie('mailchimp_user_email')) {
+            return null;
+        }
+
         // set the landing site cookie if we don't have one.
         $this->setLandingSiteCookie();
 
@@ -494,11 +499,11 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
 
                 if (($current_email = $this->getEmailFromSession()) && $current_email !== $this->user_email) {
                     $this->previous_email = $current_email;
-                    @setcookie('mailchimp_user_previous_email',$this->user_email, $cookie_duration, '/' );
+                    mailchimp_set_cookie('mailchimp_user_previous_email',$this->user_email, $cookie_duration, '/');
                 }
 
                 // cookie the current email
-                @setcookie('mailchimp_user_email', $this->user_email, $cookie_duration, '/' );
+                mailchimp_set_cookie('mailchimp_user_email', $this->user_email, $cookie_duration, '/' );
 
                 $cart_data = unserialize($cart->cart);
 
@@ -519,7 +524,7 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
         }
 
         if (isset($_GET['mc_eid'])) {
-            @setcookie('mailchimp_email_id', trim($_GET['mc_eid']), $cookie_duration, '/' );
+            mailchimp_set_cookie('mailchimp_email_id', trim($_GET['mc_eid']), $cookie_duration, '/' );
         }
     }
 
@@ -565,7 +570,7 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
             $cid = null;
         }
         
-        @setcookie('mailchimp_campaign_id', $cid, $cookie_duration, '/' );
+        mailchimp_set_cookie('mailchimp_campaign_id', $cid, $cookie_duration, '/' );
         $this->setWooSession('mailchimp_campaign_id', $cid);
 
         return $this;
@@ -600,6 +605,11 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
      */
     public function setLandingSiteCookie()
     {
+        // if we're not allowed to use this cookie, just return
+        if (!mailchimp_allowed_to_use_cookie('mailchimp_landing_site')) {
+            return $this;
+        }
+
         if (isset($_GET['expire_landing_site'])) $this->expireLandingSiteCookie();
 
         // if we already have a cookie here, we need to skip it.
@@ -618,7 +628,7 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
             if (strpos($compare_local, $compare_refer) === 0) return $this;
 
             // set the cookie
-            @setcookie('mailchimp_landing_site', $landing_site, $this->getCookieDuration(), '/' );
+            mailchimp_set_cookie('mailchimp_landing_site', $landing_site, $this->getCookieDuration(), '/' );
 
             $this->setWooSession('mailchimp_landing_site', $landing_site);
         }
@@ -631,6 +641,9 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
      */
     public function getReferer()
     {
+        if (function_exists('wp_get_referer')) {
+            return wp_get_referer();
+        }
         if (!empty($_REQUEST['_wp_http_referer'])) {
             return wp_unslash($_REQUEST['_wp_http_referer']);
         } elseif (!empty($_SERVER['HTTP_REFERER'])) {
@@ -644,7 +657,11 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
      */
     public function expireLandingSiteCookie()
     {
-        @setcookie('mailchimp_landing_site', false, $this->getCookieDuration(), '/' );
+        if (!mailchimp_allowed_to_use_cookie('mailchimp_landing_site')) {
+            return $this;
+        }
+
+        mailchimp_set_cookie('mailchimp_landing_site', false, $this->getCookieDuration(), '/' );
         $this->setWooSession('mailchimp_landing_site', false);
 
         return $this;
@@ -747,6 +764,10 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
             $this->respondJSON(array('success' => false));
         }
 
+        if (!mailchimp_allowed_to_use_cookie('mailchimp_user_email')) {
+            $this->respondJSON(array('success' => false, 'email' => false));
+        }
+
         if ($this->doingAjax() && isset($_GET['email'])) {
 
             $cookie_duration = $this->getCookieDuration();
@@ -756,10 +777,10 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
             if (($current_email = $this->getEmailFromSession()) && $current_email !== $this->user_email) {
                 $this->previous_email = $current_email;
                 $this->force_cart_post = true;
-                @setcookie('mailchimp_user_previous_email',$this->user_email, $cookie_duration, '/' );
+                mailchimp_set_cookie('mailchimp_user_previous_email',$this->user_email, $cookie_duration, '/' );
             }
 
-            @setcookie('mailchimp_user_email', $this->user_email, $cookie_duration, '/' );
+            mailchimp_set_cookie('mailchimp_user_email', $this->user_email, $cookie_duration, '/' );
 
             $this->getCartItems();
 
@@ -868,15 +889,23 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
         if (($saved_cart = $wpdb->get_row($sql)) && is_object($saved_cart)) {
             $statement = "UPDATE {$table} SET `cart` = '%s', `email` = '%s', `user_id` = %s WHERE `id` = '%s'";
             $sql = $wpdb->prepare($statement, array(maybe_serialize($this->cart), $email, $user_id, $uid));
-            $wpdb->query($sql);
+            try {
+                $wpdb->query($sql);
+            } catch (\Exception $e) {
+                return false;
+            }
         } else {
-            $wpdb->insert("{$wpdb->prefix}mailchimp_carts", array(
-                'id' => $uid,
-                'email' => $email,
-                'user_id' => (int) $user_id,
-                'cart'  => maybe_serialize($this->cart),
-                'created_at'   => gmdate('Y-m-d H:i:s', time()),
-            ));
+            try {
+                $wpdb->insert("{$wpdb->prefix}mailchimp_carts", array(
+                    'id' => $uid,
+                    'email' => $email,
+                    'user_id' => (int) $user_id,
+                    'cart'  => maybe_serialize($this->cart),
+                    'created_at'   => gmdate('Y-m-d H:i:s', time()),
+                ));
+            } catch (\Exception $e) {
+                return false;
+            }
         }
 
         return true;

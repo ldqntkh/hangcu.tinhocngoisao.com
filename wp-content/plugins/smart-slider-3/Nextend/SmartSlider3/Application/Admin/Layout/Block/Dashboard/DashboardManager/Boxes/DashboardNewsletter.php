@@ -23,9 +23,9 @@ use Nextend\Framework\Platform\Platform;
     </div>
 
     <form class="n2_dashboard_newsletter__form">
-        <input type="hidden" name="<?php echo strtoupper(Platform::getName()); ?>" value="Yes"/>
-        <input type="hidden" name="SOURCE" value="Smart Slider 3"/>
-        <input type="email" name="EMAIL" value="<?php echo Platform::getUserEmail(); ?>" placeholder="Email" tabindex="-1"/>
+        <input type="hidden" name="<?php echo strtoupper(Platform::getName()); ?>" value="Yes">
+        <input type="hidden" name="SOURCE" value="Smart Slider 3">
+        <input type="email" name="EMAIL" value="<?php echo Platform::getUserEmail(); ?>" placeholder="Email" tabindex="-1">
     </form>
 
     <div class="n2_dashboard_manager_newsletter__button">
@@ -38,13 +38,14 @@ use Nextend\Framework\Platform\Platform;
 </div>
 
 <script>
-    N2R('documentReady', function ($) {
+    _N2.r(['$', 'documentReady'], function () {
+        var $ = _N2.$;
         var $box = $('.n2_dashboard_manager_newsletter'),
             close = function (e, action) {
-                N2Classes.AjaxHelper
+                _N2.AjaxHelper
                     .ajax({
                         type: "POST",
-                        url: N2Classes.AjaxHelper.makeAjaxUrl(N2Classes.AjaxHelper.getAdminUrl('ss3-admin'), {
+                        url: _N2.AjaxHelper.makeAjaxUrl(_N2.AjaxHelper.getAdminUrl('ss3-admin'), {
                             nextendcontroller: 'settings',
                             nextendaction: action || 'dismissNewsletterDashboard'
                         }),
@@ -57,7 +58,7 @@ use Nextend\Framework\Platform\Platform;
                 .on('submit', function (e) {
                     e.preventDefault();
 
-                    N2Classes.AjaxHelper
+                    _N2.AjaxHelper
                         .ajax({
                             type: "POST",
                             url: "https://secure.nextendweb.com/mailchimp/subscribe.php",
@@ -72,7 +73,7 @@ use Nextend\Framework\Platform\Platform;
 
         $('.n2_dashboard_manager_newsletter__button')
             .on('click', function () {
-                $form.submit();
+                $form.trigger("submit");
             });
 
         $box.find('.n2_dashboard_manager_newsletter__close')

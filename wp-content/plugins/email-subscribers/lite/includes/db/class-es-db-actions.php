@@ -110,30 +110,45 @@ class ES_DB_Actions extends ES_DB {
 	 */
 	public function add( $args, $explicit = true ) {
 
-		global $wpdb, $wpbd;
-
+		global $wpbd;
+		
 		$ig_actions_table = IG_ACTIONS_TABLE;
-
-		$args_keys     = array_keys( $args );
+		
+		$args_keys = array_keys( $args );
+		
 		$args_keys_str = implode( ', ', $args_keys );
-
+		
 		$sql = "INSERT INTO $ig_actions_table ($args_keys_str)";
 
-		$args_values = array_values( $args );
-		$args_values = esc_sql( $args_values );
+		$args_values_array = array();
+		if ( is_array( $args['contact_id'] ) ) {
+			$contact_ids = $args['contact_id'];
+			foreach ( $contact_ids as $contact_id ) {
+				$args['contact_id'] = $contact_id;
 
-		$args_values_str = $this->prepare_for_in_query( $args_values );
+				$args_values = array_values( $args );
+				$args_values = esc_sql( $args_values );
 
-		$sql .= " VALUES ($args_values_str) ON DUPLICATE KEY UPDATE";
+				$args_values_array[] = $this->prepare_for_in_query( $args_values );
+			}
+		} else {
+			$args_values = array_values( $args );
+			$args_values = esc_sql( $args_values );
 
-		$sql .= ( $explicit ) ? $wpdb->prepare( ' created_at = created_at, count = count+1, updated_at = %d, ip = %s, country = %s, browser = %s, device = %s, os = %s, email_client = %s', ig_es_get_current_gmt_timestamp(), $args['ip'], $args['country'], $args['browser'], $args['device'], $args['os'], $args['email_client'] ) : ' count = values(count)';
+			$args_values_array[] = $this->prepare_for_in_query( $args_values );
+		}
 
+		
+		$sql .= ' VALUES ( ' . implode( '), (', $args_values_array ) . ' )';
+		$sql .= ' ON DUPLICATE KEY UPDATE';
+		$sql .= ( $explicit ) ? $wpbd->prepare( ' created_at = created_at, count = count+1, updated_at = %d, ip = %s, country = %s, browser = %s, device = %s, os = %s, email_client = %s', ig_es_get_current_gmt_timestamp(), $args['ip'], $args['country'], $args['browser'], $args['device'], $args['os'], $args['email_client'] ) : ' count = values(count)';
+		
 		$result = $wpbd->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
+		
 		if ( false !== $result ) {
 			return true;
 		}
-
+		
 		return false;
 	}
 
@@ -379,7 +394,7 @@ class ES_DB_Actions extends ES_DB {
 	 * @since 4.5.2
 	 */
 	public function get_count_based_on_id_type( $campaign_id, $message_id, $type, $distinct = true ) {
-		global $wpdb;
+		global $wpbd;
 
 		$args = array();
 		
@@ -389,19 +404,26 @@ class ES_DB_Actions extends ES_DB {
 
 		$count = 0;
 		if ( $distinct ) {
-			$count = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT(DISTINCT(`contact_id`)) as count FROM {$wpdb->prefix}ig_actions WHERE `campaign_id`= %d AND `message_id`= %d AND `type` = %d",
-					$args
-				)
+			$query = $wpbd->prepare(
+				"SELECT COUNT(DISTINCT(`contact_id`)) as count FROM {$wpbd->prefix}ig_actions WHERE `campaign_id`= %d AND `message_id`= %d AND `type` = %d",
+				$args
 			);
 		} else {
-			$count = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT  COUNT(`contact_id`) as count FROM {$wpdb->prefix}ig_actions WHERE `campaign_id`= %d  AND `message_id`= %d AND `type` = %d",
-					$args
-				)
+			$query = $wpbd->prepare(
+				"SELECT  COUNT(`contact_id`) as count FROM {$wpbd->prefix}ig_actions WHERE `campaign_id`= %d  AND `message_id`= %d AND `type` = %d",
+				$args
 			);
+		}
+
+		$cache_key 		 = ES_Cache::generate_key( $query );
+		$exists_in_cache = ES_Cache::is_exists( $cache_key, 'query' );
+		if ( ! $exists_in_cache ) {
+			$count = $wpbd->get_var(
+				$query
+			);
+			ES_Cache::set( $cache_key, $count, 'query' );
+		} else {
+			$count = ES_Cache::get( $cache_key, 'query' );
 		}
 
 		return $count;

@@ -180,6 +180,6 @@ class ViewSettingsGeneral extends AbstractViewSettings {
 
         echo $form->render();
 
-        echo '<input name="namespace" value="default" type="hidden" />';
+        echo '<input name="namespace" value="default" type="hidden">';
     }
 }

@@ -28,6 +28,11 @@ jQuery(document).ready(function() {
 					is_trial = jQuery('#es_free_trial_preference').is(':checked') ? 'yes': 'no';
 				}
 
+				let allow_tracking = '';
+				if (jQuery('#es_allow_tracking').length > 0) {
+					allow_tracking = jQuery('#es_allow_tracking').is(':checked') ? 'yes': 'no';
+				}
+
 				jQuery('#es_onboarding_emails_list').text(emails.join(", "));
 
 				let params = {
@@ -41,6 +46,7 @@ jQuery(document).ready(function() {
 						es_from_email: es_from_email,
 						create_post_notification: create_post_notification,
 						is_trial: is_trial,
+						allow_tracking: allow_tracking,
 						add_gdpr_consent: add_gdpr_consent,
 						enable_double_optin: enable_double_optin,
 						security: ig_es_js_data.security
@@ -224,7 +230,8 @@ jQuery(document).ready(function() {
 			if (jQuery('#ig-es-onboarding-final-steps-form #es_free_pro_trial').length > 0) {
 				is_trial = jQuery('#ig-es-onboarding-final-steps-form #es_free_pro_trial').is(':checked') ? 'yes': 'no';
 			}
-			var params = {
+			let btn_elem = jQuery(this);
+			jQuery.ajax({
 				type: 'POST',
 				url: ajaxurl,
 				data: {
@@ -238,6 +245,11 @@ jQuery(document).ready(function() {
 					security: ig_es_js_data.security
 				},
 				dataType: 'json',
+				beforeSend: function() {
+					jQuery(btn_elem).addClass('cursor-wait').attr('disabled', true);
+					jQuery(btn_elem).find('.es-btn-arrow').hide();
+					jQuery(btn_elem).find('.es-btn-loader').show().addClass('animate-spin').attr('disabled', true);
+				},
 				success: function(data, status, xhr) {
 					let redirect_url = '';
 					if( 'undefined' !== typeof data.redirect_url && '' !== data.redirect_url ) {
@@ -252,9 +264,7 @@ jQuery(document).ready(function() {
 				error: function(data, status, xhr) {
 					ig_es_handle_onboard_task_error( '', data, status, xhr );
 				}
-			};
-
-			jQuery.ajax(params);
+			});
 		},
 		update_onboarding_step: function( step = 1 ) {
 			var params = {

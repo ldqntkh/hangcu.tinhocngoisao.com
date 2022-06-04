@@ -1,0 +1,34 @@
+body.body-mobile {
+    #content {
+        .site-content-inner {
+            #sidebar {
+                padding: 5px;
+                left: initial;
+                right: -340px;
+                @media screen and (min-width: 1300px) {
+                    padding-right: 0px;
+                    right: 0px;
+                }
+            }
+        }
+        &.active-hh-sidebar {
+            #sidebar {
+                right: 0;
+            }
+        }
+        #primary {
+            &.off-canvas-bg-opacity {
+                &::before {
+                    background: rgba(0,0,0,.7);
+                    content: " ";
+                    position: absolute;
+                    top: -100%;
+                    bottom: 0;
+                    right: 0;
+                    left: 0;
+                    z-index: 999999;
+                }
+            }
+        }
+    }
+}

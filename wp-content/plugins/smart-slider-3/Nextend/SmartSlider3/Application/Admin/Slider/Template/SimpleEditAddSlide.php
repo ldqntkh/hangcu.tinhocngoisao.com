@@ -69,24 +69,24 @@ $slider = $this->getSlider();
 </form>
 
 <script>
-    N2R('windowLoad', function ($) {
+    _N2.r(['$', 'windowLoad'], function () {
+        var $ = _N2.$;
         var $form = $('#n2_slider_add_slide_form');
 
-        $('#slider-add-slide-region').focus();
+        $('#slider-add-slide-region').trigger("focus");
 
         $('.n2_slider_add_slide').on('click', function (e) {
             e.preventDefault();
 
-            $form.submit();
+            $form.trigger("submit");
         });
 
         document.addEventListener('keydown', function (e) {
             if (e.ctrlKey || e.metaKey) {
-                console.log(e.code);
                 if (e.code === 'KeyS') { // ctrl + s
                     e.preventDefault();
 
-                    $form.submit();
+                    $form.trigger("submit");
                 }
             }
         }, {

@@ -66,7 +66,26 @@ class Compatibility {
         if (isset($_GET['pswLoad']) && $_GET['pswLoad'] == 1) {
             Shortcode::forceIframe('psw');
         }
-        
+
+        if (defined('WC_ETRANSACTIONS_PLUGIN')) {
+            /**
+             * Plugin: https://wordpress.org/plugins/e-transactions-wc/
+             *
+             * @see SSDEV-2680
+             */
+            remove_action('admin_notices', 'hmac_admin_notice');
+        }
+
+        /**
+         * Plugin: https://wordpress.org/plugins/weglot/
+         *
+         * @see SSDEV-3551
+         */
+        if (defined('WEGLOT_NAME') && isset($_GET['n2prerender']) && isset($_GET['n2app'])) {
+            add_filter('weglot_button_html', function ($button_html) {
+                return '';
+            });
+        }
     }
 
     public function removeEmoji() {

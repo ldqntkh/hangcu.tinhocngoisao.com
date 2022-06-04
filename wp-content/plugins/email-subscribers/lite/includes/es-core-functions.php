@@ -345,7 +345,7 @@ if ( ! function_exists( 'ig_es_get_gmt_offset' ) ) {
 	 */
 	function ig_es_get_gmt_offset( $in_seconds = false, $timestamp = null ) {
 
-		$offset = get_option( 'gmt_offset' );
+		$offset = get_option( 'gmt_offset', 0 );
 
 		// check if timestamp has DST
 		if ( ! is_null( $timestamp ) ) {
@@ -720,6 +720,10 @@ if ( ! function_exists( 'ig_es_allowed_html_tags_in_esc' ) ) {
 	function ig_es_allowed_html_tags_in_esc() {
 		$context_allowed_tags 	= wp_kses_allowed_html('post');
 		$custom_allowed_tags	= array(
+					'div' => array(
+						'x-data' => true,
+						'x-show' => true,
+					),		
 					'select' => array(
 						'class' 	=> true,
 						'name' 		=> true,
@@ -731,7 +735,10 @@ if ( ! function_exists( 'ig_es_allowed_html_tags_in_esc' ) ) {
 						'tab-*'		=> true,
 						'multiple'	=> true,
 						'aria-*'	=> true,
-		  
+						'disabled'	=> true,
+					),
+					'optgroup' => array(
+						'label' => true,
 					),
 					'option' => array(
 						'class' 	=> true,
@@ -783,6 +790,7 @@ if ( ! function_exists( 'ig_es_allowed_html_tags_in_esc' ) ) {
 						'id'  		=> true,
 						'style'		=> true,
 						'action'    => true,
+						'method'	=> true,
 					),	
 					'svg' 	=> array(
 						'width'				=> true,
@@ -829,8 +837,16 @@ if ( ! function_exists( 'ig_es_allowed_html_tags_in_esc' ) ) {
 						'href'	=> true,
 						'media'	=> true,
 					),
+					'a' => array(
+						'x-on:click' => true,
+					),
+					'polygon' => array(
+						'class'  => true,
+						'points' => true,
+					)
 				);	
-		$allowedtags 			= array_merge_recursive( $context_allowed_tags, $custom_allowed_tags );
+
+		$allowedtags = array_merge_recursive( $context_allowed_tags, $custom_allowed_tags );
 
 		return $allowedtags;
 	}
@@ -841,11 +857,11 @@ if ( ! function_exists( 'ig_es_allowed_css_style' ) ) {
 	 * Allow CSS style in WP Kses
 	 *
 	 * @since 4.5.4
+	 * 
+	 * @since 4.7.3 Returns empty array to whitelist all CSS properties.
 	 */
 	function ig_es_allowed_css_style( $default_allowed_attr ) {
-		$custom_allowed_css = array('display', 'opacity');
-		$allowed_attr = array_merge( $default_allowed_attr, $custom_allowed_css );
-		return $allowed_attr;
+		return array(); // Return empty array to whitelist all CSS properties.
 	}
 }
 
@@ -860,7 +876,7 @@ if ( ! function_exists( 'ig_es_increase_memory_limit' ) ) {
 	 */
 	function ig_es_increase_memory_limit() {
 
-		return '256M';
+		return '512M';
 	}
 }
 

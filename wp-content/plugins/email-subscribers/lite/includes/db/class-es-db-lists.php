@@ -195,6 +195,35 @@ class ES_DB_Lists extends ES_DB {
 	}
 
 	/**
+	 * Get list by id
+	 *
+	 * @param array $list_ids List IDs.
+	 *
+	 * @return bool/array Returns lists array if list exists else false.
+	 *
+	 * @since 4.6.12
+	 */
+	public function get_lists_by_id( $list_ids = array() ) {
+		
+		global $wpdb;
+		
+		if ( empty( $list_ids ) ) {
+			return array();
+		}
+
+		// Check if we have got array of list ids.
+		if ( is_array( $list_ids ) ) {
+			$list_ids_str = implode( ',', $list_ids );
+		} else {
+			$list_ids_str = $list_ids;
+		}
+
+		$where = "id IN ({$list_ids_str})";
+
+		return $this->get_by_conditions( $where );
+	}
+
+	/**
 	 * Get all lists name by contact_id
 	 *
 	 * @param $id
@@ -273,15 +302,15 @@ class ES_DB_Lists extends ES_DB {
 		if ( empty( $list ) || ! is_scalar( $list ) ) {
 			return 0;
 		}
-
+		
 		$lower_list = strtolower( $list );
-
+		
 		$is_list_exists = $this->is_list_exists( $lower_list );
-
+		
 		if ( $is_list_exists ) {
 			return 0;
 		}
-
+		
 		$data = array(
 			'slug' => ! empty( $slug ) ? $slug : sanitize_title( $list ),
 			'name' => $list,
@@ -385,6 +414,24 @@ class ES_DB_Lists extends ES_DB {
 	}
 
 	/**
+	 * Get list names by ids
+	 * 
+	 * @param array $list_ids List ids
+	 * 
+	 * @return array $list_names List name
+	 */
+	public function get_list_name_by_ids( $list_ids = array() ) {
+		$lists_id_name_map = ES()->lists_db->get_list_id_name_map();
+		$list_names        = array();
+		foreach ( $list_ids as $list_id ) {
+			if ( ! empty( $lists_id_name_map[ $list_id ] ) ) {
+				$list_names[ $list_id ] = $lists_id_name_map[ $list_id ];
+			}
+		}
+		return $list_names;
+	}
+
+	/**
 	 * Delete lists
 	 *
 	 * @param $ids
@@ -413,5 +460,61 @@ class ES_DB_Lists extends ES_DB {
 
 	}
 
+	/**
+	 * Get list id hash map
+	 *
+	 * @param array $list_ids
+	 *
+	 * @return array $list_hash_map
+	 *
+	 * @since 4.6.12.1
+	 */
+	public function get_list_id_hash_map( $list_ids = array() ) {
 
+		$list_hash_map = array();
+
+		if ( ! empty( $list_ids ) ) {
+			$lists = ES()->lists_db->get_lists_by_id( $list_ids );
+			if ( ! empty( $lists ) ) {
+				foreach ( $lists as $list ) {
+					if ( ! empty( $list ) && ! empty( $list['id'] ) ) {
+						$list_hash_map[ $list['id'] ] = $list['hash'];
+					}
+				}
+			}
+		}
+
+		return $list_hash_map;
+	}
+
+	/**
+	 * Get lists by hash
+	 *
+	 * @param array $list_hashes
+	 *
+	 * @return array
+	 *
+	 * @since 4.7.5
+	 */
+	public function get_lists_by_hash( $list_hashes = array() ) {
+
+		global $wpbd;
+		
+		if ( empty( $list_hashes ) ) {
+			return array();
+		}
+
+		if ( ! is_array( $list_hashes ) ) {
+			$list_hashes = array( $list_hashes );
+		}
+
+		$hash_count        = count( $list_hashes );
+		$hash_placeholders = array_fill( 0, $hash_count, '%s' );
+		$where             = $wpbd->prepare( 
+			'hash IN( ' . implode( ',', $hash_placeholders ) . ')',
+			$list_hashes
+		);
+
+		return $this->get_by_conditions( $where );
+	}
 }

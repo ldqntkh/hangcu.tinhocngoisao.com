@@ -142,7 +142,7 @@ class URE_User_View extends URE_View {
 		<td>&nbsp;</td>		
 		<td style="padding-left: 10px; padding-bottom: 5px;">
   <?php    
-    if ($this->lib->is_super_admin() || !$this->multisite || !class_exists('User_Role_Editor_Pro') || !$caps_access_restrict_for_simple_admin) {  
+    if ($this->lib->is_super_admin() || !is_multisite() || !class_exists('User_Role_Editor_Pro') || !$caps_access_restrict_for_simple_admin) {  
         if ($caps_readable) {
             $checked = 'checked="checked"';
         } else {
@@ -192,7 +192,7 @@ class URE_User_View extends URE_View {
     $this->show_secondary_roles();    
 ?>
 		</td>
-		<td style="padding-left: 5px; padding-top: 5px; border-top: 1px solid #ccc;">  	
+		<td style="padding-left: 5px; padding-top: 5px; border-top: 1px solid #ccc; vertical-align: top;">  	
     <?php $this->display_caps(false, $edit_user_caps_mode ); ?>
 		</td>
 	</tr>

@@ -1,5 +1,8 @@
 <?php
 function guaven_woos_insert_to_results_cache($guaven_woos_tempval){
+  global $_wp_using_ext_object_cache;
+  $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+  $_wp_using_ext_object_cache = false;
   global $wpdb,$guaven_woo_search_backend,$guaven_woos_finalresult,$guaven_woos_finalkeys;
   $sanitize=$guaven_woos_tempval;
   $wpdb->query(
@@ -7,6 +10,7 @@ function guaven_woos_insert_to_results_cache($guaven_woos_tempval){
     "update ".$wpdb->prefix."woos_search_cache set status=1,result_data=%s,result_ids=%s where query=%s",$guaven_woos_finalresult,$guaven_woos_finalkeys,$sanitize)
   );
   set_transient('gws_' .$sanitize , $guaven_woos_finalkeys, 12 * 3600);
+  $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
 }
 
 function guaven_woos_searchProduct($guaven_woos_tempval) {

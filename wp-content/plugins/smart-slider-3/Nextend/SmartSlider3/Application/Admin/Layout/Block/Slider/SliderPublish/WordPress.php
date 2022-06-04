@@ -49,8 +49,8 @@ $slider = $model->get($this->getSliderID());
 
         <div class="n2_ss_slider_publish__option_description"><?php n2_e('Paste the PHP code into your theme\'s file:'); ?></div>
         <div class="n2_ss_slider_publish__option_code" dir="ltr">
-            &lt;?php <br/>
-            echo do_shortcode('[smartslider3 slider="<?php echo $this->getSliderID(); ?>"]');<br/>
+            &lt;?php <br>
+            echo do_shortcode('[smartslider3 slider="<?php echo $this->getSliderID(); ?>"]');<br>
             ?&gt;
         </div>
     </div>

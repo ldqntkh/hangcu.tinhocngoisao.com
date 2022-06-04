@@ -47,6 +47,7 @@ class ES_Common {
 
 		$content             = wpautop( $content );
 		$content             = do_shortcode( shortcode_unautop( $content ) );
+		$data 				 = array();
 		$data['content']     = $content;
 		$data['tmpl_id']     = $tmpl_id;
 		$data['campaign_id'] = $campaign_id;
@@ -449,7 +450,7 @@ class ES_Common {
 		if ( ! is_array( $category_names ) ) {
 			$category_names = array();
 		}
-		$checked_selected = ! in_array( 'All', $category_names ) ? "checked='checked'" : '';
+		$checked_selected = ! array_intersect( array( 'All', 'None' ), $category_names ) ? "checked='checked'" : '';
 		$category_html    = '<tr><td style="padding-top:4px;padding-bottom:4px;padding-right:10px;" ><span class="block ml-6 pr-4 text-sm font-normal text-gray-600 pb-1"><input class="es-note-category-parent form-radio text-indigo-600" type="radio" ' . esc_attr( $checked_selected ) . ' value="selected_cat"  name="es_note_cat_parent">' . __( 'Select Categories',
 				'email-subscribers' ) . '</td></tr>';
 		foreach ( $categories as $category ) {
@@ -466,7 +467,11 @@ class ES_Common {
 		$all_html    = '<tr><td style="padding-top:4px;padding-bottom:4px;padding-right:10px;"><span class="block ml-6 pr-4 text-sm font-normal text-gray-600 pb-1"><input type="radio" class="form-radio text-indigo-600 es-note-category-parent"  ' . esc_attr( $checked_all ) . ' value="{a}All{a}"  name="es_note_cat_parent">' . __( 'All Categories (Also include all categories which will create later)',
 				'email-subscribers' ) . '</td></tr>';
 
-		return $all_html . $category_html;
+		$checked_none = in_array( 'None', $category_names, true ) ? "checked='checked'" : '';
+		$none_html = '<tr><td style="padding-top:4px;padding-bottom:4px;padding-right:10px;"><span class="block ml-6 pr-4 text-sm font-normal text-gray-600 pb-1"><input type="radio" class="form-radio text-indigo-600 es-note-category-parent"  ' . esc_attr( $checked_none ) . ' value="{a}None{a}"  name="es_note_cat_parent">' . __( 'None (Don\'t include post from any category)',
+		'email-subscribers' ) . '</td></tr>';
+
+		return $none_html . $all_html . $category_html;
 	}
 
 	/**
@@ -655,7 +660,7 @@ class ES_Common {
 	 * @since 4.1.0
 	 */
 	public static function convert_id_to_name( $category ) {
-		if ( 'All' != $category ) {
+		if ( ! in_array( $category, array( 'All', 'None' ), true ) ) {
 			return get_cat_name( $category );
 		} else {
 			return $category;
@@ -1267,6 +1272,7 @@ class ES_Common {
 
 		return array(
 			'version'                  => ES_PLUGIN_VERSION,
+			'installed_on'             => get_option( 'ig_es_installed_on', '' ),
 			'is_premium'               => ES()->is_premium() ? 'yes' : 'no',
 			'plan'                     => ES()->get_plan(),
 			'is_trial'                 => ES()->is_trial() ? 'yes' : 'no',
@@ -1276,7 +1282,7 @@ class ES_Common {
 			'total_lists'              => $total_lists,
 			'total_forms'              => $total_forms,
 			'total_newsletters'        => $total_newsletters,
-			'total_post_notifications'  => $total_post_notifications,
+			'total_post_notifications' => $total_post_notifications,
 			'total_sequences'          => $total_sequences,
 			'settings'                 => self::get_all_settings()
 		);
@@ -1311,9 +1317,13 @@ class ES_Common {
 	/**
 	 * Update Total Email Sent count
 	 *
+	 * @param int $sent_count Sent emails count
+	 * 
 	 * @since 4.1.15
+	 * 
+	 * @since 4.7.5 Added $sent_count parameter
 	 */
-	public static function update_total_email_sent_count() {
+	public static function update_total_email_sent_count( $sent_count = 0 ) {
 
 		$current_date = ig_es_get_current_date();
 		$current_hour = ig_es_get_current_hour();
@@ -1329,7 +1339,9 @@ class ES_Common {
 			$total_emails_sent = $email_sent_data[ $current_date ][ $current_hour ];
 		}
 
-		$total_emails_sent ++;
+		// Add count for sent emails.
+		$total_emails_sent += $sent_count;
+
 		// We want to store only current hour data.
 		$data[ $current_date ][ $current_hour ] = $total_emails_sent;
 
@@ -1434,20 +1446,28 @@ class ES_Common {
 	 *
 	 * @since 4.4.2
 	 */
-	public static function get_useful_articles() {
-
-		$articles = array(
-			array( 'title' => __( '8 Tips To Improve Email Open Rates', 'email-subscribers' ), 'link' => 'https://www.icegram.com/2bx5' ),
-			array( 'title' => __( 'Prevent Your Email From Landing In Spam', 'email-subscribers' ), 'link' => 'https://www.icegram.com/2bx6' ),
-			array( 'title' => __( '<b>Email Subscribers Secret Club</b>', 'email-subscribers' ), 'link' => 'https://www.facebook.com/groups/2298909487017349/', 'label' => __( 'Join Now', 'email-subscribers' ), 'label_class' => 'bg-green-100 text-green-800' ),
-			array( 'title' => __( 'Best Way To Keep Customers Engaged', 'email-subscribers' ), 'link' => 'https://www.icegram.com/ymrn' ),
-			array( 'title' => __( 'Access Control', 'email-subscribers' ), 'link' => 'https://www.icegram.com/81z9' ),
-			array( 'title' => __( 'Prevent Spam Subscription Using Captcha', 'email-subscribers' ), 'link' => 'https://www.icegram.com/3jy4' ),
-			array( 'title' => __( 'Email Subscribers PRO', 'email-subscribers' ), 'link' => 'https://www.icegram.com/er6r', 'label' => __( 'Lifetime', 'email-subscribers' ), 'label_class' => 'bg-green-100 text-green-800' )
+	public static function get_useful_articles( $upsell = true ) {
+		
+		$articles_upsell = array();
+		
+		$blog_articles = array(
+			array( 'title' => __( 'Top 10 Tips on How to Build an Email List', 'email-subscribers' ), 'link' => 'https://www.icegram.com/email-list/' ),
+			array( 'title' => __( 'Why are Your Email Unsubscribes Increasing and How to Fix Them?', 'email-subscribers' ), 'link' => 'https://www.icegram.com/unsubscribes/' ),
+			array( 'title' => __( 'Balance Email Marketing and Social Media Marketing', 'email-subscribers' ), 'link' => 'https://www.icegram.com/email-marketing-and-social-media-marketing/' ),
+			array( 'title' => __( 'Use social proof to grow blog traffic through email', 'email-subscribers' ), 'link' => 'https://www.icegram.com/social-proof/' ),
+			array( 'title' => __( '5 Simple Tricks to Improve Email Marketing Campaign Results', 'email-subscribers' ), 'link' => 'https://www.icegram.com/email-marketing-campaign/' ),
 		);
 
-		return $articles;
+		if ( $upsell ) {
 
+			$articles_upsell = array(
+				array( 'title' => __( 'Email Subscribers PRO', 'email-subscribers' ), 'link' => 'https://www.icegram.com/er6r', 'label' => __( 'Lifetime', 'email-subscribers' ), 'label_class' => 'bg-green-100 text-green-800' ),
+				array( 'title' => __( '<b>Email Subscribers Secret Club</b>', 'email-subscribers' ), 'link' => 'https://www.facebook.com/groups/2298909487017349/', 'label' => __( 'Join Now', 'email-subscribers' ), 'label_class' => 'bg-green-100 text-green-800' ),
+			);
+		}
+
+		$articles = array_merge( $blog_articles, $articles_upsell);
+		return $articles;
 	}
 
 	/**
@@ -1759,12 +1779,15 @@ class ES_Common {
 	 *
 	 * @return string
 	 */
-	public static function convert_timestamp_to_date( $timestamp ) {
+	public static function convert_timestamp_to_date( $timestamp, $format = '' ) {
 
-		$convert_date_format = get_option( 'date_format' );
-		$convert_time_format = get_option( 'time_format' );
-
-		return gmdate( "$convert_date_format $convert_time_format", $timestamp );
+		if ( empty( $format ) ) {
+			$date_format = get_option( 'date_format' );
+			$time_format = get_option( 'time_format' );
+			$format      = $date_format . ' ' . $time_format;
+		}
+		
+		return gmdate( $format, $timestamp );
 	}
 
 	/**
@@ -1842,10 +1865,11 @@ class ES_Common {
 					</div>
 					<div class="ml-3">
 						<h3 class="text-sm leading-5 font-medium text-blue-800 hover:underline">
-							<?php
-							/* translators: 1: Anchor opening tag with href attribute 2: Target attribute  3: Anchor closing tag */
-							echo sprintf( esc_html__( '%1$s' . esc_url( $upsell_info['pricing_url'] ) . '%2$s' . esc_html( $upsell_info['upgrade_title'] ) . '%3$s', 'email-subscribers' ), '<a href="', '" target="_blank">', '</a>' );
-							?>
+							<a href="<?php echo esc_url( $upsell_info['pricing_url'] ); ?>" target="_blank">
+								<?php
+								echo esc_html( $upsell_info['upgrade_title'] );
+								?>
+							</a>
 						</h3>
 					</div>
 				</div>
@@ -1863,10 +1887,10 @@ class ES_Common {
 							?>
 					<p class="mb-1 mt-3">
 						<?php
-						echo wp_kses_post( 'Upgrade now & get <b> 10% discount!</b> <br/><br/>Use coupon code:' );
+						echo wp_kses_post( __( 'Upgrade now & get <b> 10% discount!</b> <br/><br/>Use coupon code:' ), 'email-subscribers' );
 							?>
 
-						<span class="ml-2 px-1.5 py-1 font-medium bg-yellow-100 rounded-md border-2 border-dotted border-indigo-300 select-all"><?php esc_html_e( 'PREMIUM10', 'email-subscribers' ); ?> </span>
+						<span class="ml-2 px-1.5 py-1 font-medium bg-yellow-100 rounded-md border-2 border-dotted border-indigo-300 select-all"><?php echo esc_html( 'PREMIUM10' ); ?> </span>
 					</p>
 					<?php
 						}
@@ -1906,28 +1930,173 @@ class ES_Common {
 	 *
 	 * @since 4.6.5
 	 */
-	public static function prepare_campaign_report_statuses_dropdown_options( $selected = '', $default_label = '' ) {
+	public static function prepare_campaign_report_statuses_dropdown_options( $statuses = array(), $selected = '', $default_label = '' ) {
 
-		$statuses = array(
-			'Sent'     => __( 'Completed', 'email-subscribers' ),
-			'In Queue' => __( 'In Queue', 'email-subscribers' ),
-			'Sending'  => __( 'Sending', 'email-subscribers' ),
-		);
+		if ( ! empty( $statuses ) ) {
+			$dropdown = '<option class="text-sm" value="">' . esc_html__( 'All Status', 'email-subscribers' ) . '</option>';
 
-		$dropdown = '<option class="text-sm" value="">' . esc_html__( 'All Status', 'email-subscribers' ) . '</option>';
+			foreach ( $statuses as $key => $status ) {
 
-		foreach ( $statuses as $key => $status ) {
+				$dropdown .= '<option class="text-sm" value="' . esc_attr( $key ) . '" ';
 
-			$dropdown .= '<option class="text-sm" value="' . esc_attr( $key ) . '" ';
+				if ( strtolower( $selected ) === strtolower( $key ) ) {
+					$dropdown .= 'selected = selected';
+				}
 
-			if ( strtolower( $selected ) === strtolower( $key ) ) {
-				$dropdown .= 'selected = selected';
+				$dropdown .= '>' . esc_html( $status ) . '</option>';
 			}
 
-			$dropdown .= '>' . esc_html( $status ) . '</option>';
+			return $dropdown;
+		}
+	}
+
+	/**
+	 * Check whether the string is a valid JSON or not.
+	 *
+	 * @param string $string String we want to test if it's json.
+	 *
+	 * @return bool
+	 * 
+	 * @since 4.6.14
+	 */
+	public static function is_valid_json( $string ) {
+
+		return is_string( $string ) && is_array( json_decode( $string, true ) ) && ( json_last_error() === JSON_ERROR_NONE ) ? true : false;
+	}
+
+	/**
+	 * Get HTML for tooltip
+	 * 
+	 * @param string $tooltip_text
+	 * 
+	 * @return string $tooltip_html
+	 * 
+	 * @since 4.7.0
+	 */
+	public static function get_tooltip_html( $tooltip_text = '' ) {
+		$tooltip_html = '';
+		if ( ! empty( $tooltip_text ) ) {
+			$tooltip_html = '<div class="inline-block es-tooltip relative align-middle cursor-pointer">
+				<svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+				<span class="break-words invisible h-auto lg:w-48 xl:w-64 tracking-wide absolute z-70 tooltip-text bg-black text-gray-300 text-xs rounded p-3 py-2">
+					' . $tooltip_text . '
+					<svg class="absolute mt-2 text-black text-opacity-100 h-2.5 left-0" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve">
+						<polygon class="fill-current" points="0,0 127.5,127.5 255,0"/>
+					</svg>
+				</span>
+			</div>';
+		}
+		return $tooltip_html;
+	}
+
+	/**
+	 * Decode HTML entities
+	 * 
+	 * @param string $string
+	 * 
+	 * @return string $string
+	 * 
+	 * @since 4.7.1
+	 */
+	public static function decode_entities( $string ) {
+
+		preg_match_all('/&#?\w+;/', $string, $entities, PREG_SET_ORDER);
+		$entities = array_unique( array_column( $entities, 0 ) );
+
+		if ( ! empty( $entities ) ) {
+			foreach ( $entities as $entity ) {
+				$decoded = mb_convert_encoding( $entity, 'UTF-8', 'HTML-ENTITIES' );
+				$string  = str_replace( $entity, $decoded, $string );
+			}
 		}
 
-		return $dropdown;
+		return $string;
+	}
+
+	/**
+	 * Override wp editor tinymce formatting options
+	 * 
+	 * @param array $init
+	 * @param string $editor_id
+	 * 
+	 * @return array $init
+	 * 
+	 * @since 4.7.3
+	 */
+	public static function override_tinymce_formatting_options( $init, $editor_id = '' ) {
+
+		if ( 'edit-es-broadcast-body' === $editor_id ) {
+			
+			$init['wpautop']      = false; // Disable stripping of p tags in Text mode.
+			$init['tadv_noautop'] = true; // Disable stripping of p tags in Text mode.
+			$init['indent']       = true;
+			
+			// To disable stripping of some HTML elements like span when switching modes in wp editor from text-visual-text.
+			$opts                            = '*[*]';
+			$init['valid_elements']          = $opts;
+			$init['extended_valid_elements'] = $opts;
+		}
+
+		return $init;
+	}
+
+	/**
+	 * Get current request URL
+	 * 
+	 * @return string $request_url
+	 * 
+	 * @since 4.7.6
+	 */
+	public static function get_current_request_url() {
+		static $request_url = '';
+	
+		if ( empty( $request_url ) ) {
+			$request_url = add_query_arg( array() );
+		}
+	
+		return esc_url_raw( $request_url );
+	}
+
+	public static function get_campaign_status_icon( $status = '' ) {
+		ob_start();
+		switch ( $status ) {
+			case 'Sent':  
+				?>
+				<svg class="inline-block mt-0.5 ml-2 h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+					<title><?php esc_attr__( 'Sent', 'email-subscribers' ); ?></title>
+					<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+				</svg>
+			<?php 
+				break;
+			case 'In Queue': 
+				?>
+			<svg class="inline-block mt-0.5 ml-2 h-5 w-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+				<title><?php esc_attr__( 'In Queue', 'email-subscribers' ); ?></title>
+				<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+			</svg>
+			<?php 
+				break;
+			case 'Sending': 
+				?>
+			<svg class="inline-block mt-0.5 ml-2 h-4 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+				<title><?php esc_attr__( 'Sending', 'email-subscribers' ); ?></title>
+				<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
+			</svg>
+			<?php 
+				break;
+			case '1': 
+				?>
+			<span class="inline-flex px-2 text-green-800 bg-green-100 rounded-full"><?php esc_html__('Active', 'email-subscribers'); ?></span>
+			<?php 
+				break;
+			case '': 
+				?>
+			   <span class="inline-flex px-2 text-red-800 bg-red-100 rounded-full"><?php esc_html__('Inactive', 'email-subscribers'); ?></span>
+		<?php 
+		}
+
+		$status = ob_get_clean();
+		return $status;
 	}
 
 }

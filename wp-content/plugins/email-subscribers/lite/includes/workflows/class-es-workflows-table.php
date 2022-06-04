@@ -98,27 +98,40 @@ class ES_Workflows_Table extends ES_List_Table {
 
 		if ( ! empty( $action_status ) ) {
 			if ( ! empty( $workflow_id ) ) {
-				$workflow_edit_url = ES_Workflow_Admin_Edit::get_edit_url( $workflow_id );
-				if ( ! empty( $workflow_edit_url ) ) {
-					$workflow_edit_url = esc_url( $workflow_edit_url );
-				}
-				if ( 'added' === $action_status ) {
-					/* translators: %s: Workflow edit URL */
-					$message = sprintf( __( 'Workflow added. <a href="%s" class="text-indigo-600">Edit workflow</a>', 'email-subscribers' ), $workflow_edit_url );
-					$status  = 'success';
-				} elseif ( 'updated' === $action_status ) {
-					/* translators: %s: Workflow edit URL */
-					$message = sprintf( __( 'Workflow updated. <a href="%s" class="text-indigo-600">Edit workflow</a>', 'email-subscribers' ), $workflow_edit_url );
-					$status  = 'success';
-				} elseif ( 'not_saved' === $action_status ) {
-					$message = __( 'Unable to save workflow. Please try again later.', 'email-subscribers' );
-					$status  = 'error';
-				} elseif ( 'not_allowed' === $action_status ) {
-					$message = __( 'You are not allowed to add/edit workflows.', 'email-subscribers' );
-					$status  = 'error';
-				} else {
-					$message = __( 'An error has occured. Please try again later', 'email-subscribers' );
-					$status  = 'error';
+				$workflow = new ES_Workflow( $workflow_id );
+				if ( $workflow->exists ) {
+					$run_workflow = get_transient( 'ig_es_run_workflow' );
+					if ( $workflow->is_runnable() && 'yes' === $run_workflow ) {
+						?>
+						<script>
+							jQuery(document).ready(function(){
+								let workflow_id = <?php echo esc_js( $workflow_id ); ?>;
+								ig_es_run_workflow( workflow_id );
+							});
+						</script>
+						<?php
+					} else {
+						// Show workflow added/updated notice only if there is not workflow to run to avoid notice cluster on the page.
+						$workflow_edit_url = $workflow->get_edit_url();
+						if ( 'added' === $action_status ) {
+							/* translators: 1. Workflow edit URL anchor tag 2: Anchor close tag */
+							$message = sprintf( __( 'Workflow added. %1$sEdit workflow%2$s.', 'email-subscribers' ), '<a href="' . esc_url( $workflow_edit_url ) . '" class="text-indigo-600">', '</a>' );
+							$status  = 'success';
+						} elseif ( 'updated' === $action_status ) {
+							/* translators: 1. Workflow edit URL anchor tag 2: Anchor close tag */
+							$message = sprintf( __( 'Workflow updated. %1$sEdit workflow%2$s', 'email-subscribers' ), '<a href="' . esc_url( $workflow_edit_url ) . '" class="text-indigo-600">', '</a>' );
+							$status  = 'success';
+						} elseif ( 'not_saved' === $action_status ) {
+							$message = __( 'Unable to save workflow. Please try again later.', 'email-subscribers' );
+							$status  = 'error';
+						} elseif ( 'not_allowed' === $action_status ) {
+							$message = __( 'You are not allowed to add/edit workflows.', 'email-subscribers' );
+							$status  = 'error';
+						} else {
+							$message = __( 'An error has occured. Please try again later', 'email-subscribers' );
+							$status  = 'error';
+						}
+					}
 				}
 			}
 		}
@@ -239,8 +252,21 @@ class ES_Workflows_Table extends ES_List_Table {
 
 		switch ( $column_name ) {
 
-			case 'created_at':
-				$output = ig_es_format_date_time( $item[ $column_name ] );
+			case 'last_ran_at':
+				$workflow_id  = $item['id'];
+				$item['meta'] = maybe_unserialize( $item['meta'] );
+				$output      .= '<span class="last_ran_at_date_time" data-workflow-id="' . $workflow_id . '">';
+				if ( isset( $item['meta']['last_ran_at'] ) ) {
+					$output .= ig_es_format_date_time( $item['meta']['last_ran_at'] );
+				} else {
+					$output .= '-';
+				}
+				$output  .= '</span>';
+				$workflow = new ES_Workflow( $workflow_id );
+				if ( $workflow->exists && $workflow->is_runnable() ) {
+					/* translators: 1. Run workflow button start tag 2: Button close tag */
+					$output .= sprintf( __( ' %1$sRun%2$s', 'email-subscribers' ), '<button type="button" class="inline-flex justify-center rounded-md border border-transparent px-2 py-0.5 bg-white text-sm leading-5 font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 ig-es-run-workflow-btn" data-workflow-id="' . $workflow_id . '">', '</button>' );
+				}
 				break;
 			default:
 				$output = $item[ $column_name ];
@@ -304,11 +330,12 @@ class ES_Workflows_Table extends ES_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
+
 		$columns = array(
-			'cb'         => '<input type="checkbox" />',
-			'title'      => __( 'Title', 'email-subscribers' ),
-			'created_at' => __( 'Created', 'email-subscribers' ),
-			'status'     => __( 'Status', 'email-subscribers' ),
+			'cb'          => '<input type = "checkbox" />',
+			'title'       => __( 'Title', 'email-subscribers' ),
+			'last_ran_at' => __( 'Last ran at', 'email-subscribers' ),
+			'status'      => __( 'Status', 'email-subscribers' ),
 		);
 
 		return $columns;
@@ -322,8 +349,7 @@ class ES_Workflows_Table extends ES_List_Table {
 	 */
 	public function get_sortable_columns() {
 		$sortable_columns = array(
-			'title'      => array( 'title', true ),
-			'created_at' => array( 'created_at', true ),
+			'title'       => array( 'title', true ),
 		);
 
 		return $sortable_columns;

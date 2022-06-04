@@ -171,8 +171,6 @@ class ES_Workflow {
 	/**
 	 * Retrieve ES_Workflow instance.
 	 *
-	 * @since 3.5.0
-	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @param int $workflow_id Worfklow ID.
@@ -426,13 +424,14 @@ class ES_Workflow {
 	/**
 	 * Execute workflow actions.
 	 * 
-	 * @param  int <parameter_name> { parameter_description }
 	 * @return bool
 	 */
 	public function run() {
 
 		do_action( 'ig_es_before_workflow_run', $this );
 
+		$this->update_last_ran_at();
+		
 		$actions = $this->get_actions();
 
 		foreach ( $actions as $action_index => $action ) {
@@ -1016,5 +1015,114 @@ class ES_Workflow {
 		}
 
 		return $action;
+	}
+
+	/**
+	 * Check if workflow has given action or not.
+	 * 
+	 * @param string $action_name Action name.
+	 * 
+	 * @return bool $has_action Whether workflow has given action or not.
+	 */
+	public function has_action( $action_name = '' ) {
+		$has_action = false;
+		$actions    = $this->get_actions();
+
+		if ( ! empty( $actions ) ) {
+			foreach ( $actions as $action ) {
+				$current_action_name = $action->get_name();
+				if ( $current_action_name === $action_name ) {
+					$has_action = true;
+					break;
+				}
+			}
+		}
+
+		return $has_action;
+	}
+
+	/**
+	 * Check if workflow is runnable or not.
+	 *
+	 * @since 4.7.6
+	 *
+	 * @param  integer $workflow_id Workflow ID.
+	 * 
+	 * @return bool  $is_runnable Workflow is runnable or not.
+	 */
+	public function is_runnable() {
+
+		$is_runnable = false;
+		$trigger     = $this->get_trigger();
+		
+		if ( $trigger instanceof ES_Workflow_Trigger ) {
+			$supplied_data_items = $trigger->get_supplied_data_items();
+	
+			// Workflow having order related trigger and add to list action are runnable.
+			if ( in_array( 'wc_order', $supplied_data_items, true ) && $this->has_action( 'ig_es_add_to_list' ) ) {
+				$is_runnable = true;
+			}
+		}
+
+		return $is_runnable;
+	}
+
+	/**
+	 * Method to get edit url of a workflow
+	 *
+	 * @since 4.7.6
+	 *
+	 * @return string  $edit_url Workflow edit URL
+	 */
+	public function get_edit_url() {
+
+		$id       = $this->get_id();
+		$edit_url = admin_url( 'admin.php?page=es_workflows' );
+
+		$edit_url = add_query_arg(
+			array(
+				'id'     => $id,
+				'action' => 'edit',
+			),
+			$edit_url
+		);
+
+		return $edit_url;
+	}
+
+	/**
+	 * Method to update workflow last run at with current date time
+	 *
+	 * @since 4.7.6
+	 *
+	 * @return string Last ran date time
+	 */
+	public function get_last_ran_at() {
+		
+		return ES_Clean::string( $this->get_option( 'last_ran_at' ) );
+	}
+
+	/**
+	 * Method to update workflow last run at with current date time
+	 *
+	 * @since 4.7.6
+	 *
+	 * @return bool
+	 */
+	public function update_last_ran_at() {
+		
+		$workflow_id               = $this->get_id();
+		$last_ran_at 			   = ig_get_current_date_time();
+		$this->meta['last_ran_at'] = $last_ran_at;
+		
+		$workflow_data = array(
+			'meta' => maybe_serialize( $this->meta ),
+		);
+
+		$updated = ES()->workflows_db->update( $workflow_id, $workflow_data );
+		if ( $updated ) {
+			return $last_ran_at;
+		}
+		return '';
 	}
 }

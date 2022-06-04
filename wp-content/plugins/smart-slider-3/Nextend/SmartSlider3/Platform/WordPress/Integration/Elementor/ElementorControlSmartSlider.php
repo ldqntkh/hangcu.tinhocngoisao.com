@@ -17,7 +17,7 @@ class ElementorControlSmartSlider extends AbstractControl {
             <div class="elementor-control-input-wrapper">
                 <a style="margin-bottom:10px;" href="#" onclick="NextendSmartSliderSelectModal(jQuery(this).siblings('input')); return false;" class="button button-primary elementor-button elementor-button-smartslider" title="Select slider">Select
                     slider</a>
-                <input type="{{ data.input_type }}" title="{{ data.title }}" data-setting="{{ data.name }}"/>
+                <input type="{{ data.input_type }}" title="{{ data.title }}" data-setting="{{ data.name }}">
             </div>
         </div>
         <# if(data.controlValue == ''){NextendSmartSliderSelectModal(function(){return jQuery('[data-setting="smartsliderid"]')})} #>

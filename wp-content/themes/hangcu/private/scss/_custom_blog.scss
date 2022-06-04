@@ -1,0 +1,114 @@
+body.body-desktop {
+    .gvn-custom-post {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+}
+
+
+.gvn-post-sidebar {
+    width: 322px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        li {
+            padding: 10px;
+            border-bottom: 0.5px solid #DAD9D9;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            &:last-child {
+                border-bottom: none;
+            }
+            i {
+                color: #181717;
+            }
+            a {
+                color: #181717;
+                width: 100%;
+            }
+            &.active, &:hover {
+                a, i {
+                    color: #ED1C24;
+                }
+            }
+            
+        }
+    }
+}
+.gvn-post-content {
+    width: calc(100% - 332px);
+    margin-left: 10px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+body.body-mobile.post-template-custom-post-template {
+    #content {
+        .container {
+            background-color: transparent!important;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    .gvn-custom-post {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        margin-top: 0;
+        margin-bottom: 0;
+        width: 100%;
+        .gvn-post-sidebar {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 0;
+        }
+        .gvn-post-content {
+            width: 100%;
+            margin-left: 0px;
+            border-radius: 0;
+        }
+    }
+}
+
+
+.gvn-custom-post .gvn-post-content {
+    h1 {
+        font-size: 26px!important;
+        font-weight: bold!important;
+    }
+    h2 {
+        font-size: 24px!important;
+        font-weight: bold!important;
+    }
+    h3 {
+        font-size: 22px!important;
+        font-weight: bold!important;
+    }
+    h4,
+    h5,
+    h6,
+    p,
+    a,
+    span {
+        font-size: 16px!important;
+        font-weight: normal!important;
+    }
+}

@@ -20,6 +20,7 @@ abstract class IG_ES_Workflow_Variable {
 
 	/**
 	 * Variable description
+	 *
 	 * @var string
 	 */
 	protected $description;
@@ -92,6 +93,7 @@ abstract class IG_ES_Workflow_Variable {
 
 	/**
 	 * Sets the name, data_type and data_field props
+	 *
 	 * @param $name
 	 */
 	public function setup( $name ) {

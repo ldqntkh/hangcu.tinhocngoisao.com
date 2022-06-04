@@ -182,6 +182,13 @@ class ES_Workflow_Admin_Edit {
 				}
 			}
 
+			if ( in_array( $action_status, array( 'added', 'updated' ), true ) ) {
+				$run_workflow = ig_es_get_request_data( 'run_workflow', 'no' );
+				if ( 'yes' === $run_workflow ) {
+					set_transient( 'ig_es_run_workflow', 'yes', 3 );
+				}
+			}
+
 			$redirect_url = menu_page_url( 'es_workflows', false );
 			$redirect_url = add_query_arg(
 				array(
@@ -276,23 +283,15 @@ class ES_Workflow_Admin_Edit {
 	public static function add_metaboxes() {
 
 		$page_prefix = ES()->get_admin_page_prefix();
-		
-		$meta_box_title_for_trigger			= __( 'Trigger', 'email-subscribers' );
-		$meta_box_title_for_actions			= __( 'Actions', 'email-subscribers' );
-		$meta_box_title_for_save    	    = __( 'Save', 'email-subscribers' );
-		$meta_box_title_for_options 	    = __( 'Options', 'email-subscribers' );
-		$meta_box_title_for_variables 	    = __( 'Placeholders', 'email-subscribers' );
-		// $meta_box_title_for_timing  = __( 'Timing', 'email-subscribers' );
 
-		add_meta_box( 'ig_es_workflow_trigger', $meta_box_title_for_trigger, array( __CLASS__, 'trigger_metabox' ), $page_prefix . '_page_es_workflows', 'normal', 'default' );
-		add_meta_box( 'ig_es_workflow_actions', $meta_box_title_for_actions, array( __CLASS__, 'actions_metabox' ), $page_prefix . '_page_es_workflows', 'normal', 'default' );
-		add_meta_box( 'ig_es_workflow_save', $meta_box_title_for_save, array( __CLASS__, 'save_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' );
-		add_meta_box( 'ig_es_workflow_variables', $meta_box_title_for_variables, array( __CLASS__, 'variables_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' );
+		add_meta_box( 'ig_es_workflow_trigger', __( 'Trigger', 'email-subscribers' ), array( __CLASS__, 'trigger_metabox' ), $page_prefix . '_page_es_workflows', 'normal', 'default' );
+		add_meta_box( 'ig_es_workflow_actions', __( 'Actions', 'email-subscribers' ), array( __CLASS__, 'actions_metabox' ), $page_prefix . '_page_es_workflows', 'normal', 'default' );
+		add_meta_box( 'ig_es_workflow_save', __( 'Save', 'email-subscribers' ), array( __CLASS__, 'save_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' );
+		add_meta_box( 'ig_es_workflow_variables', __( 'Placeholders', 'email-subscribers' ), array( __CLASS__, 'variables_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' );
+		
 		if ( ES()->can_upsell_features( array( 'lite', 'trial' ) ) ) {
-			do_action( 'ig_es_workflows_integration', $page_prefix ); 
+			do_action( 'ig_es_workflows_integration', $page_prefix );
 		}
-		// add_meta_box( 'ig_es_workflow_options', $meta_box_title_for_options, array( __CLASS__, 'options_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' ); // phpcs:ignore
-		// add_meta_box( 'ig_es_workflow_timing', $meta_box_title_for_timing, array( __CLASS__, 'timing_metabox' ), $page_prefix . '_page_es_workflows', 'side', 'default' ); // phpcs:ignore
 	}
 
 	/**
@@ -444,7 +443,7 @@ class ES_Workflow_Admin_Edit {
 	 * @param int $workflow_id Workflow ID.
 	 * @return mixed $workflow_id/false workflow id on success otherwise false
 	 * 
-	 * @modified 4.5.3 Removed sanitization for $posted being performed through ig_es_get_request_data function. Instead added individual sanitization based on workflow field.
+	 * @since 4.5.3 Removed sanitization for $posted being performed through ig_es_get_request_data function. Instead added individual sanitization based on workflow field.
 	 */
 	public static function save( $workflow_id = 0 ) {
 
@@ -489,6 +488,18 @@ class ES_Workflow_Admin_Edit {
 			case 'datetime':
 				$workflow_meta['queue_datetime'] = self::extract_string_option_value( 'queue_datetime', $posted );
 				break;
+		}
+
+		if ( ! empty( $workflow_id ) ) {
+			$run_workflow = ig_es_get_request_data( 'run_workflow', 'no' );
+			if ( 'no' === $run_workflow ) {
+				$existing_meta = ES()->workflows_db->get_column( 'meta', $workflow_id );
+				$existing_meta = maybe_unserialize( $existing_meta );
+				if ( ! empty( $existing_meta['last_ran_at'] ) ) {
+					// Don't update the workflow last run time unless admin check the run workflow option.
+					$workflow_meta['last_ran_at'] = $existing_meta['last_ran_at'];
+				}
+			}
 		}
 
 		$workflow_data = array(
@@ -550,32 +561,4 @@ class ES_Workflow_Admin_Edit {
 	public static function extract_array_option_value( $option, $posted, $default = array() ) {
 		return isset( $posted['workflow_options'][ $option ] ) ? ES_Clean::recursive( $posted['workflow_options'][ $option ] ) : $default;
 	}
-
-	/**
-	 * Method to get edit url of a workflow
-	 *
-	 * @since 4.4.1
-	 *
-	 * @param  integer $workflow_id Workflow ID.
-	 * @return string  $edit_url Workflow edit URL
-	 */
-	public static function get_edit_url( $workflow_id = 0 ) {
-
-		if ( empty( $workflow_id ) ) {
-			return '';
-		}
-
-		$edit_url = admin_url( 'admin.php?page=es_workflows' );
-
-		$edit_url = add_query_arg(
-			array(
-				'action' => 'edit',
-				'id'     => $workflow_id,
-			),
-			$edit_url
-		);
-
-		return $edit_url;
-	}
-
 }

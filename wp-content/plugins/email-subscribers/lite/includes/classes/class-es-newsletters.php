@@ -67,7 +67,7 @@ class ES_Newsletters {
 				$subject     = ! empty( $broadcast_data['subject'] ) ? $broadcast_data['subject'] : '';
 
 				// Check if user has added required data for creating broadcast.
-				if ( ! empty( $broadcast_data['subject'] ) && ! empty( $broadcast_data['body'] ) && ! empty( $list_id ) && ! empty( $subject ) ) {
+				if ( ! empty( $broadcast_data['subject'] ) && ! empty( $broadcast_data['body'] ) && ! empty( $subject ) ) {
 					$broadcast_data['base_template_id'] = $template_id;
 					$broadcast_data['list_ids']         = $list_id;
 					$broadcast_data['status']           = IG_ES_CAMPAIGN_STATUS_SCHEDULED;
@@ -76,7 +76,12 @@ class ES_Newsletters {
 					$meta['es_schedule_date']           = ! empty( $broadcast_data['es_schedule_date'] ) ? $broadcast_data['es_schedule_date'] : '';
 					$meta['es_schedule_time']           = ! empty( $broadcast_data['es_schedule_time'] ) ? $broadcast_data['es_schedule_time'] : '';
 					$meta['pre_header']                 = ! empty( $broadcast_data['pre_header'] ) ? $broadcast_data['pre_header'] : '';
-					$broadcast_data['meta']             = maybe_serialize( $meta );
+
+					if ( ! empty( $meta['list_conditions'] ) ) {
+						$meta['list_conditions'] = IG_ES_Campaign_Rules::remove_empty_conditions( $meta['list_conditions'] );
+					}
+
+					$broadcast_data['meta'] = maybe_serialize( $meta );
 
 					self::es_send_email_callback( $broadcast_data );
 
@@ -117,12 +122,6 @@ class ES_Newsletters {
 				);
 			} elseif ( empty( $broadcast_data['body'] ) ) {
 				$message      = __( 'Please add message body or select template', 'email-subscribers' );
-				$message_data = array(
-					'message' => $message,
-					'type'    => 'error',
-				);
-			} elseif ( empty( $list_id ) ) {
-				$message      = __( 'Please select list.', 'email-subscribers' );
 				$message_data = array(
 					'message' => $message,
 					'type'    => 'error',
@@ -176,15 +175,14 @@ class ES_Newsletters {
 		$lists       = ES_Common::prepare_list_dropdown_options( $list_ids );
 		$from_email  = ES_Common::get_ig_option( 'from_email' );
 
-		$broadcast_id         = ! empty( $broadcast_data['id'] ) ? $broadcast_data['id'] : '';
-		$broadcast_from_name  = ! empty( $broadcast_data['from_name'] ) ? $broadcast_data['from_name'] : get_option( 'ig_es_from_name' );
-		$broadcast_email      = ! empty( $broadcast_data['from_email'] ) ? $broadcast_data['from_email'] : $from_email;
-		$broadcast_reply_to   = ! empty( $broadcast_data['reply_to_email'] ) ? $broadcast_data['reply_to_email'] : $from_email;
-		$broadcast_subject    = ! empty( $broadcast_data['subject'] ) ? $broadcast_data['subject'] : '';
-		$broadcast_pre_header = ! empty( $broadcast_data['pre_header'] ) ? $broadcast_data['pre_header'] : '';
-		$broadcast_status     = ! empty( $broadcast_data['status'] ) ? (int) $broadcast_data['status'] : 0;
+		$broadcast_id        = ! empty( $broadcast_data['id'] ) ? $broadcast_data['id'] : 0;
+		$broadcast_from_name = ! empty( $broadcast_data['from_name'] ) ? $broadcast_data['from_name'] : get_option( 'ig_es_from_name' );
+		$broadcast_email     = ! empty( $broadcast_data['from_email'] ) ? $broadcast_data['from_email'] : $from_email;
+		$broadcast_reply_to  = ! empty( $broadcast_data['reply_to_email'] ) ? $broadcast_data['reply_to_email'] : $from_email;
+		$broadcast_subject   = ! empty( $broadcast_data['subject'] ) ? $broadcast_data['subject'] : '';
+		$broadcast_status    = ! empty( $broadcast_data['status'] ) ? (int) $broadcast_data['status'] : 0;
 
-		// Flag to check if broadcast is not being send or already sent.
+		// Flag to check if broadcast is being send or already sent.
 		$is_broadcast_processing = false;
 
 		if ( ! empty( $broadcast_status ) ) {
@@ -214,12 +212,7 @@ class ES_Newsletters {
 			}
 		}
 
-		// Allow multiselect for lists field in the pro version by changing list field's class,name and adding multiple attribute.
-		$select_list_attr  	= ES()->is_pro() ? 'multiple="multiple"' : '';
-		$select_list_name  	= ES()->is_pro() ? 'broadcast_data[list_ids][]' : 'broadcast_data[list_ids]';
-		$select_list_class 	= ES()->is_pro() ? 'ig-es-form-multiselect' : 'form-select';
-
-		$allowedtags 		= ig_es_allowed_html_tags_in_esc();
+		$allowedtags = ig_es_allowed_html_tags_in_esc();
 		?>
 
 		<div class="font-sans pt-1.5 wrap">
@@ -272,7 +265,7 @@ class ES_Newsletters {
 										</ul>
 									</div>
 								</div>
-								<div class="flex md:mt-0 md:ml-2 xl:ml-4">
+								<div class="flex md:mt-0 xl:ml-4">
 
 									<div id="broadcast_button" class="inline-block text-left ">
 										<button type="button"
@@ -286,7 +279,7 @@ class ES_Newsletters {
 										</button>
 									</div>
 
-									<div id="broadcast_button1" class="flex hidden mt-4 md:mt-0 md:ml-2 xl:ml-4">
+									<div id="broadcast_button1" class="flex hidden mt-4 md:mt-0">
 								<span>
 									<div class="relative inline-block text-left">
 										<span>
@@ -297,19 +290,27 @@ class ES_Newsletters {
 									</span>
 								</div>
 							</span>
-									</div>
+							</div>
 
-									<span class="md:ml-2 xl:ml-3">
-							<button type="button" class="inline-flex items-center w-full py-1.5 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md ig_es_draft_broadcast md:px-2 lg:px-3 xl:px-4 hover:bg-gray-50 focus:outline-none focus:shadow-outline focus:border-blue-300">
-								<?php echo esc_html__( 'Save Draft', 'email-subscribers' ); ?>
+							<span class="md:ml-2 xl:ml-3">
+							<?php
+							$save_button_class = 'ig_es_draft_broadcast';
+							$save_button_text  = __( 'Save Draft', 'email-subscribers' );
+							if ( in_array( $broadcast_status, array( IG_ES_CAMPAIGN_STATUS_QUEUED, IG_ES_CAMPAIGN_STATUS_PAUSED ), true ) ) {
+								$save_button_class = 'ig_es_save_broadcast';
+								$save_button_text  = __( 'Save', 'email-subscribers' );
+							}
+							?>
+							<button type="button" class="<?php echo esc_attr( $save_button_class ); ?> inline-flex items-center w-full py-1.5 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md  md:px-2 lg:px-3 xl:px-4 hover:bg-gray-50 focus:outline-none focus:shadow-outline focus:border-blue-300">
+								<?php echo esc_html( $save_button_text ); ?>
 							</button>
-						</span>
+							</span>
 
 									<span id="broadcast_button2" class="hidden md:ml-2 xl:ml-3">
 							<div class="relative inline-block text-left">
 								<span>
 									<?php
-									// If broadcast is sent or being sent then don't allow scheduling to conflicts.
+									// If broadcast is sent or being sent then don't allow scheduling to avoid conflicts.
 									if ( ! $is_broadcast_processing ) {
 										?>
 										<button type="submit" id="ig_es_broadcast_submitted" name="ig_es_broadcast_submitted" class="w-24 inline-flex justify-center py-1.5 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md md:px-2 lg:px-3 xl:px-4 hover:bg-indigo-500 hover:text-white"
@@ -331,6 +332,14 @@ class ES_Newsletters {
 							</span>
 						</div>
 					</span>
+					<div class="ml-1 xl:ml-2 mt-2">
+								<a class="px-1.5 py-2 es-documentation" href="https://www.icegram.com/documentation/es-how-to-create-and-send-newsletter-emails/?utm_source=in_app&utm_medium=broadcast&utm_campaign=es_doc" target="_blank">
+									<svg class="w-6 h-6 -mt-1 inline text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<title><?php esc_html_e('Documentation ', 'email-subscribers'); ?></title>
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+									</svg>
+								</a>
+							</div>
 								</div>
 							</div>
 						</header>
@@ -338,7 +347,7 @@ class ES_Newsletters {
 					<div class="mx-auto max-w-7xl">
 						<hr class="wp-header-end">
 					</div>
-					<div class="mx-auto mt-7 es_broadcast_first max-w-7xl">
+					<div class="mx-auto mt-6 es_broadcast_first max-w-7xl">
 						<div>
 							<div class=" bg-white rounded-lg shadow-md md:flex">
 								<div class="broadcast_main_content py-4 pl-2">
@@ -371,7 +380,8 @@ class ES_Newsletters {
 											'quicktags'    => true,
 											'editor_class' => 'wp-editor-boradcast',
 										);
-										wp_editor( $body, 'edit-es-boradcast-body', $editor_args );
+										add_filter( 'tiny_mce_before_init', array( 'ES_Common', 'override_tinymce_formatting_options' ), 10, 2 );
+										wp_editor( $body, 'edit-es-broadcast-body', $editor_args );
 										?>
 									</div>
 									<?php do_action( 'ig_es_after_broadcast_left_pan_settings', $broadcast_data ); ?>
@@ -386,16 +396,20 @@ class ES_Newsletters {
 										</select>
 									</div>
 									<div class="block py-2 mx-4 ">
-										<label for="recipients" class="text-sm font-medium leading-5 text-gray-700"><?php echo esc_html__( 'Recipients', 'email-subscribers' ); ?></label>
-										<select <?php echo esc_attr( $select_list_attr ); ?> class="block w-full h-8 mt-1 text-sm rounded-md cursor-pointer h-9 <?php echo esc_attr( $select_list_class ); ?>" name="<?php echo esc_attr( $select_list_name ); ?>" id="ig_es_broadcast_list_ids">
-											<?php
-											 echo wp_kses( $lists, $allowedtags ); 
-											?>
-										</select>
+										<?php
+											do_action( 'ig_es_show_campaign_rules', $broadcast_id, $broadcast_data );
+										?>
 										<!-- Hidden field to detect whether admin has update campaign lists or not during editing of campaign -->
 										<input type="hidden" name="broadcast_data[existing_list_ids]" value="<?php echo esc_attr( $list_ids ); ?>">
 										<div class="block mt-1">
-											<span id="ig_es_total_contacts"></span>
+											<span id="ig_es_total_contacts">
+												<h2 class='text-sm font-normal text-gray-600'>
+													<span class=""><?php echo esc_html__( 'Total recipients:', 'email-subscribers' ); ?> </span>
+													<span class='text-base font-medium text-gray-700'>
+														<span class='ig_es_list_contacts_count'></span>
+													</span>
+												</h2>
+											</span>
 										</div>
 									</div>
 
@@ -605,7 +619,7 @@ class ES_Newsletters {
 						ES_DB_Sending_Queue::do_insert_from_contacts_table( $mailing_queue_id, $mailing_queue_hash, $campaign_id, $list_id );
 					}
 					
-					$mailing_queue = ES_DB_Mailing_Queue::get_email_by_id( $mailing_queue_id );
+					$mailing_queue = ES_DB_Mailing_Queue::get_mailing_queue_by_id( $mailing_queue_id );
 					if ( ! empty( $mailing_queue ) ) {
 		
 						$queue_start_at    = $mailing_queue['start_at'];
@@ -734,6 +748,10 @@ class ES_Newsletters {
 
 		$broadcast_data = ig_es_get_request_data( 'broadcast_data', array(), false );
 
+		/** 
+		 * To allow insert of new broadcast data, 
+		 * we are specifically setting $broadcast_id to null when id is empty in $broadcast_data
+		 **/
 		$broadcast_id = ! empty( $broadcast_data['id'] ) ? $broadcast_data['id'] : null;
 		$is_updating  = ! empty( $broadcast_id ) ? true : false;
 		$list_id      = ! empty( $broadcast_data['list_ids'] ) ? $broadcast_data['list_ids'] : '';
@@ -742,11 +760,15 @@ class ES_Newsletters {
 
 		$broadcast_data['base_template_id'] = $template_id;
 		$broadcast_data['list_ids']         = $list_id;
-		$broadcast_data['status']           = ! empty( $broadcast_data['status'] ) ? 1 : 0;
+		$broadcast_data['status']           = ! empty( $broadcast_data['status'] ) ? $broadcast_data['status'] : 0;
 		$meta                               = ! empty( $broadcast_data['meta'] ) ? $broadcast_data['meta'] : array();
 		$meta['pre_header']                 = ! empty( $broadcast_data['pre_header'] ) ? $broadcast_data['pre_header'] : '';
-		$broadcast_data['meta']             = maybe_serialize( $meta );
 
+		if ( ! empty( $meta['list_conditions'] ) ) {
+			$meta['list_conditions'] = IG_ES_Campaign_Rules::remove_empty_conditions( $meta['list_conditions'] );
+		}
+
+		$broadcast_data['meta'] = maybe_serialize( $meta );
 		$broadcast_data['type'] = 'newsletter';
 		$broadcast_data['name'] = $broadcast_data['subject'];
 		$broadcast_data['slug'] = sanitize_title( sanitize_text_field( $broadcast_data['name'] ) );

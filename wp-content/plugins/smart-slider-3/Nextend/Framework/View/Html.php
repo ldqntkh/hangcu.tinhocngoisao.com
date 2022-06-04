@@ -2,6 +2,7 @@
 
 namespace Nextend\Framework\View;
 
+use Nextend\Framework\Platform\Platform;
 use Nextend\Framework\Settings;
 
 class Html {
@@ -74,7 +75,7 @@ class Html {
         $htmlOptions['src'] = $src;
         $htmlOptions['alt'] = $alt;
 
-        return self::tag('img', $htmlOptions, false);
+        return self::tag('img', $htmlOptions, false, false);
     }
 
     /**
@@ -115,7 +116,13 @@ class Html {
             'async' => 1
         );
 
-        if ($htmlOptions === array()) return '';
+        if (empty($htmlOptions)) {
+            return '';
+        }
+
+        if (isset($htmlOptions['style']) && empty($htmlOptions['style'])) {
+            unset($htmlOptions['style']);
+        }
 
         $html = '';
         if (isset($htmlOptions['encode'])) {
@@ -193,49 +200,49 @@ class Html {
             );
             $options = array_merge($options, $scriptOptions);
 
-            return self::tag('link', $options, false);
+            return self::tag('link', $options, false, false);
         }
 
-        return self::tag("style", $scriptOptions + array(
-                "type" => "text/css"
-            ), $script);
+        return self::tag("style", $scriptOptions, $script);
     }
 
     /**
      * Insert script
      *
      * @param string $script
-     * @param bool   $file
      *
      * @return string
      */
-    public static function script($script, $file = false) {
-        if ($file) {
-            return self::tag('script', array(
-                    'type' => 'text/javascript',
-                    'src'  => $script
-                ) + self::getScriptAttributes(), '');
-        }
+    public static function script($script) {
 
         return self::tag('script', array(
-            'type'   => 'text/javascript',
             'encode' => false
         ), $script);
     }
 
     public static function scriptFile($script, $attributes = array()) {
         return self::tag('script', array(
-                'type' => 'text/javascript',
-                'src'  => $script
+                'src' => $script
             ) + self::getScriptAttributes() + $attributes, '');
     }
 
     private static function getScriptAttributes() {
         static $attributes = null;
+
+        if (Platform::isAdmin()) {
+            return array();
+        }
+
         if ($attributes === null) {
             if (class_exists('\\Nextend\\Framework\\Settings', false)) {
                 $value       = trim(html_entity_decode(strip_tags(Settings::get('scriptattributes', ''))));
-                $_attributes = explode(' ', str_replace('\'', "", str_replace("\"", "", $value)));
+                $_attributes = explode(' ', str_replace(array(
+                    '\'',
+                    "\""
+                ), "", str_replace(array(
+                    "onload",
+                    "onerror"
+                ), "not-allowed", $value)));
                 if (!empty($value) && !empty($_attributes)) {
                     foreach ($_attributes as $attr) {
                         if (strpos($attr, '=') !== false) {
@@ -279,8 +286,11 @@ class Html {
                 unset($array['style']);
             }
             if (isset($array['class'])) {
-                if (!isset($target['class'])) $target['class'] = '';
-                $target['class'] .= ' ' . $array['class'];
+                if (empty($target['class'])) {
+                    $target['class'] = $array['class'];
+                } else {
+                    $target['class'] .= ' ' . $array['class'];
+                }
                 unset($array['class']);
             }
 
@@ -304,7 +314,11 @@ class Html {
             );
 
             if (defined('JETPACK__VERSION')) {
-                $attrs['class'] = 'jetpack-lazy-image';
+                $attrs['class'] .= ' jetpack-lazy-image';
+            }
+
+            if (defined('PERFMATTERS_VERSION')) {
+                $attrs['class'] .= ' no-lazy';
             }
         }
 

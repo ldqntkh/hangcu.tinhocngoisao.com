@@ -7,6 +7,8 @@ use WPMailSMTP\Connect;
 use WPMailSMTP\Helpers\PluginImportDataRetriever;
 use WPMailSMTP\Options;
 use WPMailSMTP\WP;
+use WPMailSMTP\Reports\Emails\Summary as SummaryReportEmail;
+use WPMailSMTP\Tasks\Reports\SummaryEmailTask as SummaryReportEmailTask;
 
 /**
  * Class for the plugin's Setup Wizard.
@@ -143,7 +145,7 @@ class SetupWizard {
 			return;
 		}
 
-		add_dashboard_page( '', '', 'manage_options', Area::SLUG . '-setup-wizard', '' );
+		add_submenu_page( '', '', '', 'manage_options', Area::SLUG . '-setup-wizard', '' );
 	}
 
 	/**
@@ -153,11 +155,29 @@ class SetupWizard {
 	 */
 	private function load_setup_wizard() {
 
+		/**
+		 * Before setup wizard load.
+		 *
+		 * @since 2.8.0
+		 *
+		 * @param \WPMailSMTP\Admin\SetupWizard  $setup_wizard SetupWizard instance.
+		 */
+		do_action( 'wp_mail_smtp_admin_setup_wizard_load_setup_wizard_before', $this );
+
 		$this->enqueue_scripts();
 
 		$this->setup_wizard_header();
 		$this->setup_wizard_content();
 		$this->setup_wizard_footer();
+
+		/**
+		 * After setup wizard load.
+		 *
+		 * @since 2.8.0
+		 *
+		 * @param \WPMailSMTP\Admin\SetupWizard  $setup_wizard SetupWizard instance.
+		 */
+		do_action( 'wp_mail_smtp_admin_setup_wizard_load_setup_wizard_after', $this );
 
 		exit;
 	}
@@ -186,7 +206,7 @@ class SetupWizard {
 				'is_multisite'       => is_multisite(),
 				'translations'       => WP::get_jed_locale_data( 'wp-mail-smtp' ),
 				'exit_url'           => wp_mail_smtp()->get_admin()->get_admin_page_url(),
-				'email_test_tab_url' => add_query_arg( 'tab', 'test', wp_mail_smtp()->get_admin()->get_admin_page_url() ),
+				'email_test_tab_url' => add_query_arg( 'tab', 'test', wp_mail_smtp()->get_admin()->get_admin_page_url( Area::SLUG . '-tools' ) ),
 				'is_pro'             => wp_mail_smtp()->is_pro(),
 				'license_exists'     => apply_filters( 'wp_mail_smtp_admin_setup_wizard_license_exists', false ),
 				'plugin_version'     => WPMS_PLUGIN_VER,
@@ -527,6 +547,15 @@ class SetupWizard {
 		$options   = new Options();
 		$overwrite = ! empty( $_POST['overwrite'] );
 		$value     = isset( $_POST['value'] ) ? wp_slash( json_decode( wp_unslash( $_POST['value'] ), true ) ) : []; // phpcs:ignore
+
+		// Cancel summary report email task if summary report email was disabled.
+		if (
+			! SummaryReportEmail::is_disabled() &&
+			isset( $value['general'][ SummaryReportEmail::SETTINGS_SLUG ] ) &&
+			$value['general'][ SummaryReportEmail::SETTINGS_SLUG ] === true
+		) {
+			( new SummaryReportEmailTask() )->cancel();
+		}
 
 		$options->set( $value, false, $overwrite );
 

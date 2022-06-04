@@ -158,7 +158,7 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 		 *
 		 * @since 4.4.0
 		 */
-		public static function get_dashboard_reports_data( $refresh = false ) {
+		public static function get_dashboard_reports_data( $source, $refresh = false, $days = 60, $campaign_count = 5 ) {
 
 			/**
 			 * - Get Total Contacts
@@ -185,12 +185,13 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 			$total_forms     = ES()->forms_db->count_forms();
 			$total_lists     = ES()->lists_db->count_lists();
 			$total_campaigns = ES()->campaigns_db->get_total_campaigns();
-
-			$total_email_opens  = self::get_total_contacts_opened_emails( 60, false );
-			$total_links_clicks = self::get_total_contacts_clicks_links( 60, false );
-			$total_message_sent = self::get_total_emails_sent( 60, false );
-			$total_contact_lost = self::get_total_contact_lost( 60, false );
-			$contacts_growth = self::get_contacts_growth();
+			$total_contacts_subscribed = self::get_total_subscribed_contacts( $days );
+			
+			$total_email_opens  = self::get_total_contacts_opened_emails( $days, false );
+			$total_links_clicks = self::get_total_contacts_clicks_links( $days, false );
+			$total_message_sent = self::get_total_emails_sent( $days, false );
+			$total_contact_lost = self::get_total_contact_lost( $days, false );
+			$contacts_growth 	= self::get_contacts_growth();
 
 			$total_open_rate  = 0;
 			$total_click_rate = 0; 
@@ -217,16 +218,22 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 
 			$data = array();
 
-			$data = apply_filters( 'ig_es_reports_data', $data );
+			
+			$can_show = self::can_show_campaign_stats( $source );
+			if ( $can_show ) {
+
+				$data = self::get_campaign_stats( $campaign_count );
+			}
 
 			$reports_data = array(
-				'total_contacts'     => $total_contacts,
-				'total_lists'        => $total_lists,
-				'total_forms'        => $total_forms,
-				'total_campaigns'    => $total_campaigns,
-				'total_email_opens'  => $total_email_opens,
-				'total_message_sent' => $total_message_sent,
-				'total_contact_lost' => $total_contact_lost,
+				'total_contacts'     => number_format( $total_contacts ),
+				'total_lists'        => number_format( $total_lists ),
+				'total_forms'        => number_format( $total_forms ),
+				'total_campaigns'    => number_format( $total_campaigns ),
+				'total_contacts_subscribed' => number_format( $total_contacts_subscribed ),
+				'total_email_opens'  => number_format( $total_email_opens ),
+				'total_message_sent' => number_format( $total_message_sent ),
+				'total_contact_lost' => number_format( $total_contact_lost ),
 				'avg_open_rate'      => number_format( $avg_open_rate, 2 ),
 				'avg_click_rate'     => number_format( $avg_click_rate, 2 ),
 				'total_open_rate'    => number_format( $total_open_rate, 2 ),
@@ -242,6 +249,113 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 			return $data;
 		}
 
+		/**
+		 * Get Campaigns Stats
+		 *
+		 * @return array
+		 *
+		 * @since 4.7.8
+		 */
+		public static function get_campaign_stats( $total_campaigns = 5 ) {
 
+			global $wpdb;
+
+			$campaigns = ES_DB_Mailing_Queue::get_recent_campaigns( $total_campaigns );
+
+			$campaigns_data = array();
+			if ( ! empty( $campaigns ) && count( $campaigns ) > 0 ) {
+
+				foreach ( $campaigns as $key => $campaign ) {
+
+					$message_id  = $campaign['id'];
+					$campaign_id = $campaign['campaign_id'];
+
+					if ( 0 == $campaign_id ) {
+						continue;
+					}
+
+					$results = $wpdb->get_results( $wpdb->prepare( "SELECT type, count(DISTINCT (contact_id) ) as total FROM {$wpdb->prefix}ig_actions WHERE message_id = %d AND campaign_id = %d GROUP BY type", $message_id, $campaign_id ), ARRAY_A );
+					
+					$stats     = array();
+					$type      = '';
+					$type_text = '';
+					
+					if ( count( $results ) > 0 ) {
+
+						foreach ( $results as $result ) {
+
+							$type  = $result['type'];
+							$total = $result['total'];
+
+							switch ( $type ) {
+								case IG_MESSAGE_SENT:
+									$type_text = 'total_sent';
+									break;
+								case IG_MESSAGE_OPEN:
+									$type_text = 'total_opens';
+									break;
+								case IG_LINK_CLICK:
+									$type_text = 'total_clicks';
+									break;
+								case IG_CONTACT_UNSUBSCRIBE:
+									$type_text = 'total_unsubscribe';
+									break;
+							}
+
+							$stats[ $type_text ] = $total;
+						}
+					}
+
+					$stats = wp_parse_args( $stats, array( 'total_sent' => 0, 'total_opens' => 0, 'total_clicks' => 0, 'total_unsubscribe' => 0 ) );
+
+					if ( 0 != $stats['total_sent'] ) {
+						$campaign_opens_rate  = ( $stats['total_opens'] * 100 ) / $stats['total_sent'];
+						$campaign_clicks_rate = ( $stats['total_clicks'] * 100 ) / $stats['total_sent'];
+						$campaign_losts_rate  = ( $stats['total_unsubscribe'] * 100 ) / $stats['total_sent'];
+					} else {
+						$campaign_opens_rate  = 0;
+						$campaign_clicks_rate = 0;
+						$campaign_losts_rate  = 0;
+					}
+
+					$campaign_type = ES()->campaigns_db->get_column( 'type', $campaign_id );
+
+					if ( 'newsletter' === $campaign_type ) {
+						$type = __( 'Broadcast', 'email-subscribers' );
+					} elseif ( 'post_notification' === $campaign_type ) {
+						$type = __( 'Post Notification', 'email-subscribers' );
+					} elseif ( 'post_digest' === $campaign_type ) {
+						$type = __( 'Post Digest', 'email-subscribers' );
+					}
+
+					$start_at  = gmdate( 'd F', strtotime( $campaign['start_at'] ) );
+					$finish_at = gmdate( 'd F', strtotime( $campaign['finish_at'] ) );
+
+					$campaigns_data[ $key ]                         = $stats;
+					$campaigns_data[ $key ]['title']                = $campaign['subject'];
+					$campaigns_data[ $key ]['hash']                 = $campaign['hash'];
+					$campaigns_data[ $key ]['status']               = $campaign['status'];
+					$campaigns_data[ $key ]['campaign_type']        = $campaign_type;
+					$campaigns_data[ $key ]['type']                 = $type;
+					$campaigns_data[ $key ]['campaign_opens_rate']  = round( $campaign_opens_rate );
+					$campaigns_data[ $key ]['campaign_clicks_rate'] = round( $campaign_clicks_rate );
+					$campaigns_data[ $key ]['campaign_losts_rate']  = round( $campaign_losts_rate );
+					$campaigns_data[ $key ]['start_at']             = $start_at;
+					$campaigns_data[ $key ]['finish_at']            = $finish_at;
+				}
+
+			}
+			$data['campaigns'] = $campaigns_data;
+		
+			return $data;
+		}
+
+		public static function can_show_campaign_stats( $source = '' ) {
+			if ( 'es_dashboard' === $source && ! ES()->is_pro() ) {
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

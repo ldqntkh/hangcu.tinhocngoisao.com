@@ -103,6 +103,20 @@ abstract class AbstractGeneratorGroup {
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
+    public function getError() {
+        return n2_('Generator not found');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDocsLink() {
+        return 'https://smartslider.helpscoutdocs.com/article/1999-dynamic-slides';
+    }
+
     public function isInstalled() {
         return true;
     }

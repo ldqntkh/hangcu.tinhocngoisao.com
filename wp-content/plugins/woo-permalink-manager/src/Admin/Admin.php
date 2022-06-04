@@ -1,7 +1,8 @@
 <?php namespace Premmerce\UrlManager\Admin;
 
-use Premmerce\SDK\V2\FileManager\FileManager;
 use Premmerce\UrlManager\UrlManagerPlugin;
+use Premmerce\SDK\V2\FileManager\FileManager;
+use Premmerce\UrlManager\Admin\BundleAndSave;
 
 /**
  * Class Admin
@@ -25,6 +26,11 @@ class Admin
      */
     private $settings;
 
+    /**
+     * @var bundlesAndSave
+     */
+    private $bundlesAndSave;
+
     const META_IGNORE_BANNER = 'premmerce_url_manager_ignore_banner';
 
     /**
@@ -34,9 +40,11 @@ class Admin
      */
     public function __construct(FileManager $fileManager)
     {
-        $this->fileManager  = $fileManager;
-        $this->settingsPage = UrlManagerPlugin::DOMAIN . '-admin';
-        $this->settings     = new Settings($fileManager);
+        $this->fileManager    = $fileManager;
+        $this->settingsPage   = UrlManagerPlugin::DOMAIN . '-admin';
+        $this->settings       = new Settings($fileManager);
+        $this->bundlesAndSave = new BundleAndSave($fileManager);
+
         $this->registerActions();
     }
 
@@ -177,7 +185,8 @@ class Admin
 
         $current = isset($_GET['tab']) ? $_GET['tab'] : 'settings';
 
-        $tabs['settings'] = __('Settings', 'premmerce-url-manager');
+        $tabs['settings']         = __('Settings', 'premmerce-url-manager');
+        $tabs['bundle_and_save']  = __('Bundle and Save', 'premmerce-url-manager');
 
         #premmerce_clear
         if (function_exists('premmerce_wpm_fs')) {
@@ -185,13 +194,13 @@ class Admin
                 $tabs['account'] = __('Account', 'premmerce-url-manager');
             }
             $tabs['contact'] = __('Contact Us', 'premmerce-url-manager');
-//            $tabs['pricing'] = __('Pricing', 'premmerce-url-manager');
         }
         #/premmerce_clear
 
 
         $this->fileManager->includeTemplate('admin/main.php', [
             'settings' => $this->settings,
+            'bundles'  => $this->bundlesAndSave,
             'tabs'     => $tabs,
             'current'  => $current,
         ]);

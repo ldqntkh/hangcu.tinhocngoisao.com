@@ -76,7 +76,7 @@ if ( ! class_exists( 'IG_ES_Premium_Services_UI' ) ) {
 					add_action( 'add_meta_boxes', array( &$this, 'register_utm_tracking_metabox' ) );
 					add_action( 'ig_es_save_template', array( &$this, 'save_utm_campaign' ), 10, 2 );
 					add_action( 'ig_es_after_broadcast_tracking_options_settings', array( &$this, 'add_broadcast_utm_tracking_option' ) );
-					add_filter( 'ig_es_registered_settings', array( &$this, 'add_utm_tracking_option_in_settings' ), 10, 2 );
+					add_filter( 'ig_es_registered_settings', array( &$this, 'add_utm_tracking_option_in_settings' ) );
 				}
 			}
 		}
@@ -297,9 +297,14 @@ if ( ! class_exists( 'IG_ES_Premium_Services_UI' ) ) {
 			global $post;
 			$es_utm_campaign = get_post_meta( $post->ID, 'es_utm_campaign', true );
 			$es_utm_campaign = ! empty( $es_utm_campaign ) ? $es_utm_campaign : '';
+			$allowedtags 	 = ig_es_allowed_html_tags_in_esc();
+
+			add_filter( 'safe_style_css', 'ig_es_allowed_css_style' );
+			/* translators: 1: UTM parameters */
+			$tooltip_html = ES_Common::get_tooltip_html( sprintf( __( 'This will be appended to every URL in this template with parameters: %s', 'email-subscribers' ), 'utm_source=es&utm_medium=email&utm_campaign=campaign_name' ) );
 			?>
-			<label class="es_utm_label"><span class="font-medium text-sm text-gray-700"><?php echo esc_html__( 'Campaign Name', 'email-subscribers' ); ?></span><span class="help_tip es_help_tip"
-				data-tip="<?php echo sprintf( esc_html__( 'This will be appended to every URL in this template with parameters: utm_source=es&utm_medium=email&utm_campaign=campaign_name', 'email-subscribers' ) ); ?>"></span> </label><br>
+			<label class="es_utm_label"><span class="font-medium text-sm text-gray-700"><?php echo esc_html__( 'Campaign Name', 'email-subscribers' ); ?></span>
+				<?php echo wp_kses( $tooltip_html, $allowedtags ); ?> </label><br>
 			<input style="margin: 0.20rem 0;" type="text" name="es_utm_campaign" value="<?php echo esc_attr( $es_utm_campaign ); ?>" placeholder="<?php echo esc_html__( 'Campaign Name', 'email-subscribers' ); ?>" id="es_utm_campaign"/><br/>
 			<?php
 		}
@@ -338,7 +343,8 @@ if ( ! class_exists( 'IG_ES_Premium_Services_UI' ) ) {
 			$track_utm        = array(
 				'ig_es_track_utm' => array(
 					'id'      => 'ig_es_track_utm',
-					'name'    => __( 'UTM tracking', 'email-subscribers' ),
+					'name'    => __( 'Google Analytics UTM tracking', 'email-subscribers' ),
+					'info'    => __( 'Do you want to automatically add campaign tracking parameters in emails to track performance in Google Analytics? (We recommend keeping it enabled)', 'email-subscribers' ),
 					'type'    => 'checkbox',
 					'default' => 'no'
 				)

@@ -1126,7 +1126,9 @@ if ( ! class_exists( 'IG_Feedback_V_1_2_5' ) ) {
 					// Survey Skip & Deactivate.
 					$form.on('click', '.ig-deactivate-survey-deactivate', function (event) {
 						event.preventDefault();
-						location.href = $deactivateLink.attr('href');
+						let deactivationURL = $deactivateLink.attr('href');
+						let skipSurveyURL = deactivationURL + '&survey_status=skipped';
+						location.href = skipSurveyURL;
 					});
 
 					// Help Consent
@@ -1694,7 +1696,6 @@ if ( ! class_exists( 'IG_Feedback_V_1_2_5' ) ) {
 			}
 
 			$response = wp_remote_post( $this->get_api_url( $is_dev_mode ), $args );
-
 			$result['status'] = 'success';
 			if ( $response instanceof WP_Error ) {
 				$error_message     = $response->get_error_message();

@@ -107,13 +107,6 @@ class ControllerAjaxSlider extends AdminAjaxController {
                     $slider['widgetbullet']          = 'transitionRectangle';
                     break;
 
-                case 'accordion':
-                    $slider['type']        = 'accordion';
-                    $slider['orientation'] = 'horizontal';
-
-                    $slider['widget-arrow-enabled'] = 0;
-                    break;
-
                 case 'simple':
                 default:
                     $slider['type'] = 'simple';
@@ -248,7 +241,10 @@ class ControllerAjaxSlider extends AdminAjaxController {
         $view = new ViewAjaxSliderBox($this);
         $view->setSlider($slider);
 
-        $this->response->respond($view->display());
+        $this->response->respond(array(
+            'html'        => $view->display(),
+            'sliderCount' => $slidersModel->getSlidersCount('published', true)
+        ));
     }
 
     public function actionChangeSliderType() {

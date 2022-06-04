@@ -19,6 +19,8 @@ class BlockGeneratorBox extends AbstractBlock {
 
     protected $description = '';
 
+    protected $docsLink = '';
+
     /** @var string */
     protected $imageUrl;
 
@@ -53,6 +55,20 @@ class BlockGeneratorBox extends AbstractBlock {
      */
     public function setDescription($description) {
         $this->description = $description;
+    }
+
+    /**
+     * @param string
+     */
+    public function getDocsLink() {
+        return $this->docsLink;
+    }
+
+    /**
+     * @param string $link
+     */
+    public function setDocsLink($link) {
+        $this->docsLink = $link;
     }
 
     /**

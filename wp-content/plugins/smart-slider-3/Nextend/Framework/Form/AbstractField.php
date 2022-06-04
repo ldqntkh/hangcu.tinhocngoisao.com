@@ -111,7 +111,7 @@ abstract class AbstractField implements ContainedInterface {
 
         $this->defaultValue = $default;
 
-        foreach ($parameters AS $option => $value) {
+        foreach ($parameters as $option => $value) {
             $option = 'set' . $option;
             $this->{$option}($value);
         }
@@ -297,7 +297,7 @@ abstract class AbstractField implements ContainedInterface {
                 'relatedFieldsOn'  => $this->relatedFields,
                 'relatedFieldsOff' => $this->relatedFieldsOff
             );
-            Js::addInline('new N2Classes.FormRelatedFields("' . $this->fieldID . '", ' . json_encode($options) . ');');
+            Js::addInline('new _N2.FormRelatedFields("' . $this->fieldID . '", ' . json_encode($options) . ');');
         }
     }
 

@@ -15,7 +15,7 @@ namespace Nextend\SmartSlider3\Application\Admin\Layout\Block\Generator\Generato
                 echo $label;
                 ?>
             </div>
-            <i class="ssi_16 ssi_16--info" data-tip-description="<?php echo $this->getDescription(); ?>" data-tip-label="<?php echo $label; ?>"></i>
+            <i class="ssi_16 ssi_16--info" data-tip-description="<?php echo $this->getDescription(); ?>" data-tip-label="<?php echo $label; ?>" data-tip-link="<?php echo $this->getDocsLink(); ?>"></i>
         </div>
         <a href="<?php echo $this->getButtonLink(); ?>" target="<?php echo $this->getButtonLinkTarget(); ?>" class="n2_slide_generator_box__title_button">
             <?php echo $this->getButtonLabel(); ?>

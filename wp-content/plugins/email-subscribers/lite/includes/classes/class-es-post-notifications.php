@@ -45,7 +45,7 @@ class ES_Post_Notifications_Table {
 				$template_id        = ig_es_get_request_data( 'template_id' );
 				$cat                = ig_es_get_request_data( 'es_note_cat' );
 				$es_note_cat_parent = ig_es_get_request_data( 'es_note_cat_parent' );
-				$cat                = ( ! empty( $es_note_cat_parent ) && '{a}All{a}' == $es_note_cat_parent ) ? array( $es_note_cat_parent ) : $cat;
+				$cat                = ( ! empty( $es_note_cat_parent ) && in_array( $es_note_cat_parent, array( '{a}All{a}', '{a}None{a}' ), true ) ) ? array( $es_note_cat_parent ) : $cat;
 
 				if ( empty( $list_id ) ) {
 					$message = __( 'Please select list.', 'email-subscribers' );
@@ -196,7 +196,7 @@ class ES_Post_Notifications_Table {
 
 				// all categories selected
 				$parent_category_option = ig_es_get_request_data( 'es_note_cat_parent' );
-				if ( '{a}All{a}' === $parent_category_option ) {
+				if ( in_array( $parent_category_option, array( '{a}All{a}', '{a}None{a}' ), true ) ) {
 					array_unshift( $categories, $parent_category_option );
 				}
 
@@ -318,6 +318,25 @@ class ES_Post_Notifications_Table {
 
 					<table class="max-w-full form-table">
 						<tbody>
+						<?php if ( ! $is_new ) { ?>
+							<tr class="border-b border-gray-100">
+								<th scope="row" class="w-3/12 pt-3 pb-8 text-left">
+									<label for="tag-link"><span class="block ml-6 pr-4 pt-2 text-sm font-medium text-gray-600 pb-2">
+												<?php esc_html_e( 'Enable/Disable campaign', 'email-subscribers' ); ?>
+									</label>
+									
+								</th>
+								<td class="w-9/12 py-3">
+									<label for="status" class="ml-12 inline-flex items-center cursor-pointer"><span class="relative">
+												<input id="status" type="checkbox" class="absolute es-check-toggle opacity-0 w-0 h-0"
+													   name="status" value="1" <?php checked( $status, '1' ); ?> />
+
+												<span class="es-mail-toggle-line"></span>
+												<span class="es-mail-toggle-dot"></span>	
+											</span></label>
+								</td>
+							</tr>
+						<?php } ?>
 
 						<?php do_action( 'es_before_post_notification_settings', $id ); ?>
 
@@ -365,24 +384,6 @@ class ES_Post_Notifications_Table {
 							</td>
 						</tr>
 						<?php do_action( 'es_after_post_notification_template', $id ); ?>
-						<?php if ( ! $is_new ) { ?>
-							<tr class="border-b border-gray-100">
-								<th scope="row" class="w-3/12 pt-3 pb-8 text-left">
-									<label for="tag-link"><span class="block ml-6 pr-4 pt-2 text-sm font-medium text-gray-600 pb-2">
-												<?php esc_html_e( 'Select Status', 'email-subscribers' ); ?>
-									</label>
-								</th>
-								<td class="w-9/12 py-3">
-									<label for="status" class="ml-12 inline-flex items-center cursor-pointer"><span class="relative">
-												<input id="status" type="checkbox" class="absolute es-check-toggle opacity-0 w-0 h-0"
-													   name="status" value="1" <?php checked( $status, '1' ); ?> />
-
-												<span class="es-mail-toggle-line"></span>
-												<span class="es-mail-toggle-dot"></span>	
-											</span></label>
-								</td>
-							</tr>
-						<?php } ?>
 						<tr class="border-b border-gray-100">
 							<th scope="row" class="pt-3 pb-8 w-3/12 text-left">
 								<label for="tag-link"><span class="block ml-6 pr-4 text-sm font-medium text-gray-600 pb-2"><?php esc_html_e( 'Select post category', 'email-subscribers' ); ?></span>

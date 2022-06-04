@@ -675,7 +675,7 @@ class ES_DB_Campaigns extends ES_DB {
 						$where .= " categories LIKE '%" . $category_str . "%'";
 						if ( ( $total_categories - 1 )  === $i ) {
 							$where .= " OR categories LIKE '%all%'";
-							$where .= ')';
+							$where .= ") AND categories NOT LIKE '%none%'";
 						}
 					}
 				} else {
@@ -767,5 +767,93 @@ class ES_DB_Campaigns extends ES_DB {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get all campaigns based on passed arguements
+	 * 
+	 * @param array $args Campaing arguements
+	 * 
+	 * @return array Array of campaigns
+	 * 
+	 * @since 4.6.11
+	 */
+	public function get_all_campaigns( $args = array() ) {
+		global $wpbd;
+
+		$where = '';
+
+		if ( ! empty( $args['include_types'] ) ) {
+			$type_count        = count( $args['include_types'] );
+			$type_placeholders = array_fill( 0, $type_count, '%s' );
+			$where .= $wpbd->prepare( 'type IN( ' . implode( ',', $type_placeholders ) . ' )', $args['include_types'] );
+		}
+
+		if ( ! empty( $args['exclude_types'] ) ) {
+			$type_count        = count( $args['exclude_types'] );
+			$type_placeholders = array_fill( 0, $type_count, '%s' );
+			$where .= $wpbd->prepare( 'type NOT IN( ' . implode( ',', $type_placeholders ) . ' )', $args['exclude_types'] );
+		}
+
+		if ( ! empty( $args['status'] ) ) {
+			$status_count        = count( $args['status'] );
+			$status_placeholders = array_fill( 0, $status_count, '%d' );
+			$where .= $wpbd->prepare( ' AND status IN( ' . implode( ',', $status_placeholders ) . ' )', $args['status'] );
+		}
+		
+		if ( ! empty( $args['campaigns_not_in'] ) ) {
+			$ids_count        = count( $args['campaigns_not_in'] );
+			$ids_placeholders = array_fill( 0, $ids_count, '%d' );
+			$where .= $wpbd->prepare( ' AND id NOT IN( ' . implode( ',', $ids_placeholders ) . ' )', $args['campaigns_not_in'] );
+		}
+
+		return $this->get_by_conditions( $where );
+	}
+
+	/**
+	 * Get selected lists ids in the campaign
+	 * 
+	 * @param int $campaign_id
+	 * 
+	 * @return array $list_ids
+	 * 
+	 * @since 4.7.6
+	 */
+	public function get_list_ids( $campaign_id ) {
+
+		$list_ids = array();
+
+		// If $campaign_id is numeric, then fetch the campaign data based on campaign_id else $campaign_id is campaign data.
+		if ( is_numeric( $campaign_id ) ) {
+			$campaign = $this->get( $campaign_id );
+		} else {
+			$campaign = $campaign_id;
+		}
+
+		if ( ! empty( $campaign ) ) {
+			// Check list ids column since prior to campaign rules features, list ids were being stored in list_ids column.
+			if ( ! empty( $campaign['list_ids'] ) ) {
+				$list_ids = explode( ',', $campaign['list_ids'] );
+			}
+			
+			$campaign_meta = maybe_unserialize( $campaign['meta'] );
+			$conditions    = isset( $campaign_meta['list_conditions'] ) ? $campaign_meta['list_conditions']: array();
+			if ( ! empty( $conditions ) ) {
+				foreach ( $conditions as $i => $condition_group ) {
+					if ( ! empty( $condition_group ) ) {
+						foreach ( $condition_group as $j => $condition ) {
+							$condition_field = isset ( $condition['field'] ) ? $condition['field'] : '';
+							if ( '_lists__in' === $condition_field ) {
+								if ( ! empty( $condition['value'] ) && is_array( $condition['value'] ) ) {
+									$list_ids = array_merge( $list_ids, $condition['value'] );
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $list_ids;
 	}
 }

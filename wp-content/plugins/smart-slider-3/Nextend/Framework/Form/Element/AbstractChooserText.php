@@ -40,7 +40,7 @@ abstract class AbstractChooserText extends AbstractFieldHidden {
                 'type'     => 'text',
                 'style'    => 'width: ' . $this->width . 'px;',
                 'disabled' => 'disabled'
-            ), false);
+            ), false, false);
         }
 
         return Html::tag('input', array(
@@ -50,7 +50,7 @@ abstract class AbstractChooserText extends AbstractFieldHidden {
             'type'         => $this->type,
             'style'        => 'width: ' . $this->width . 'px;',
             'autocomplete' => 'off'
-        ), false);
+        ), false, false);
 
     }
 

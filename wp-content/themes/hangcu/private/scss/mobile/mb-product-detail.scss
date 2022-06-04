@@ -1,0 +1,119 @@
+body.body-mobile.single {
+    #content {
+        >.container {
+            background-color: $white;
+            .site-content-inner {
+                margin: 0;
+            }
+        }
+    }
+    #cart-top {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px 16px;
+        border-top: 1px solid silver;
+        background: white;
+        z-index: 999;
+    }
+
+    #mb-product-overlay {
+        transition: all .25s linear;
+        &.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    #mb-product-detail-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 0;
+        z-index: 9999;
+        inset: auto 0px 0px;
+        border: none;
+        background: rgb(255, 255, 255);
+        overflow: hidden;
+        border-radius: 15px 15px 0px 0px;
+        outline: none;
+        padding: 0px;
+        display: none;
+        transition: all .25s linear;
+        &.active {
+            display: initial;
+            height: auto;
+        }
+        .electro-close-icon {
+            width: 30px;
+            height: 30px;
+            display: block;
+            &::before, &::after {
+                width: 16px;
+                height: 2px;
+                margin-right: -10px;
+            }
+        }
+        .line-1 {
+            padding: 10px;
+            color: rgb(13, 83, 2);
+            .electro-checked-icon {
+                background-image: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/check@2x.png);
+                background-size: 16px 16px;
+                background-position: center;
+                border: none;
+                background-repeat: no-repeat;
+                width: 20px;
+                height: 20px;
+                float: left;
+                margin-right: 4px;
+            }
+        }
+        .line-2 {
+            padding: 10px;
+            display: flex;
+            img {
+                width: 35%;
+                margin-right: 10px;
+            }
+            p {
+                width: calc( 65% - 10px );
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                strong {
+                    font-weight: 500;
+                }
+                .electro-price {
+                    font-size: 24px;
+                    line-height: 32px;
+                    margin-right: 8px;
+                    font-weight: 500;
+                }
+            }
+        }
+        .line-3 {
+            border-top: 1px solid rgb(242, 242, 242);
+            padding: 10px;
+            a {
+                font-size: 15px;
+                line-height: 24px;
+                padding: 8px 0px;
+                text-align: center;
+                // text-transform: capitalize;
+                border-radius: 4px;
+                font-weight: 500;
+                display: flex;
+                flex-direction: column;
+                color: rgb(255, 255, 255);
+                background-color: #ED1C24;
+            }
+        }
+    }    
+}

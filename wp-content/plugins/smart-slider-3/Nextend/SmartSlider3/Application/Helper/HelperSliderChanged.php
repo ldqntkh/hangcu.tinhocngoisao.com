@@ -36,20 +36,45 @@ class HelperSliderChanged {
         return intval($this->storage->get('sliderChanged', $sliderId, $value));
     }
 
-    public function setSliderChanged($sliderId, $value = 1) {
-        $this->storage->set('sliderChanged', $sliderId, $value);
-        $changedSliders = array($sliderId);
 
-        $xref = new ModelSlidersXRef($this);
-        foreach ($xref->getGroups($sliderId) AS $row) {
+    public function setGroupChanged($sliderId, $value = 1) {
+        $xref     = new ModelSlidersXRef($this);
+        $groupIDs = array();
+        foreach ($xref->getGroups($sliderId) as $row) {
             if ($row['group_id'] > 0) {
                 $this->storage->set('sliderChanged', $row['group_id'], $value);
-                $changedSliders[] = $row['group_id'];
+            }
+            $groupIDs[] = $row['group_id'];
+        }
+
+        return $groupIDs;
+
+    }
+
+    public function setSliderChanged($sliderId, $value = 1, &$changedSliders = array()) {
+        $this->storage->set('sliderChanged', $sliderId, $value);
+        $changedSliders[] = $sliderId;
+
+        $xref        = new ModelSlidersXRef($this);
+        $sliderModel = new ModelSliders($this);
+
+        array_merge($changedSliders, $this->setGroupChanged($sliderId));
+
+        foreach ($xref->getGroups($sliderId) as $group) {
+            $changedSliders[] = $group['group_id'];
+        }
+
+        $fallbackSliders = $sliderModel->getFallbackUsage($changedSliders);
+
+        if (!empty($fallbackSliders)) {
+            foreach ($fallbackSliders as $slider) {
+                if (!in_array($slider['id'], $changedSliders)) {
+                    $this->setSliderChanged($slider['id'], 1, $changedSliders);
+                }
             }
         }
-        $sliderModel  = new ModelSliders($this);
         $relatedPosts = array();
-        foreach ($changedSliders AS $id) {
+        foreach ($changedSliders as $id) {
 
             do_action('smartslider3_slider_changed', $id);
 
@@ -63,7 +88,7 @@ class HelperSliderChanged {
                         "\n\r",
                         "\r"
                     ), "\n", $relatedPostsRaw));
-                    foreach ($relatedPostsRaw AS $relatedPostID) {
+                    foreach ($relatedPostsRaw as $relatedPostID) {
                         if ($relatedPostID > 0) {
                             $relatedPosts[] = $relatedPostID;
                         }
@@ -73,11 +98,11 @@ class HelperSliderChanged {
         }
         if (count($relatedPosts) > 0) {
             $relatedPosts = array_unique($relatedPosts);
-            foreach ($relatedPosts AS $postID) {
+            foreach ($relatedPosts as $postID) {
                 $post = WP_Post::get_instance($postID);
                 if ($post) {
                     do_action('edit_post', $postID, $post);
-                    do_action('save_post', $postID, $post);
+                    do_action('save_post', $postID, $post, true);
                 }
             }
         }

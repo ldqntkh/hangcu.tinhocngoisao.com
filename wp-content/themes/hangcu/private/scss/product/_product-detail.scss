@@ -1,0 +1,232 @@
+body.single-product {
+  .blockUI {
+    display: none!important;
+  }
+  .woocommerce-breadcrumb {
+    margin-bottom: 0;
+    @include truncate-text(1);
+  }
+  .product_title {
+    font-weight: 600;
+    color: #414141;
+  }
+  #content {
+    >.container {
+      background-color: $white;
+    }
+  }
+  .hangcu-product {
+    margin-top: 20px;
+    .product-contents {
+      .electro-description {
+        margin-bottom: 20px;
+        padding-top: 20px;
+
+        &.less-content {
+          max-height: 400px;
+          overflow: hidden;
+          position: relative;
+          transition: all 0.5s;
+        }
+
+        &.show-more-content {
+          max-height: auto;
+          transition: all 0.5s;
+          .btn-show-more-content {
+            display: none;
+          }
+        }
+
+        .btn-show-more-content {
+          display: block;
+          bottom: 0;
+          width: 100%;
+          border-radius: 0;
+          background: #ffffff;
+          box-shadow: 10px -10px 51px 72px #ffffffd6;
+          color: #288ad6;
+          position: absolute;
+
+          .fas {
+            margin-left: 7px;
+            font-size: 25px;
+          }
+        }
+      }
+    }
+  }
+
+  .site-content-inner {
+    .related.products {
+      ul.products {
+          background-color: $footer_bg_color;
+          border-radius: 0;
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+          border: .5px solid $bg_gray_color;
+          box-sizing: border-box;
+          li {
+              border: .5px solid $bg_gray_color;
+              overflow: hidden;
+              height: 300px;
+              @media screen and (min-width: 768px) {
+                height: 335px;
+              }
+              @media screen and (min-width: 1200px) {
+                  height: 370px;
+                  flex: 0 0 25%;
+                  max-width: 25%;
+              }
+              &::after {
+                  content: '';
+                  display: none;
+              }
+              .product-outer {
+                  
+                  .product-inner {
+                      padding: 10px!important;
+                      box-shadow: none!important;
+                      position: relative;
+                      background-color: transparent;
+                      h2 {
+                          color: $product-title-color;
+                          font-size: 14px;
+                          font-weight: 600;
+                          @include truncate-text(2);
+                      }
+                      .product-thumbnail {
+                          margin-bottom: .714em;
+                          width: 100%;
+                          position: relative;
+                          height: 190px;
+                          img {
+                              height: 170px;
+                              transition: all 0.5s;
+                              max-width: 252px;
+                              // width: 100%;
+                              position: absolute;
+                              top: 30px;
+                              left: 50%;
+                              transform: translateX(-50%);
+                          }
+                          @media screen and (min-width: 1200px) {
+                              height: 240px;
+                              img {
+                                  height: 210px;
+                              }
+                          }
+                      }
+                      .sale-percent {
+                          position: absolute;
+                          top: 20px;
+                          right: 0;
+                          background: #ED801C;
+                          border-radius: 2px;
+                          padding: 5px 7px;
+                          color: white;
+                          font-size: 16px;
+                          font-weight: bold;
+                      }
+                      .price {
+                          bdi {
+                              color: $product-price-color;
+                              font-size: 16px;
+                              font-weight: bold;
+                          }
+                          del {
+                              bdi {
+                                  color: $product-sale-price-color;
+                                  font-size: 14px;
+                                  font-weight: 500;
+                              }
+                          }
+                          .electro-price {
+                              display: flex;
+                              justify-content: flex-start;
+                              flex-direction: column-reverse;
+                          }
+                      }
+                  }
+              }
+              &:hover {
+                  .product-outer {
+                      .product-inner {
+                          h2 {
+                              color: $product-title-hover-color;
+                          }
+                          .product-thumbnail {
+                              img {
+                                  top: 20px;
+                              }
+                          }
+                      }
+                  } 
+              }
+          }
+      }
+    }
+  }
+}
+
+.item-product-check {
+  list-style: none;
+  margin: 0!important;
+  padding: 0!important;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px!important;
+  li {
+    line-height: initial!important;
+    text-align: center;
+    width: 30%;
+    position: relative;
+    background:#fff;
+    border: 1px solid#ddd;
+    -moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+    -webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    float: left;
+    text-align: center;
+    padding: 10px 10px 10px 10px!important;
+    cursor: pointer;
+    &.checked {
+      border: 1px solid #f89008;
+    }
+    a {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      strong {
+        color: red;
+      }
+      span {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &::before {
+          content: '';
+          width: 15px;
+          height: 15px;
+          border: 1px solid silver;
+          display: block;
+          margin-right: 5px;
+          border-radius: 50%;
+        }
+        &.checked {
+          &::before {
+            background-image: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/check@2x.png);
+            background-size: cover;
+            border: none;
+            background-repeat: no-repeat;
+          }
+        }
+      }
+    }
+  }
+}

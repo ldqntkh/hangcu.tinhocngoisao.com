@@ -161,7 +161,13 @@ class Guaven_woo_search_admin
         $type = $_POST['type'];
         switch ($type){
             case 'support_expired':
-                set_transient('guaven_woos_support_expired_dismissed', true, 14 * 24 * 3600);  
+                global $_wp_using_ext_object_cache;
+                $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+                $_wp_using_ext_object_cache = false;
+
+                set_transient('guaven_woos_support_expired_dismissed', true, 14 * 24 * 3600); 
+
+                $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
                 break;
         }
     }
@@ -329,6 +335,10 @@ jQuery(".Rebuild-SearchBox-Cache a").attr("href","javascript://");
 
     public function cache_rebuild_ajax_callback()
     {
+        global $_wp_using_ext_object_cache;
+
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
 
         $this->set_memory_limit();
 
@@ -431,6 +441,7 @@ jQuery(".Rebuild-SearchBox-Cache a").attr("href","javascript://");
             die();
         }
         echo round($msteps * 10000 / $all_steps) / 100;
+        $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous;
         die();
     }
 
@@ -575,6 +586,15 @@ jQuery(".Rebuild-SearchBox-Cache a").attr("href","javascript://");
         $args['post_status']='publish';
 
         $products_for_json = get_posts($args);
+
+        if( count($products_for_json) != 0 ) {
+            for( $i = 0; $i < count( $products_for_json ); $i++ ) {
+                $products_for_json[$i]->post_title_name = $products_for_json[$i]->post_title;
+                $products_for_json[$i]->post_title = $this->utf8convert( $products_for_json[$i]->post_title );
+            }
+            // wp_send_json_error( [ "test" => $products_for_json ] );
+        }
+
         $products_array    = $this->json_processing($products_for_json,$skip_parent_variations);
         if ($op_name == 'guaven_woos_product_cache' and $this->fs_or_db() != '') {
             file_put_contents($this->fs_or_db(), serialize(array_merge($old_option_data, $products_array)));
@@ -584,6 +604,31 @@ jQuery(".Rebuild-SearchBox-Cache a").attr("href","javascript://");
         update_option($op_name, serialize(array_merge($old_option_data, $products_array)), false);
     }
 
+    function utf8convert($str) {
+
+            if(!$str) return false;
+
+            $utf8 = array(
+
+                'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ|Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+
+                'd'=>'đ|Đ',
+
+                'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ|É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+
+                'i'=>'í|ì|ỉ|ĩ|ị|Í|Ì|Ỉ|Ĩ|Ị',
+
+                'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ|Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+
+                'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự|Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+
+                'y'=>'ý|ỳ|ỷ|ỹ|ỵ|Ý|Ỳ|Ỷ|Ỹ|Ỵ');
+
+            foreach($utf8 as $ascii=>$uni) $str = preg_replace("/($uni)/i",$ascii,$str);
+
+        return $str;
+
+    }
 
 
     public function json_processing($products_for_json,$skip_parent_variations='')
@@ -608,7 +653,9 @@ jQuery(".Rebuild-SearchBox-Cache a").attr("href","javascript://");
             $guaven_woos_wpml_key = $langfixer_arr[1];
             //end of wpml part
 
-            $title_and_hidden_sku = ($value->post_title . ' <span class="woos_sku"> ' . 
+            // format name
+            $val = '---'.$value->post_title . '----' . $value->post_title_name;
+            $title_and_hidden_sku = ($val . ' <span class="woos_sku"> ' . 
             (get_post_meta($value->ID, '_sku', true)!=$value->post_title?(get_post_meta($value->ID, '_sku', true) . 
             (strpos(get_post_meta($value->ID, '_sku', true), ' ') !== false ? (', ' . str_replace(" ", "", get_post_meta($value->ID, '_sku', true))) : '')):'') . ' </span>' . $guaven_woos_wpml_key);
 

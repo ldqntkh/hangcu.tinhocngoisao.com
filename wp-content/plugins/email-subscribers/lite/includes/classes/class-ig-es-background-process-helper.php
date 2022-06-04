@@ -110,14 +110,17 @@ if ( ! class_exists( 'IG_ES_Background_Process_Helper' ) ) {
 		 * A timeout limit of 30s is common on shared hosting.
 		 *
 		 * @param string $start_time start timestamp.
+		 * @param float $fraction Time fraction.
 		 * 
 		 * @return bool
 		 * 
 		 * @since 4.6.3
+		 * 
+		 * @since Added $fraction parameter
 		 */
-		public static function time_exceeded( $start_time = 0 ) {
+		public static function time_exceeded( $start_time = 0, $fraction = 0.6 ) {
 
-			$finish = $start_time + ( self::get_time_limit() * 0.6 );
+			$finish = $start_time + ( self::get_time_limit() * $fraction );
 			$return = false;
 
 			if ( time() >= $finish ) {

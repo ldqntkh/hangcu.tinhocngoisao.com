@@ -1,8 +1,8 @@
-Plugin Name	: Email Subscribers & Newsletters
-Plugin URI	: https://www.icegram.com/
-Author		: Icegram
-Author URI	: https://www.icegram.com/
-License		: GPLv3
+Plugin Name: Email Subscribers & Newsletters
+Plugin URI : https://www.icegram.com/
+Author	   : Icegram
+Author URI : https://www.icegram.com/
+License	   : GPLv3
 
 
 **4.3.13 (24.02.2020)**

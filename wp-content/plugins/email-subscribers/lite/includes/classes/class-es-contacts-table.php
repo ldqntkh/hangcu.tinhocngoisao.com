@@ -483,8 +483,18 @@ class ES_Contacts_Table extends ES_List_Table {
 								if ( ! $is_error ) {
 
 									$lists = ! empty( $lists ) ? $lists : array( 1 => 0 );
-
+									
+									$existing_subscribed_lists = ES()->lists_contacts_db->get_list_ids_by_contact( $id, 'subscribed' );
 									ES()->lists_contacts_db->update_contact_lists( $id, $lists );
+									$updated_subscribed_lists = ES()->lists_contacts_db->get_list_ids_by_contact( $id, 'subscribed' );
+
+									// Lists whose status changed to unconfirmed or unsubscribed from subscribed.
+									$changed_lists = array_diff( $existing_subscribed_lists, $updated_subscribed_lists );
+									
+									// Check if admin has updated status of any subscribed lists.
+									if ( ! $is_new && ! empty( $changed_lists ) ) {
+										do_action( 'ig_es_admin_contact_unsubscribe', $id, 0, 0, $changed_lists );
+									}
 
 									if ( $id ) {
 
@@ -593,7 +603,7 @@ class ES_Contacts_Table extends ES_List_Table {
 	 * @return mixed
 	 */
 	public function get_subscribers( $per_page = 5, $page_number = 1, $do_count_only = false ) {
-		global $wpdb, $wpbd;
+		global $wpbd;
 
 		$order_by          = sanitize_sql_orderby( ig_es_get_request_data( 'orderby' ) );
 		$order             = ig_es_get_request_data( 'order' );
@@ -625,15 +635,15 @@ class ES_Contacts_Table extends ES_List_Table {
 			$where_clause_added = false;
 
 			if ( ! empty( $filter_by_list_id ) ) {
-				$list_filter_sql    = $wpdb->prepare( ' WHERE list_id = %d', $filter_by_list_id );
+				$list_filter_sql    = $wpbd->prepare( ' WHERE list_id = %d', $filter_by_list_id );
 				$where_clause_added = true;
 			}
 
 			if ( ! empty( $filter_by_status ) ) {
 				if ( $where_clause_added ) {
-					$list_filter_sql .= $wpdb->prepare( ' AND status = %s', $filter_by_status );
+					$list_filter_sql .= $wpbd->prepare( ' AND status = %s', $filter_by_status );
 				} else {
-					$list_filter_sql .= $wpdb->prepare( ' WHERE status = %s', $filter_by_status );
+					$list_filter_sql .= $wpbd->prepare( ' WHERE status = %s', $filter_by_status );
 				}
 			}
 
@@ -644,9 +654,9 @@ class ES_Contacts_Table extends ES_List_Table {
 		// Prepare search query
 		if ( ! empty( $search ) ) {
 			$query[] = ' ( first_name LIKE %s OR last_name LIKE %s OR email LIKE %s ) ';
-			$args[]  = '%' . $wpdb->esc_like( $search ) . '%';
-			$args[]  = '%' . $wpdb->esc_like( $search ) . '%';
-			$args[]  = '%' . $wpdb->esc_like( $search ) . '%';
+			$args[]  = '%' . $wpbd->esc_like( $search ) . '%';
+			$args[]  = '%' . $wpbd->esc_like( $search ) . '%';
+			$args[]  = '%' . $wpbd->esc_like( $search ) . '%';
 		}
 
 		if ( $add_where_clause || count( $query ) > 0 ) {
@@ -683,9 +693,25 @@ class ES_Contacts_Table extends ES_List_Table {
 			$sql .= $order_by_clause;
 			$sql .= " LIMIT {$offset}, {$per_page}";
 
-			$result = $wpbd->get_results( $sql, 'ARRAY_A' );
+			$cache_key 		 = ES_Cache::generate_key( $sql );
+			$exists_in_cache = ES_Cache::is_exists( $cache_key, 'query' );
+
+			if ( ! $exists_in_cache ) {
+				$result = $wpbd->get_results( $sql, 'ARRAY_A' );
+				ES_Cache::set( $cache_key, $result, 'query' );
+			} else {
+				$result = ES_Cache::get( $cache_key, 'query' );
+			}
 		} else {
-			$result = $wpbd->get_var( $sql );
+			
+			$cache_key 		 = ES_Cache::generate_key( $sql );
+			$exists_in_cache = ES_Cache::is_exists( $cache_key, 'query' );
+			if ( ! $exists_in_cache ) {
+				$result = $wpbd->get_var( $sql );
+				ES_Cache::set( $cache_key, $result, 'query' );
+			} else {
+				$result = ES_Cache::get( $cache_key, 'query' );
+			}
 		}
 
 		return $result;
@@ -712,9 +738,7 @@ class ES_Contacts_Table extends ES_List_Table {
 		}
 
 		?>
-
-
-		<form method="post" action="<?php echo esc_attr( $action ); ?>" class="ml-5 mr-4 text-left pt-8 flex-row mt-2 item-center ">
+		<form id="es-admin-contact-form" method="post" action="<?php echo esc_attr( $action ); ?>" class="ml-5 mr-4 text-left pt-8 mt-2 item-center ">
 			<?php wp_nonce_field( 'ig-es-contact-nonce', 'ig_es_contact_nonce' ); ?>
 			<div class="flex flex-row border-b border-gray-100">
 				<div class="flex w-1/5">
@@ -773,7 +797,7 @@ class ES_Contacts_Table extends ES_List_Table {
 									<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
 								</svg>
 							</div>
-							<input id="email" class="form-input block border-gray-400 w-full pl-10 pr-12 shadow-sm  focus:bg-gray-100 sm:text-sm sm:leading-5" id="email" name="contact_data[email]" value="<?php echo esc_attr( $email ); ?>" placeholder="<?php esc_html_e( 'Enter email', 'email-subscribers' ); ?>"/>
+							<input id="email" class="form-input block border-gray-400 w-full pl-10 pr-12 shadow-sm  focus:bg-gray-100 sm:text-sm sm:leading-5" type="email" name="contact_data[email]" value="<?php echo esc_attr( $email ); ?>" placeholder="<?php esc_html_e( 'Enter email', 'email-subscribers' ); ?>"/>
 						</div>
 					</div>
 				</div>
@@ -813,6 +837,7 @@ class ES_Contacts_Table extends ES_List_Table {
 					<div class="ml-4 pt-6">
 						<label for="status">
 							<span class="block ml-4 pt-1 pr-4 text-sm font-medium text-gray-600 pb-2"> <?php esc_html_e( 'List(s)', 'email-subscribers' ); ?></span></label>
+							<p class="italic text-xs text-gray-400 mt-2 ml-4 leading-snug pb-8"><?php esc_html_e( 'Contacts will be added into selected list(s)', 'email-subscribers' ); ?></p>
 					</div>
 				</div>
 				<div class="flex">
@@ -867,21 +892,17 @@ class ES_Contacts_Table extends ES_List_Table {
 	 * @since 4.0.0
 	 */
 	public function column_default( $item, $column_name ) {
-		$item = apply_filters( 'es_subscribers_col_data', $item, $column_name );
+		$item = apply_filters( 'es_subscribers_col_data', $item, $column_name, $this );
 		switch ( $column_name ) {
 			case 'lists':
 				return $this->get_lists_to_show( $item['id'] );
 			case 'created_at':
 				return ig_es_format_date_time( $item[ $column_name ] );
-			case 'ip':
-				$subscribed_ip = ! empty ( $item['ip_address'] ) ? $item['ip_address'] : '-';
 
-				return $subscribed_ip;
 			case 'first_name':
 			case 'email':
 			default:
 				$column_data = isset( $item[ $column_name ] ) ? $item[ $column_name ] : '-';
-
 				return apply_filters( 'ig_es_contact_column_data', $column_data, $column_name, $item, $this );
 		}
 	}
@@ -999,19 +1020,37 @@ class ES_Contacts_Table extends ES_List_Table {
 	public function column_name( $item ) {
 		$delete_nonce = wp_create_nonce( 'ig_es_delete_subscriber' );
 
-		$name  = ES_Common::prepare_name_from_first_name_last_name( $item['first_name'], $item['last_name'] );
+		$contact_id = $item['id'];
+		$name       = ES_Common::prepare_name_from_first_name_last_name( $item['first_name'], $item['last_name'] );
 
 		$title = '<strong class="pl-1">' . $name . '</strong>';		
 		$page = ig_es_get_request_data( 'page' );
 
 		$actions = array(
-			/* translators: 1: Page 2: Edit action 3: Contact id 4: Wp nonce */
-			'edit'   => sprintf( __( '<a href="?page=%1$s&action=%2$s&subscriber=%3$s&_wpnonce=%4$s" class="text-indigo-600">Edit</a>', 'email-subscribers' ), esc_attr( $page ), 'edit', absint( $item['id'] ), $delete_nonce ),
-			/* translators: 1: Page 2: Delete action 3: Contact id 4: Wp nonce */
-			'delete' => sprintf( __( '<a href="?page=%1$s&action=%2$s&subscriber=%3$s&_wpnonce=%4$s" onclick="return checkDelete()">Delete</a>', 'email-subscribers' ), esc_attr( $page ), 'delete', absint( $item['id'] ), $delete_nonce ),
+			'edit'   => '<a href="?page=' . esc_attr( $page ) . '&action=edit&subscriber=' . absint( $item['id'] ) . '&_wpnonce=' . $delete_nonce . '" class="text-indigo-600">' . esc_html__( 'Edit', 'email-subscribers' ) . '</a>',
+
+			'delete' => '<a href="?page=' . esc_attr( $page ) . '&action=delete&subscriber=' . absint( $item['id'] ) . '&_wpnonce=' . $delete_nonce . '" onclick="return checkDelete()">' . esc_html__( 'Delete', 'email-subscribers' ) . '</a>',
 		);
-		/* translators: 1: Page 2: Resend action 3: Contact id 4: Wp nonce */
-		$actions['resend'] = sprintf( __( '<a href="?page=%1$s&action=%2$s&subscriber=%3$s&_wpnonce=%4$s" class="text-indigo-600">Resend Confirmation<a>', 'email-subscribers' ), esc_attr( ig_es_get_request_data( 'page' ) ), 'resend', absint( $item['id'] ), $delete_nonce );
+
+		if ( isset( $this->contact_lists_statuses[ $contact_id ] ) ) {
+			$lists_statuses = $this->contact_lists_statuses[ $contact_id ];
+			
+			if ( ! empty( $lists_statuses ) ) {
+				
+				$has_unconfirmed_status = false;
+				foreach ( $lists_statuses as $list_status ) {
+					if ( 'unconfirmed' === $list_status ) {
+						$has_unconfirmed_status = true;
+						break;
+					}
+				}
+	
+				// Show resend confirmation email option only when contact has unconfirmed status in atleast one list.
+				if ( $has_unconfirmed_status ) {
+					$actions['resend'] = '<a href="?page=' . esc_attr( $page ) . '&action=resend&subscriber=' . absint( $item['id'] ) . '&_wpnonce=' . $delete_nonce . '" class="text-indigo-600">' . esc_html__( 'Resend Confirmation', 'email-subscribers' ) . '</a>';
+				}
+			}
+		}
 
 		return $title . $this->row_actions( $actions );
 	}
@@ -1025,17 +1064,13 @@ class ES_Contacts_Table extends ES_List_Table {
 	 */
 	public function get_columns() {
 		$columns      = array(
-			'cb'    => '<input type="checkbox"/>',
-			'name'  => __( 'Name', 'email-subscribers' ),
-			'email' => __( 'Email', 'email-subscribers' ),
-			'lists' => __( 'List(s)', 'email-subscribers' ),
+			'cb'   		 => '<input type="checkbox"/>',
+			'name'  	 => __( 'Name', 'email-subscribers' ),
+			'email' 	 => __( 'Email', 'email-subscribers' ),
+			'lists' 	 => __( 'List(s)', 'email-subscribers' ),
+			'created_at' => __( 'Created', 'email-subscribers' )
 		);
-		$can_track_ip = apply_filters( 'ig_es_can_track_subscriber_ip', 'yes' );
-		if ( 'yes' === $can_track_ip ) {
-			$columns['ip'] = __( 'IP', 'email-subscribers' );
-		}
-		$columns['created_at'] = __( 'Created', 'email-subscribers' );
-
+		
 		return $columns;
 	}
 
@@ -1066,13 +1101,15 @@ class ES_Contacts_Table extends ES_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'bulk_delete'        => __( 'Delete', 'email-subscribers' ),
-			'bulk_list_update'   => __( 'Move to list', 'email-subscribers' ),
-			'bulk_list_add'      => __( 'Add to list', 'email-subscribers' ),
-			'bulk_status_update' => __( 'Change status', 'email-subscribers' ),
+			'bulk_delete'                  => __( 'Delete', 'email-subscribers' ),
+			'bulk_list_update'             => __( 'Move to list', 'email-subscribers' ),
+			'bulk_list_add'                => __( 'Add to list', 'email-subscribers' ),
+			'bulk_status_update'           => __( 'Change status', 'email-subscribers' ),
 		);
 
-		return $actions;
+		$bulk_actions = apply_filters( 'ig_es_contacts_bulk_action', $actions );
+
+		return $bulk_actions;
 	}
 
 	/**
@@ -1208,8 +1245,10 @@ class ES_Contacts_Table extends ES_List_Table {
 	 */
 	public function process_bulk_action() {
 
+		$current_action = $this->current_action();
+
 		// Detect when a bulk action is being triggered...
-		if ( 'delete' === $this->current_action() ) {
+		if ( 'delete' === $current_action ) {
 
 			// In our file that handles the request, verify the nonce.
 			$nonce = esc_attr( ig_es_get_request_data( '_wpnonce' ) );
@@ -1228,12 +1267,12 @@ class ES_Contacts_Table extends ES_List_Table {
 			}
 		}
 
-		if ( 'resend' === $this->current_action() ) {
+		if ( 'resend' === $current_action ) {
 			// In our file that handles the request, verify the nonce.
 			$nonce = esc_attr( ig_es_get_request_data( '_wpnonce' ) );
 
 			if ( ! wp_verify_nonce( $nonce, 'ig_es_delete_subscriber' ) ) {
-				die( 'You do not have a permission to resend email confirmation' );
+				die( esc_html__( 'You do not have a permission to resend email confirmation', 'email-subscribers' ) );
 			} else {
 				$id         = absint( ig_es_get_request_data( 'subscriber' ) );
 				$resend     = ig_es_get_request_data( 'resend', false );
@@ -1266,8 +1305,8 @@ class ES_Contacts_Table extends ES_List_Table {
 		$action  = ig_es_get_request_data( 'action' );
 		$action2 = ig_es_get_request_data( 'action2' );
 
-		$actions = array( 'bulk_delete', 'bulk_status_update', 'bulk_list_update', 'bulk_list_add' );
-		if ( in_array( $action, $actions ) || in_array( $action2, $actions ) ) {
+		$actions = array( 'bulk_delete', 'bulk_status_update', 'bulk_list_update', 'bulk_list_add', 'bulk_send_confirmation_email' );
+		if ( in_array( $action, $actions, true ) || in_array( $action2, $actions, true ) ) {
 
 			$subscriber_ids = ig_es_get_request_data( 'subscribers' );
 			if ( empty( $subscriber_ids ) ) {
@@ -1302,6 +1341,10 @@ class ES_Contacts_Table extends ES_List_Table {
 
 				// loop over the array of record IDs and delete them
 				$edited = ES()->lists_contacts_db->edit_subscriber_status( $subscriber_ids, $status );
+
+				if ( in_array( $status, array( 'unsubscribed', 'unconfirmed' ), true ) ) {
+					do_action( 'ig_es_admin_contact_unsubscribe', $subscriber_ids );
+				}
 
 				if ( $edited ) {
 					$message = __( 'Contact(s) status changed successfully!', 'email-subscribers' );
@@ -1351,6 +1394,8 @@ class ES_Contacts_Table extends ES_List_Table {
 
 				return;
 			}
+
+			do_action( 'ig_es_audience_screen_action_' . $current_action, $subscriber_ids );
 		}
 	}
 
@@ -1384,5 +1429,4 @@ class ES_Contacts_Table extends ES_List_Table {
 
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}ig_contacts SET form_id = %d WHERE form_id = %d", 0, $form_id ) );
 	}
-
 }

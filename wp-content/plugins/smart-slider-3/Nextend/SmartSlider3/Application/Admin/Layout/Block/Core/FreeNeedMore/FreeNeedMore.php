@@ -11,7 +11,7 @@ use Nextend\SmartSlider3\SmartSlider3Info;
 ?>
 <div class="n2_free_need_more">
     <div class="n2_free_need_more__logo">
-        <img src="<?php echo ResourceTranslator::toUrl('$ss3-admin$/images/logo-filled.svg'); ?>" alt="logo"/>
+        <img src="<?php echo ResourceTranslator::toUrl('$ss3-admin$/images/logo-filled.svg'); ?>" alt="logo">
     </div>
     <div class="n2_free_need_more__title">
         <?php n2_e('Need more?'); ?>

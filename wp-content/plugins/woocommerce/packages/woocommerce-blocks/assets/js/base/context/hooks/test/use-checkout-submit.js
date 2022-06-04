@@ -12,7 +12,12 @@ import { useCheckoutSubmit } from '../use-checkout-submit';
 const mockUseCheckoutContext = {
 	onSubmit: jest.fn(),
 };
-const mockUsePaymentMethodDataContext = {};
+const mockUsePaymentMethodDataContext = {
+	activePaymentMethod: '',
+	currentStatus: {
+		isDoingExpressPayment: false,
+	},
+};
 
 jest.mock( '../../providers/cart-checkout/checkout-state', () => ( {
 	useCheckoutContext: () => mockUseCheckoutContext,
@@ -50,6 +55,7 @@ describe( 'useCheckoutSubmit', () => {
 			);
 		} );
 
+		//eslint-disable-next-line testing-library/await-async-query
 		const { onSubmit } = renderer.root.findByType( 'div' ).props;
 
 		onSubmit();

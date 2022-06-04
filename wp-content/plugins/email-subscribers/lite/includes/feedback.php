@@ -209,18 +209,18 @@ function ig_es_render_iges_merge_feedback() {
 			return;
 		}
 
+		$event = 'poll.merge_iges';
+
+		// If user has already given feedback on Icegram page, don't ask them again
+		$is_event_tracked = $ig_es_feedback->is_event_tracked( 'ig', $event );
+
+		if ( $is_event_tracked ) {
+			return;
+		}
+
 		$total_contacts = ES()->contacts_db->count_active_contacts_by_list_id();
 
 		if ( $total_contacts >= 5 ) {
-
-			$event = 'poll.merge_iges';
-
-			// If user has already given feedback on Icegram page, don't ask them again
-			$is_event_tracked = $ig_es_feedback->is_event_tracked( 'ig', $event );
-
-			if ( $is_event_tracked ) {
-				return;
-			}
 
 			$params = array(
 				'type'              => 'poll',
@@ -309,3 +309,32 @@ function ig_es_render_broadcast_ui_review() {
 }
 
 add_action( 'ig_es_broadcast_created', 'ig_es_render_broadcast_ui_review' );
+
+if ( ! function_exists( 'ig_es_show_plugin_usage_tracking_notice' ) ) {
+
+	/**
+	 * Can we show tracking usage optin notice?
+	 *
+	 * @return bool
+	 *
+	 * @since 4.7.7
+	 */
+	function ig_es_show_plugin_usage_tracking_notice( $enable ) {
+
+
+		// Show notice ES pages except the dashboard page.
+		if ( ES()->is_es_admin_screen() ) {
+
+			$current_page = ig_es_get_request_data( 'page' );
+
+			if ( 'es_dashboard' !== $current_page ) {
+				
+				$enable = true;
+			}
+		}
+
+		return $enable;
+	}
+}
+
+add_filter( 'ig_es_show_plugin_usage_tracking_notice', 'ig_es_show_plugin_usage_tracking_notice' );

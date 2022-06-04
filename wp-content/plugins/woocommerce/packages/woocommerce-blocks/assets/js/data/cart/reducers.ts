@@ -9,13 +9,14 @@ import type { Reducer } from 'redux';
  */
 import { ACTION_TYPES as types } from './action-types';
 import { defaultCartState, CartState } from '../default-states';
+import { EMPTY_CART_ERRORS } from '../constants';
 import type { CartAction } from './actions';
 
 /**
  * Sub-reducer for cart items array.
  *
- * @param   {Array<CartItem>}  state   cartData.items state slice.
- * @param   {CartAction}  action  Action object.
+ * @param {Array<CartItem>} state  cartData.items state slice.
+ * @param {CartAction}      action Action object.
  */
 const cartItemsReducer = (
 	state: Array< CartItem > = [],
@@ -37,8 +38,8 @@ const cartItemsReducer = (
 /**
  * Reducer for receiving items related to the cart.
  *
- * @param   {CartState}  state   The current state in the store.
- * @param   {CartAction}  action  Action object.
+ * @param {CartState}  state  The current state in the store.
+ * @param {CartAction} action Action object.
  *
  * @return  {CartState}          New or existing state.
  */
@@ -67,8 +68,11 @@ const reducer: Reducer< CartState > = (
 			if ( action.response ) {
 				state = {
 					...state,
-					errors: [],
-					cartData: action.response,
+					errors: EMPTY_CART_ERRORS,
+					cartData: {
+						...state.cartData,
+						...action.response,
+					},
 				};
 			}
 			break;
@@ -83,6 +87,31 @@ const reducer: Reducer< CartState > = (
 				};
 			}
 			break;
+		case types.SET_BILLING_DATA:
+			state = {
+				...state,
+				cartData: {
+					...state.cartData,
+					billingAddress: {
+						...state.cartData.billingAddress,
+						...action.billingData,
+					},
+				},
+			};
+			break;
+		case types.SET_SHIPPING_ADDRESS:
+			state = {
+				...state,
+				cartData: {
+					...state.cartData,
+					shippingAddress: {
+						...state.cartData.shippingAddress,
+						...action.shippingAddress,
+					},
+				},
+			};
+			break;
+
 		case types.REMOVING_COUPON:
 			if ( action.couponCode || action.couponCode === '' ) {
 				state = {
@@ -125,7 +154,7 @@ const reducer: Reducer< CartState > = (
 		case types.RECEIVE_CART_ITEM:
 			state = {
 				...state,
-				errors: [],
+				errors: EMPTY_CART_ERRORS,
 				cartData: {
 					...state.cartData,
 					items: cartItemsReducer( state.cartData.items, action ),

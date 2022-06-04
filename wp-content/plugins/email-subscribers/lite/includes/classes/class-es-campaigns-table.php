@@ -10,6 +10,14 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 class ES_Campaigns_Table extends ES_List_Table {
+
+	/**
+	 * Class instance.
+	 *
+	 * @var ES_Campaigns_Table $instance
+	 */
+	public static $instance;
+
 	/**
 	 * Number of campaigns to be shown on the page
 	 *
@@ -45,6 +53,19 @@ class ES_Campaigns_Table extends ES_List_Table {
 
 		add_action( 'ig_es_campaign_deleted', array( $this, 'delete_child_campaigns' ), 10, 1 );
 
+	}
+
+	/**
+	 * Get class instance.
+	 * 
+	 * @since 4.7.8
+	 */
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -325,7 +346,16 @@ class ES_Campaigns_Table extends ES_List_Table {
 
 					return ES_Common::prepare_list_name_by_ids( $list_ids );
 				} else {
-					return '-';
+					$type = isset( $item['type'] ) ? $item['type'] : '';
+					$list_ids = array();
+					if ( 'newsletter' === $type && ! empty( $item['meta'] ) ) {
+						$list_ids = ES()->campaigns_db->get_list_ids( $item );
+					}
+					if ( $list_ids ) {
+						return ES_Common::prepare_list_name_by_ids( $list_ids );
+					} else {
+						return '-';
+					}
 				}
 				break;
 			case 'type':
@@ -340,7 +370,13 @@ class ES_Campaigns_Table extends ES_List_Table {
 			case 'categories':
 				if ( ! empty( $item[ $column_name ] ) ) {
 					$categories = ES_Common::convert_categories_string_to_array( $item[ $column_name ], false );
-					$categories = strpos( $item[ $column_name ], '{a}All{a}' ) ? __( 'All', 'email-subscribers' ) : trim( trim( implode( ', ', $categories ) ), ',' );
+					if ( strpos( $item[ $column_name ], '{a}All{a}' ) ) {
+						$categories = __( 'All', 'email-subscribers' );
+					} else if ( strpos( $item[ $column_name ], '{a}None{a}' ) ) {
+						$categories = __( 'None', 'email-subscribers' );
+					} else {
+						$categories = trim( trim( implode( ', ', $categories ) ), ',' );
+					}
 
 					return $categories;
 				} else {
@@ -398,17 +434,18 @@ class ES_Campaigns_Table extends ES_List_Table {
 			$title = ! empty( $item['name'] ) ? $item['name'] : '';
 
 			$slug = ( in_array( $item['type'], array( 'post_notification', 'post_digest' ) ) ) ? esc_attr( 'es_notifications' ) : 'es_' . $item['type'];
-			/* translators: 1: Slug  2: Edit Action  3: List id  4. WP Nonce */
-			$actions ['edit'] = sprintf( __( '<a href="?page=%1$s&action=%2$s&list=%3$s&_wpnonce=%4$s" class="text-indigo-600">Edit</a>', 'email-subscribers' ), $slug, 'edit', absint( $item['id'] ), $nonce );
+
+			$actions ['edit'] = '<a href="?page=' . esc_attr( $slug ) . '&action=edit&list=' . absint( $item['id'] ) . '&_wpnonce=' . $nonce . '" class="text-indigo-600">' . esc_html__( 'Edit', 'email-subscribers' ) . '</a>';
 
 			if ( in_array( $type, array( 'post_notification', 'post_digest' ) ) ) {
 				// Add reports link if there are any reports related to the post notification.
 				if ( ! empty( $report ) ) {
 
-					$actions['report'] = sprintf( '<a href="?page=%s&campaign_id=%d" class="text-indigo-600">%s</a>', esc_attr( 'es_reports' ), esc_attr( $item['id'] ), __( 'Report', 'email-subscribers' ) );
+					$actions['report'] = '<a href="?page=' . esc_attr( 'es_reports' ) . '&campaign_id=' . esc_attr( $item['id'] ) . '" class="text-indigo-600">' . esc_html__( 'Report', 'email-subscribers' ) . '</a>';
 				}
 			} elseif ( 'sequence' === $type ) {
-				$actions['report'] = sprintf( '<a href="?page=%s&campaign_id=%d" class="text-indigo-600">%s</a>', esc_attr( 'es_reports' ), esc_attr( $item['id'] ), __( 'Report', 'email-subscribers' ) );
+
+				$actions['report'] = '<a href="?page=' . esc_attr( 'es_reports' ) . '&campaign_id=' . esc_attr( $item['id'] ) . '" class="text-indigo-600">' . esc_html__( 'Report', 'email-subscribers' ) . '</a>';
 			}
 		} else {
 
@@ -417,13 +454,15 @@ class ES_Campaigns_Table extends ES_List_Table {
 			$status = $item['status'];
 
 			$broadcast_allowed_edit_statuses = array(
-				IG_ES_CAMPAIGN_STATUS_IN_ACTIVE,
-				IG_ES_CAMPAIGN_STATUS_SCHEDULED,
+				IG_ES_CAMPAIGN_STATUS_IN_ACTIVE, // Draft status.
+				IG_ES_CAMPAIGN_STATUS_SCHEDULED, // Scheduled status.
+				IG_ES_CAMPAIGN_STATUS_QUEUED, // Sending status.
+				IG_ES_CAMPAIGN_STATUS_PAUSED, // Paused status.
 			);
 
 			if ( in_array( $status, $broadcast_allowed_edit_statuses ) ) {
-				/* translators: 1: Slug  2: Edit Action  3: List id  4. WP Nonce */
-				$actions ['edit'] = sprintf( __( '<a href="?page=%1$s&action=%2$s&list=%3$s&_wpnonce=%4$s" class="text-indigo-600">Edit</a>', 'email-subscribers' ), $slug, 'edit', absint( $item['id'] ), $nonce );
+
+				$actions ['edit'] = '<a href="?page=' . esc_attr( $slug ) . '&action=edit&list=' . absint( $item['id'] ) . '&_wpnonce=' . $nonce . '" class="text-indigo-600">' . esc_html__( 'Edit', 'email-subscribers' ) . '</a>';
 			}
 
 			$broadcast_allowed_report_statuses = array(
@@ -431,12 +470,13 @@ class ES_Campaigns_Table extends ES_List_Table {
 				IG_ES_CAMPAIGN_STATUS_QUEUED,
 				IG_ES_CAMPAIGN_STATUS_ACTIVE,
 				IG_ES_CAMPAIGN_STATUS_FINISHED,
+				IG_ES_CAMPAIGN_STATUS_PAUSED,
 			);
 
 			if ( in_array( $status, $broadcast_allowed_report_statuses ) && ! empty( $report ) ) {
 				$es_nonce = wp_create_nonce( 'es_notification' );
-				/* translators: 1: Slug  2: View Action  3: Hash  4. WP Nonce */
-				$actions['report'] = sprintf( '<a href="?page=%s&action=%s&list=%s&_wpnonce=%s" class="text-indigo-600">%s</a>', esc_attr( 'es_reports' ), 'view', $report['hash'], $es_nonce, __( 'Report', 'email-subscribers' ) );
+
+				$actions['report'] = '<a href="?page=' . esc_attr( 'es_reports' ) . '&action=view&list=' . $report['hash'] . '&_wpnonce=" ' . $es_nonce . '" class="text-indigo-600">' . esc_html__( 'Report', 'email-subscribers' ) . '</a>';
 			}
 
 			
@@ -447,8 +487,7 @@ class ES_Campaigns_Table extends ES_List_Table {
 			$actions = apply_filters( 'ig_es_campaign_actions', $actions, $item );
 		}
 
-		/* translators: 1: Slug  2: Delete Action  3: ID  4. WP Nonce */
-		$actions['delete'] = sprintf( __( '<a href="?page=%1$s&action=%2$s&list=%3$s&_wpnonce=%4$s" onclick="return checkDelete()">Delete</a>', 'email-subscribers' ), esc_attr( 'es_campaigns' ), 'delete', absint( $item['id'] ), $nonce );
+		$actions['delete'] = '<a href="?page=' . esc_attr( 'es_campaigns' ) . '&action=delete&list=' . absint( $item['id'] ) . '&_wpnonce=' . $nonce . '" onclick="return checkDelete()">' . esc_html__( 'Delete', 'email-subscribers' ) . '</a>';
 
 		$title .= $this->row_actions( $actions );
 
@@ -524,10 +563,12 @@ class ES_Campaigns_Table extends ES_List_Table {
 
 				case IG_ES_CAMPAIGN_STATUS_IN_ACTIVE:
 					?>
-					<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" class="ml-2 h-6 w-6 text-indigo-600">
-						<title><?php echo esc_html__( 'Draft', 'email-subscribers' ); ?></title>
-						<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-					</svg>
+					<a href="?page=es_newsletters&action=edit&list=<?php echo esc_attr( $campaign_id ); ?>">
+						<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" class="ml-2 h-6 w-6 text-indigo-600">
+							<title><?php echo esc_html__( 'Draft', 'email-subscribers' ); ?></title>
+							<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+						</svg>
+					</a>
 					<?php
 					break;
 
@@ -542,19 +583,18 @@ class ES_Campaigns_Table extends ES_List_Table {
 
 				case IG_ES_CAMPAIGN_STATUS_QUEUED:
 					?>
-					<svg class="flex-shrink-0 ml-2 h-6 w-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+					<svg class="flex-shrink-0 h-6 w-6 text-yellow-400 inline" fill="currentColor" viewBox="0 0 20 20">
 						<title><?php echo esc_html__( 'Sending', 'email-subscribers' ); ?></title>
 						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
-					</svg>
 					</svg>
 					<?php
 					break;
 
 				case IG_ES_CAMPAIGN_STATUS_PAUSED:
 					?>
-					<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" class="ml-2 h-6 w-6 text-blue-400">
+					<svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 inline text-gray-500" viewBox="0 0 20 20" fill="currentColor">
 						<title><?php echo esc_html__( 'Paused', 'email-subscribers' ); ?></title>
-						<path d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
 					</svg>
 					<?php
 					break;
@@ -571,6 +611,7 @@ class ES_Campaigns_Table extends ES_List_Table {
 		}
 		?>
 		<?php
+		do_action( 'ig_es_campaign_column_status', $item );
 	}
 
 	/**

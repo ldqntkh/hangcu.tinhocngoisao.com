@@ -28,6 +28,7 @@ class IG_ES_Replace_Helper {
 
 	/**
 	 * Pattern string
+	 *
 	 * @var string
 	 */
 	public $string;
@@ -74,6 +75,7 @@ class IG_ES_Replace_Helper {
 
 	/**
 	 * Pre process match before using the actual callback
+	 *
 	 * @param $match
 	 * @return string
 	 */

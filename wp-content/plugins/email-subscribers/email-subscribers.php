@@ -3,13 +3,13 @@
  * Plugin Name: Email Subscribers & Newsletters
  * Plugin URI: https://www.icegram.com/
  * Description: Add subscription forms on website, send HTML newsletters & automatically notify subscribers about new blog posts once it is published.
- * Version: 4.6.9
+ * Version: 4.7.9
  * Author: Icegram
  * Author URI: https://www.icegram.com/
  * Requires at least: 3.9
- * Tested up to: 5.6
+ * Tested up to: 5.8
  * WC requires at least: 3.6.0
- * WC tested up to: 4.9.2
+ * WC tested up to: 5.5.1
  * ES WOO: 7120515:9f4c7f8bb491260ef19edf9699db73e6
  * Requires PHP: 5.6
  * Text Domain: email-subscribers
@@ -71,6 +71,13 @@ if ( ! defined( 'IG_ES_FEEDBACK_TRACKER_VERSION' ) ) {
 	define( 'IG_ES_FEEDBACK_TRACKER_VERSION', '1.2.5' );
 }
 
+if ( ! defined( 'IG_ES_TRACKER_VERSION' ) ) {
+	define( 'IG_ES_TRACKER_VERSION', '1.2.6' );
+}
+
+if ( ! defined( 'IG_ES_PLUGIN_USAGE_TRACKER_VERSION' ) ) {
+	define( 'IG_ES_PLUGIN_USAGE_TRACKER_VERSION', '1.0.0' );
+}
 
 global $ig_es_tracker;
 
@@ -91,7 +98,7 @@ global $wp_version;
  * It might be defined from older version of ES
  */
 require plugin_dir_path( __FILE__ ) . 'lite/includes/feedback/class-ig-tracker.php';
-$ig_es_tracker = 'IG_Tracker_V_' . str_replace( '.', '_', IG_ES_FEEDBACK_TRACKER_VERSION );
+$ig_es_tracker = 'IG_Tracker_V_' . str_replace( '.', '_', IG_ES_TRACKER_VERSION );
 
 if ( ! function_exists( 'ig_es_show_upgrade_pro_notice' ) ) {
 	/**
@@ -178,7 +185,7 @@ if ( 'premium' === $ig_es_plan ) {
 /* ***************************** Initial Compatibility Work (End) ******************* */
 
 if ( ! defined( 'ES_PLUGIN_VERSION' ) ) {
-	define( 'ES_PLUGIN_VERSION', '4.6.9' );
+	define( 'ES_PLUGIN_VERSION', '4.7.9' );
 }
 
 // Plugin Folder Path.
@@ -249,7 +256,7 @@ if ( ! function_exists( 'activate_email_subscribers' ) ) {
 		if ( is_multisite() && $network_wide ) {
 			
 			// Get all active blogs in the network and activate plugin on each one
-			$blog_ids = $wpdb->get_col( sprintf( "SELECT blog_id FROM $wpdb->blogs WHERE deleted = %d", 0 ) );
+			$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM $wpdb->blogs WHERE deleted = %d", 0 ) );
 			foreach ( $blog_ids as $blog_id ) {
 				ig_es_activate_on_blog( $blog_id );
 			}
@@ -277,7 +284,7 @@ if ( ! function_exists( 'deactivate_email_subscribers' ) ) {
 			global $wpdb;
 			
 			// Get all active blogs in the network.
-			$blog_ids = $wpdb->get_col( sprintf( "SELECT blog_id FROM $wpdb->blogs WHERE deleted = %d", 0 ) );
+			$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM $wpdb->blogs WHERE deleted = %d", 0 ) );
 			foreach ( $blog_ids as $blog_id ) {
 				// Run deactivation code on each one
 				ig_es_trigger_deactivation_in_multisite( $blog_id );
@@ -403,6 +410,7 @@ if ( ! function_exists( 'es_subbox' ) ) {
 			'group'     => $group
 		);
 		$subscription_shortcode = ES_Shortcode::render_es_subscription_shortcode( $atts );
+		add_filter( 'safe_style_css', 'ig_es_allowed_css_style' );
 		echo wp_kses( $subscription_shortcode , $allowedtags ); 
 	}
 }

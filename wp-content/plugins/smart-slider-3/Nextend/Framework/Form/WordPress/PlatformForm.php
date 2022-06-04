@@ -8,7 +8,7 @@ use Nextend\Framework\Request\Request;
 class PlatformForm extends PlatformFormBase {
 
     public function tokenize() {
-        return '<input type="hidden" name="nextend_nonce" value="' . wp_create_nonce('nextend_security') . '" />';
+        return '<input type="hidden" name="nextend_nonce" value="' . wp_create_nonce('nextend_security') . '">';
     }
 
     public function tokenizeUrl() {

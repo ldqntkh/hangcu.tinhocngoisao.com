@@ -4,9 +4,9 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Author URI: https://www.icegram.com/
 Tags: email marketing, subscription, autoresponder, post notification, welcome email
 Requires at least: 3.9
-Tested up to: 5.6
+Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 4.6.9
+Stable tag: 4.7.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses
 
@@ -69,7 +69,8 @@ Email Subscribers is a fully-featured subscription plugin specially created keep
 > 👉  **Automatic Background Sending**
 > 👉  **Active Contacts Growth**
 > 👉  **Advance Campaign Reports**
-> 👉  **Connect with SMTP / Email Sending Services**
+> 👉  **Connect with SMTP**
+> 👉  **Send email using Mailgun, Sparkpost, Sendgrid, Peipost & Amazon SES**
 > 👉  **Email Open Tracking**
 > 👉  **Link Tracking**
 > 👉  **UTM Tracking**
@@ -134,9 +135,15 @@ If you like Email Subscribers, please leave us a [⭐⭐⭐⭐⭐](https://wordp
 
 **Some of our other free plugins on WordPress.org**
 
-1. [Icegram](https://wordpress.org/plugins/icegram/) - Popups, Welcome Bar, Opt-Ins and Lead Generation Plugin
-2. [Rainmaker](https://wordpress.org/plugins/icegram-rainmaker/) - Best Forms Plugin on WordPress
-3. [Temporary Login Without Password](https://wordpress.org/plugins/temporary-login-without-password/) -It's a handy tool to support our customers. We use it daily.
+[Icegram](https://wordpress.org/plugins/icegram/) - Popups, Welcome Bar, Opt-Ins and Lead Generation Plugin
+
+[Rainmaker](https://wordpress.org/plugins/icegram-rainmaker/) - Best Forms Plugin on WordPress
+
+[Temporary Login Without Password](https://wordpress.org/plugins/temporary-login-without-password/) -It's a handy tool to support our customers. We use it daily.
+
+[Smart Manager](https://wordpress.org/plugins/smart-manager-for-wp-e-commerce/) - Manage & Bulk edit Products, Orders & more..
+
+[Offermative](https://wordpress.org/plugins/offermative-discount-pricing-related-products-upsell-funnels-for-woocommerce/) - Dynamic discount pricing, related product recommendations, upsells and funnels for WooCommerce.
 
 == Installation ==
 
@@ -301,8 +308,127 @@ Refer [here](https://www.icegram.com/documentation/es-faq/).
 
 21. Campaign Analytics [PRO]
 
+== Upgrade Notice ==
+
+= 4.7.9 =
+
+* New: Added 'Total sent' column on the Reports page
+* Update: UX improvements
+* Fix: Incorrect sent and opened dates on campaign report on some setup
+* Fix: Campaign report migration issue from Email Subscribers 3.5.16
+* Fix: Duplicate sequence emails **[PRO]**
 
 == Changelog ==
+
+**4.7.9 (02.09.2021)**
+
+* New: Added 'Total sent' column on the Reports page
+* Update: UX improvements
+* Fix: Incorrect sent and opened dates on campaign report on some setup
+* Fix: Campaign report migration issue from Email Subscribers 3.5.16
+* Fix: Duplicate sequence emails **[PRO]**
+
+**4.7.8 (26.08.2021)**
+
+* New: Pause/resume ongoing campaigns **[PRO]**
+* New: Dashboard widget to review statistics in a glance
+* Update: Batch email API improvements **[PRO]**
+
+**4.7.7 (17.08.2021)**
+
+* Update: Tested up to WordPress 5.8
+* Update: Improved campaign reports performance
+* Update: Improved handling of emails having internationalized domain name during import
+* Fix: Newline characters when previewing campaign reports
+* Fix: Database error when subscribing to another list and name field isn't present in the subscription form
+
+**4.7.6 (17.07.2021)**
+
+* New: Bulk resend confirmation emails **[PRO]**
+* New: Run Workflows on existing orders **[PRO]**
+* New: Search contacts by email on the Reports page **[PRO]**
+* Fix: Incorrect form action URL when the subscription form is shown on the blog page
+* Fix: 'es_subbox' function not working
+
+**4.7.5.1 (16.06.2021)**
+
+* Fix: PHP warning for number_format on Manage List screen
+
+**4.7.5 (16.06.2021)**
+
+* New: Import subscribers from WooCommerce orders **[PRO]**
+* New: Added option to remove plugin data on plugin deletion
+* Update: Support for Peipost batch email API
+* Update: Support for Sparkpost batch email API **[PRO]**
+* Update: Removing JavaScript dependency for handling frontend subscriptions
+
+**4.7.4 (27.05.2021)**
+
+* Fix: Localization/internationalization issue
+* Update: Improved UI/IX
+
+**4.7.3 (19.05.2021)**
+
+* Fix: Formatting of broadcast test email not matching with actual campaign email **[PRO]**
+* Fix: JavaScript errors on the broadcast screen when a visual mode is disabled for classic editor
+* Fix: Incorrect campaign start date on the reports page
+* Fix: Fixing incorrect count of imported users in the log message when CSV contains duplicate emails
+* Update: Improved email template preview
+* Update: Improved campaign report UI
+
+**4.7.2 (12.05.2021)**
+
+* New: Support for 'List-Unsubscribe' email header
+* New: Support for 'Subscribed at' field while importing contacts through CSV
+* Update: Support for Sendgrid batch email API **[PRO]**
+* Update: Improved page load performance on Email Subscribers' admin pages
+
+**4.7.1 (30.04.2021)**
+
+* New: Send emails using Postmark batch API **[PRO]**
+* Update: Improved dashboard UI
+* Fix: Post digest category issue [PRO]
+* Fix: Garbage characters in few cases when an email containing HTML entities is sent using Pepipost
+* Fix: Ajax call on every page load
+
+**4.7.0 (05.04.2021)**
+
+* New: Support for list and status fields while importing contacts through CSV
+* New: Using batch API to send emails through Mailgun **[PRO]**
+
+**4.6.14 (25.03.2021)**
+
+* New: Send emails using Mailgun, SparkPost and SendGrid **[PRO]**
+* New: Import contacts from MailChimp
+
+**4.6.13 (17.03.2021)**
+
+* New: Campaign rules to filter recipients while sending sequence emails **[PRO]**
+* Update: Tested up to WordPress 5.7
+* Fix: Invalid date and time for campaign reports activity table
+
+**4.6.12.1 (05.03.2021)**
+
+* Fix: Subscription issue with [Icegram](https://wordpress.org/plugins/icegram) plugin
+
+**4.6.12 (04.03.2021)**
+
+* New: Filter recipients using new campaign rules for 'is in List' and 'is not in List' while sending broadcast **[PRO]**
+* Update: Improved campaign report UI
+* Update: Improved securities in subscription form
+
+**4.6.11 (25.02.2021)**
+
+* New: Campaign rules to filter recipients while sending broadcast [PRO]
+* New: Added option to disable post notifications for default WordPress posts
+* Update: Improved campaign preview report UI
+
+**4.6.10 (15.02.2021)**
+
+* New: New workflow trigger for YITH WooCommerce Wishlist [PRO]
+* New: Added additional stats on campaigns reports dashboard
+* Update: Disable IP tracking in lite version by default to make GDPR compliant
+* Fix: Database vulnerability
 
 **4.6.9 (05.02.2021)**
 

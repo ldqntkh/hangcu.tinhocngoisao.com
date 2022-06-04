@@ -14,15 +14,15 @@ use Nextend\SmartSlider3\Application\Model\ModelLicense;
 
 class SmartSlider3Info {
 
-    public static $version = '3.4.1.16';
+    public static $version = '3.5.1.7';
 
     public static $channel = 'stable';
 
-    public static $revision = 'a96b01e9e124d83f204b4c0881ed1373253fb4d6';
+    public static $revision = '6da043836534827654088675078f4dcfd1ded6e7';
 
-    public static $revisionShort = 'a96b01e9';
+    public static $revisionShort = '6da04383';
 
-    public static $branch = 'release-3.4.1.16';
+    public static $branch = 'release-3.5.1.7';
 
     public static $completeVersion;
 
@@ -38,6 +38,8 @@ class SmartSlider3Info {
 
     public static $forceDesktop = false;
 
+    public static $forceAllDevices = false;
+
     public static function init() {
 
         self::$completeVersion = self::$version . '/b:' . self::$branch . '/r:' . self::$revision;
@@ -52,16 +54,6 @@ class SmartSlider3Info {
     }
 
     public static function applySource(&$params) {
-        static $isSourceSet = false;
-        if (!$isSourceSet) {
-            if (defined('SMARTSLIDER3AFFILIATE')) {
-                self::$source = SMARTSLIDER3AFFILIATE;
-            }
-            self::$source = apply_filters('smartslider3_hoplink', self::$source);
-        
-
-            $isSourceSet = true;
-        }
 
         if (!empty(self::$source)) {
             $params['source'] = self::$source;

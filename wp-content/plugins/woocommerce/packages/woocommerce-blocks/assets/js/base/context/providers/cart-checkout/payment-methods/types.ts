@@ -1,59 +1,24 @@
 /**
  * External dependencies
  */
-import type { ReactNode } from 'react';
-
+import {
+	PaymentMethodConfiguration,
+	PaymentMethods,
+	ExpressPaymentMethods,
+} from '@woocommerce/type-defs/payments';
+import type {
+	EmptyObjectType,
+	ObjectType,
+} from '@woocommerce/type-defs/objects';
 /**
  * Internal dependencies
  */
 import type { emitterCallback } from '../../../event-emit';
 import { STATUS } from './constants';
 
-type ObjectType = Record< string, unknown >;
-type EmptyObjectType = Record< string, never >;
-
-export interface PaymentMethodConfig {
-	// A unique string to identify the payment method client side.
-	name: string;
-	// A react node for your payment method UI.
-	content: ReactNode;
-	// A react node to display a preview of your payment method in the editor.
-	edit: ReactNode;
-	// A callback to determine whether the payment method should be shown in the checkout.
-	canMakePayment: (
-		cartData: ObjectType
-	) => Promise< boolean | { error: { message: string } } >;
-	// A unique string to represent the payment method server side. If not provided, defaults to name.
-	paymentMethodId?: string;
-	// Object that describes various features provided by the payment method.
-	supports: ObjectType;
-	// Array of card types (brands) supported by the payment method. (See stripe/credit-card for example.)
-	icons: ObjectType;
-	// A react node that will be used as a label for the payment method in the checkout.
-	label: ReactNode;
-	// An accessibility label. Screen readers will output this label when the payment method is selected.
-	ariaLabel: string;
-	// Optionally customize the label text for the checkout submit (`Place Order`) button.
-	placeOrderButtonLabel?: string;
-}
-
-export type ExpressPaymentMethodConfig = Omit<
-	PaymentMethodConfig,
-	'icons' | 'label' | 'ariaLabel' | 'placeOrderButtonLabel'
->;
-
-export type PaymentMethods =
-	| Record< string, PaymentMethodConfig >
-	| EmptyObjectType;
-
-export type ExpressPaymentMethods =
-	| Record< string, ExpressPaymentMethodConfig >
-	| EmptyObjectType;
-
 export interface CustomerPaymentMethod {
-	method: PaymentMethodConfig;
+	method: PaymentMethodConfiguration;
 	expires: string;
-	// eslint-disable-next-line camelcase
 	is_default: boolean;
 	tokenId: number;
 	actions: ObjectType;
@@ -62,12 +27,21 @@ export type CustomerPaymentMethods =
 	| Record< string, CustomerPaymentMethod >
 	| EmptyObjectType;
 
-export type PaymentMethodsDispatcherType = (
-	paymentMethods: PaymentMethods | ExpressPaymentMethods
-) => void;
+export interface PaymentMethodDispatchers {
+	setRegisteredPaymentMethods: ( paymentMethods: PaymentMethods ) => void;
+	setRegisteredExpressPaymentMethods: (
+		paymentMethods: ExpressPaymentMethods
+	) => void;
+	setShouldSavePayment: ( shouldSave: boolean ) => void;
+	setActivePaymentMethod: (
+		paymentMethod: string,
+		paymentMethodData?: ObjectType | EmptyObjectType
+	) => void;
+}
 
 export interface PaymentStatusDispatchers {
-	started: ( paymentMethodData?: ObjectType | EmptyObjectType ) => void;
+	pristine: () => void;
+	started: () => void;
 	processing: () => void;
 	completed: () => void;
 	error: ( error: string ) => void;
@@ -86,8 +60,8 @@ export interface PaymentStatusDispatchers {
 export interface PaymentMethodDataContextState {
 	currentStatus: STATUS;
 	shouldSavePaymentMethod: boolean;
+	activePaymentMethod: string;
 	paymentMethodData: ObjectType | EmptyObjectType;
-	hasSavedToken: boolean;
 	errorMessage: string;
 	paymentMethods: PaymentMethods;
 	expressPaymentMethods: ExpressPaymentMethods;
@@ -108,6 +82,8 @@ export type PaymentMethodCurrentStatusType = {
 	hasFailed: boolean;
 	// If true then the payment method has completed it's processing successfully.
 	isSuccessful: boolean;
+	// If true, an express payment is in progress.
+	isDoingExpressPayment: boolean;
 };
 
 export type PaymentMethodDataContextType = {
@@ -123,12 +99,10 @@ export type PaymentMethodDataContextType = {
 	errorMessage: string;
 	// The active payment method slug.
 	activePaymentMethod: string;
-	// A function for setting the active payment method.
-	setActivePaymentMethod: ( paymentMethod: string ) => void;
 	// Current active token.
 	activeSavedToken: string;
-	// A function for setting the active payment method token.
-	setActiveSavedToken: ( activeSavedToken: string ) => void;
+	// A function for setting the active payment method.
+	setActivePaymentMethod: PaymentMethodDispatchers[ 'setActivePaymentMethod' ];
 	// Returns the customer payment for the customer if it exists.
 	customerPaymentMethods:
 		| Record< string, CustomerPaymentMethod >
@@ -145,8 +119,14 @@ export type PaymentMethodDataContextType = {
 	onPaymentProcessing: ReturnType< typeof emitterCallback >;
 	// A function used by express payment methods to indicate an error for checkout to handle. It receives an error message string. Does not change payment status.
 	setExpressPaymentError: ( error: string ) => void;
+	// True if an express payment method is active.
+	isExpressPaymentMethodActive: boolean;
 	// A function used to set the shouldSavePayment value.
-	setShouldSavePayment: ( shouldSavePayment: boolean ) => void;
+	setShouldSavePayment: PaymentMethodDispatchers[ 'setShouldSavePayment' ];
 	// True means that the configured payment method option is saved for the customer.
 	shouldSavePayment: boolean;
 };
+
+export type PaymentMethodsDispatcherType = (
+	paymentMethods: PaymentMethods
+) => undefined;

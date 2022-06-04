@@ -67,50 +67,12 @@ class ES_Action_Add_To_List extends ES_Workflow_Action {
 				if ( ! $data_type || ! $data_type->validate( $data_item ) ) {
 					continue;
 				}
-				$data = $data_type->get_data( $data_item );
-				$this->add_contact( $list_id, $data );
-
-				// Check if we have WC_Order object.
-				if ( $data_item instanceof WC_Order && is_callable( array( $data_item, 'get_items' ) ) ) {
-
-					// Get product items from the order.
-					$line_items = $data_item->get_items();
-
-					if ( ! empty( $line_items ) ) {
-						$product_list_enabled   = $this->get_option( 'ig-es-product-list-enabled' );
-						$variation_list_enabled = $this->get_option( 'ig-es-variation-list-enabled' );
-						$action_add_to_list     = new ES_Action_Add_To_List();
-						foreach ( $line_items as $line_item ) {
-							$product = $line_item->get_product();
-
-							if ( $product instanceof WC_Product ) {
-
-								// If product is a variation then get its parent product.
-								if ( $product->is_type( 'variation' ) ) {
-									$parent_product_id = $product->get_parent_id();
-									$parent_product    = wc_get_product( $parent_product_id );
-
-									// Check if list also has to be created for variation product also.
-									if ( $variation_list_enabled ) {
-										$variation_list_id = $this->create_list_from_product( $product );
-										if ( ! empty( $variation_list_id ) ) {
-											$action_add_to_list->add_contact( $variation_list_id, $data );
-										}
-									}
-								} else {
-									$parent_product = $product;
-								}
-								
-								if ( $product_list_enabled ) {
-									$parent_list_id = $this->create_list_from_product( $parent_product );
-									if ( ! empty( $parent_list_id ) ) {
-										$action_add_to_list->add_contact( $parent_list_id, $data );
-									}
-								}
-							}
-
-						}
-					}
+				$data = array();
+				if ( is_callable( array( $data_type, 'get_data' ) ) ) {
+					$data = $data_type->get_data( $data_item );
+				}
+				if ( ! empty( $data['email'] ) ) {
+					$this->add_contact( $list_id, $data );
 				}
 			}
 		}
@@ -153,13 +115,12 @@ class ES_Action_Add_To_List extends ES_Workflow_Action {
 		} else {
 			$name = ! empty( $data['name'] ) ? trim( $data['name'] ) : '';
 
-			$last_name = '';
+			$first_name = '';
+			$last_name  = '';
 			if ( ! empty( $name ) ) {
 				$name_parts = ES_Common::prepare_first_name_last_name( $name );
 				$first_name = $name_parts['first_name'];
 				$last_name  = $name_parts['last_name'];
-			} else {
-				$first_name = ES_Common::get_name_from_email( $email );
 			}
 		}
 

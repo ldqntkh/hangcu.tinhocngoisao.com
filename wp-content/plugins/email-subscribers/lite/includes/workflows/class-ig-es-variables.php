@@ -108,6 +108,7 @@ class IG_ES_Variables {
 
 		/** 
 		 * Variable class object
+		 *
 		 * @var IG_ES_Variable $variable_object
 		 */
 		$variable_object = require_once $path;

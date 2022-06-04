@@ -258,6 +258,22 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
         if ($pagenow == 'admin.php' && isset($_GET) && isset($_GET['page']) && 'mailchimp-woocommerce' === $_GET['page']) {
             $this->handle_abandoned_cart_table();
             $this->update_db_check();
+
+            /// this is where we need to cache this data for a longer period of time and only during admin page views.
+            /// https://wordpress.org/support/topic/the-plugin-slows-down-the-website-because-of-slow-api/#post-14339311
+            if (mailchimp_is_configured() && ($list_id = mailchimp_get_list_id())) {
+                $transient = "mailchimp-woocommerce-gdpr-fields.{$list_id}";
+                $GDPRfields = get_site_transient($transient);
+                if (!is_array($GDPRfields)) {
+                    try {
+                        $GDPRfields = mailchimp_get_api()->getGDPRFields($list_id);
+                        set_site_transient($transient, $GDPRfields, 0);
+                    } catch (\Exception $e) {
+                        set_site_transient($transient, array(), 60);
+                    }
+                }
+            }
+
 			$active_tab = isset($_GET['tab']) ? $_GET['tab'] : ($this->getOption('active_tab') ? $this->getOption('active_tab') : 'api_key');
 			if ($active_tab == 'sync' && get_option('mailchimp-woocommerce-sync.initial_sync') == 1 && get_option('mailchimp-woocommerce-sync.completed_at') > 0 ) {
                 $this->mailchimp_show_initial_sync_message();
@@ -341,9 +357,13 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
 				if ($wpdb->query($delete_sql) !== false) {
 					$sql = "ALTER TABLE {$wpdb->prefix}mailchimp_carts ADD PRIMARY KEY (email);";
 					// only update the option if the query returned sucessfully
-					if ($wpdb->query($sql) !== false) {
-						update_option( $this->plugin_name.'_cart_table_add_index_update', true);
-					}	
+					try {
+                        if ($wpdb->query($sql) !== false) {
+                            update_option( $this->plugin_name.'_cart_table_add_index_update', true);
+                        }
+                    } catch (\Exception $e) {
+                        update_option( $this->plugin_name.'_cart_table_add_index_update', true);
+                    }
 				}
 			}
 		}
@@ -781,19 +801,48 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
 
 		$response = wp_remote_post( 'https://woocommerce.mailchimpapp.com/api/support', $pload);
 		$response_body = json_decode($response['body']);
-		if ($response['response']['code'] == 200 && $response_body->success == true ){
-			
+		if ($response['response']['code'] == 200 && $response_body->success == true ) {
 			wp_send_json_success($response_body);
+		} else if ($response['response']['code'] == 404 ) {
+			wp_send_json_error(array('success' => false, 'error' => $response));
 		}
-		
-		else if ($response['response']['code'] == 404 ){
-			wp_send_json_error(array(
-				'success' => false,
-				'error' => $response
-			));
-		}
-
 	}
+
+    /**
+     * @return mixed|null
+     */
+	public function mailchimp_send_sync_finished_email() {
+        try {
+            $order_count = mailchimp_get_api()->getOrderCount(mailchimp_get_store_id());
+            $list_name = $this->getListName();
+        } catch (\Exception $e) {
+            $list_name = mailchimp_get_list_id();
+            $order_count = mailchimp_get_order_count();
+        }
+
+        $admin_email = $this->getOption('admin_email');
+
+        if (empty($admin_email)) {
+            return null;
+        }
+
+        $pload = array(
+            'headers' => array(
+                'Content-type' => 'application/json',
+            ),
+            'body' => json_encode(array(
+                'sync_finished' => true,
+                'audience_name' => $list_name,
+                'total_orders' => $order_count,
+                'store_name' => get_option('blogname'),
+                'email' => $admin_email,
+            )),
+            'timeout'     => 30,
+        );
+        $response = wp_remote_post( 'https://woocommerce.mailchimpapp.com/api/support', $pload);
+        $response_body = json_decode($response['body']);
+        return $response_body;
+    }
 
 	public function mailchimp_woocommerce_ajax_create_account_signup() {
 		$data = $_POST['data'];
@@ -813,22 +862,14 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
 			'body' => json_encode($data),
 			'timeout'     => 30,
         );
-		
 
 		$response = wp_remote_post( 'https://woocommerce.mailchimpapp.com/api/signup/', $pload);
 		$response_body = json_decode($response['body']);
-		if ($response['response']['code'] == 200 && $response_body->success == true ){
-			
+		if ($response['response']['code'] == 200 && $response_body->success == true) {
 			wp_send_json_success($response_body);
-		}
-		
-		else if ($response['response']['code'] == 404 ){
-			wp_send_json_error(array(
-				'success' => false,
-			));
-		}
-
-        else {
+		} else if ($response['response']['code'] == 404 ) {
+			wp_send_json_error(array('success' => false));
+		} else {
 			$suggestion = wp_remote_get( 'https://woocommerce.mailchimpapp.com/api/usernames/suggestions/' . $_POST['username']);
 			$suggested_username = json_decode($suggestion['body'])->data;
 			wp_send_json_error( array(
@@ -1241,7 +1282,7 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
 
 			return array_key_exists($list_id, $lists) ? $lists[$list_id] : false;
 		} catch (\Exception $e) {
-			return array();
+			return false;
 		}
 	}
 
@@ -1790,5 +1831,63 @@ class MailChimp_WooCommerce_Admin extends MailChimp_WooCommerce_Options {
 		return wp_send_json_success( esc_html( file_get_contents( WC_LOG_DIR . $viewed_log ) ) );
 		
 	}
+
+    public function save()
+    {
+        if (MC_Flag::isOn(MC_FlagNames::FIX_ECOMMERCE_CUSTOMER_STATS)) {
+            $existing_order_record = null;
+            $is_existing_order = $this->existsInDatabase();
+            $no_customer_for_existing_order = false;
+            if ($is_existing_order) {
+                $existing_order_record = MC::userDB()->queryOne('from Ecommerce_Order where store_id = ? and order_id = ? limit 1', [$this->store_id, $this->order_id]);
+                $no_customer_for_existing_order = $existing_order_record ? $existing_order_record->getCustomer() === null : true;
+            }
+            $result = parent::save();
+            $customer = $this->getCustomer();
+            if ($customer !== null) {
+                // Did we just save a new line item record?
+                if (!$is_existing_order) {
+                    // Is this line item a completely new order or some addition to an existing order?
+                    $has_another_line_item = (bool)MC::userDB()->querySqlOne('select 1 from ecommerce_orders where store_id = ? and order_foreign_id = ? and order_id != ? and is_deleted = ? limit 1', [$this->store_id, $this->order_foreign_id, $this->order_id, 'N']);
+                    if (!$has_another_line_item) {
+                        $customer->incrementOrdersCount();
+                        $customer->addOrderToTotalSpent($this);
+                    }
+                    // Did we just make an update to an existing line item?
+                } elseif ($existing_order_record) {
+                    $is_order_total_mismatched_with_other_line_items = (bool)MC::userDB()->querySqlOne('select 1 from ecommerce_orders where store_id = ? and order_foreign_id = ? and order_total != ? and is_deleted = ? limit 1', [$this->store_id, $this->order_foreign_id, $this->order_total, 'N']);
+                    // Only update if all the line items say the same order_total
+                    if (!$is_order_total_mismatched_with_other_line_items) {
+                        $customer->total_spent = $customer->total_spent - $existing_order_record->order_total + $this->order_total;
+                    }
+                    if ($no_customer_for_existing_order) {
+                        $customer->incrementOrdersCount();
+                    }
+                }
+                $customer->save();
+                $this->customer = $customer;
+            }
+            return $result;
+        }
+        // Non-flagged behavior
+        return parent::save();
+    }
+
+    public function onDelete()
+    {
+        parent::onDelete();
+        if (MC_Flag::isOn(MC_FlagNames::FIX_ECOMMERCE_CUSTOMER_STATS)) {
+            $has_another_line_item = MC::userDB()->querySqlOne('select 1 from ecommerce_orders where store_id = ? and order_foreign_id != ? and is_deleted = ? limit 1', [$this->store_id, $this->order_foreign_id, 'N']);
+            if (!$has_another_line_item) {
+                $customer = $this->getCustomer();
+                if ($customer !== null) {
+                    $customer->total_spent -= $this->order_total;
+                    $customer->decrementOrdersCount();
+                    $customer->save();
+                    $this->customer = $customer;
+                }
+            }
+        }
+    }
 
 }

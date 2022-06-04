@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useCallback, useState, useEffect } from '@wordpress/element';
 import { CART_STORE_KEY as storeKey } from '@woocommerce/block-data';
 import { useDebounce } from 'use-debounce';
 import { usePrevious } from '@woocommerce/base-hooks';
@@ -39,7 +39,7 @@ const cartItemHasQuantityAndKey = (
  *
  * @see https://github.com/woocommerce/woocommerce-gutenberg-products-block/tree/trunk/src/RestApi/StoreApi
  *
- * @param {CartItem} cartItem      The cartItem to get quantity info from and will have quantity updated on.
+ * @param {CartItem} cartItem The cartItem to get quantity info from and will have quantity updated on.
  * @return {StoreCartItemQuantity} An object exposing data and actions relating to cart items.
  */
 export const useStoreCartItemQuantity = (
@@ -66,6 +66,9 @@ export const useStoreCartItemQuantity = (
 		storeKey
 	);
 
+	// Update local state when server updates.
+	useEffect( () => setQuantity( cartItemQuantity ), [ cartItemQuantity ] );
+
 	// Track when things are already pending updates.
 	const isPending = useSelect(
 		( select ) => {
@@ -84,14 +87,14 @@ export const useStoreCartItemQuantity = (
 		[ cartItemKey ]
 	);
 
-	const removeItem = () => {
+	const removeItem = useCallback( () => {
 		return cartItemKey
 			? removeItemFromCart( cartItemKey ).then( () => {
 					triggerFragmentRefresh();
 					return true;
 			  } )
 			: Promise.resolve( false );
-	};
+	}, [ cartItemKey, removeItemFromCart ] );
 
 	// Observe debounced quantity value, fire action to update server on change.
 	useEffect( () => {

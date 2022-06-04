@@ -19,6 +19,10 @@ class Guaven_woo_search_front
 
     public function personal_interest_collector()
     {
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
+
         if ( ($this->skip_transients() or is_singular('product')) and !empty($this->cookieprods) ) {
             $products_personal = '';
             if (!empty($_COOKIE['guaven_woos_lastvisited'])) {
@@ -64,6 +68,7 @@ class Guaven_woo_search_front
             set_transient($uniqcookieid, $htmlkeys, 86400);
             if(!headers_sent())setcookie('guaven_woos_lastvisited', $uniqcookieid, time() + 86400, '/', null, 0);
         }
+        $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
     }
 
     public function local_values(){
@@ -169,6 +174,9 @@ class Guaven_woo_search_front
 
     public function trend_calculator()
     {
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
         $ret   = get_transient('guaven_woos_data_trend');
         $count = get_option('guaven_woos_data_trend_num');
         if (empty($ret)
@@ -208,7 +216,7 @@ class Guaven_woo_search_front
         } else {
             $ret = unserialize($ret);
         }
-
+        $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
         return $ret;
     }
 

@@ -24,9 +24,7 @@ interface PackageItem {
 }
 
 interface Destination {
-	// eslint-disable-next-line camelcase
 	address_1: string;
-	// eslint-disable-next-line camelcase
 	address_2: string;
 	city: string;
 	state: string;
@@ -37,7 +35,6 @@ interface Destination {
 export interface PackageData {
 	destination: Destination;
 	name: string;
-	// eslint-disable-next-line camelcase
 	shipping_rates: CartShippingPackageShippingRate[];
 	items: PackageItem[];
 }
@@ -60,7 +57,7 @@ interface PackageProps {
 
 export const ShippingRatesControlPackage = ( {
 	packageId,
-	className,
+	className = '',
 	noResultsMessage,
 	renderOption,
 	packageData,
@@ -68,10 +65,7 @@ export const ShippingRatesControlPackage = ( {
 	collapse = false,
 	showItems = false,
 }: PackageProps ): ReactElement => {
-	const { selectShippingRate, selectedShippingRate } = useSelectShippingRate(
-		packageId,
-		packageData.shipping_rates
-	);
+	const { selectShippingRate } = useSelectShippingRate();
 
 	const header = (
 		<>
@@ -120,8 +114,12 @@ export const ShippingRatesControlPackage = ( {
 			className={ className }
 			noResultsMessage={ noResultsMessage }
 			rates={ packageData.shipping_rates }
-			onSelectRate={ selectShippingRate }
-			selected={ selectedShippingRate }
+			onSelectRate={ ( newShippingRateId ) =>
+				selectShippingRate( newShippingRateId, packageId )
+			}
+			selectedRate={ packageData.shipping_rates.find(
+				( rate ) => rate.selected
+			) }
 			renderOption={ renderOption }
 		/>
 	);

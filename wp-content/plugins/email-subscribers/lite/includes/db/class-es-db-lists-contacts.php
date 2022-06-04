@@ -107,10 +107,7 @@ class ES_DB_Lists_Contacts extends ES_DB {
 
 		if ( is_array( $list_ids ) && count( $list_ids ) > 0 ) {
 
-			$can_track_ip = apply_filters( 'ig_es_can_track_subscriber_ip', 'yes' ); 
-			if ( 'no' === $can_track_ip && ES()->is_pro() ) {
-				$contact_data['subscribed_ip'] = '';
-			}
+			$contact_data = apply_filters( 'ig_es_get_subscriber_ip', $contact_data, 'subscribed_ip' ); 
 
 			// Remove entry if it's already there in a list
 			$contact_id = ! empty( $contact_data['contact_id'] ) ? $contact_data['contact_id'] : 0;
@@ -476,16 +473,19 @@ class ES_DB_Lists_Contacts extends ES_DB {
 		if ( count( $contacts ) > 0 ) {
 			$values = array();
 
+			if ( ! is_array( $list_ids ) ) {
+				$list_ids = array( absint( $list_ids ) );
+			}
+			
 			$key = 0;
-			foreach ( $contacts as $contact_id ) {
-
+			foreach ( $contacts as $contact_id => $created_at ) {
 				foreach ( $list_ids as $list_id ) {
 
 					$values[ $key ]['contact_id']      = $contact_id;
 					$values[ $key ]['list_id']         = $list_id;
 					$values[ $key ]['status']          = $status;
 					$values[ $key ]['optin_type']      = $optin_type;
-					$values[ $key ]['subscribed_at']   = $subscribed_at;
+					$values[ $key ]['subscribed_at']   = $created_at;
 					$values[ $key ]['subscribed_ip']   = $subscribed_ip;
 					$values[ $key ]['unsubscribed_at'] = $unsubscribed_at;
 					$values[ $key ]['unsubscribed_ip'] = $unsubscribed_ip;
@@ -1003,6 +1003,4 @@ class ES_DB_Lists_Contacts extends ES_DB {
 	public function get_all_contacts() {
 		return $this->get_contacts( 'all' );
 	}
-
-
 }

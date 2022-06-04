@@ -312,7 +312,7 @@ class Export_Subscribers {
 			$contact_ids      = array();
 			foreach ( $results as $result ) {
 
-				if ( ! in_array( $result['contact_id'], $contact_ids ) ) {
+				if ( ! in_array( $result['contact_id'], $contact_ids, true ) ) {
 					$contact_ids[] = $result['contact_id'];
 				}
 

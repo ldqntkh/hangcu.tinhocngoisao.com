@@ -1,0 +1,105 @@
+#custom_preferences_header_promotion .form-table:not(:first-of-type){
+    margin: 0 10px;
+}
+#custom_preferences_header_promotion .form-table:not(:first-of-type) tbody {
+    border: 1px solid silver;
+}
+#custom_preferences_header_promotion .form-table:not(:first-of-type) tr th,
+#custom_preferences_header_promotion .form-table:not(:first-of-type) tr td {
+    margin: 0;
+    padding: 5px;
+}
+
+#custom_preferences_header_promotion .form-table:not(:first-of-type) tr td input[type=text]{
+    width: calc(100% - 150px);
+}
+
+#create_icon .container-images {
+    height: calc(100vh - 330px);
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#create_icon .header-control {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#create_icon .header-control .left-content {
+    width: 700px;
+}
+
+#create_icon .header-control .image-size {
+    margin: 10px 0 0;
+}
+
+#create_icon .container-images .left-content {
+    height: 100%;
+    width: calc(100% - 400px);
+    border: 1px dashed silver;
+    max-height: 100%;
+    max-width: calc(100% - 300px);
+    overflow: auto;
+    position: relative;
+}
+
+#create_icon .container-images .left-content #image {
+    width: 100%;
+    cursor: crosshair;
+    border: 1px solid silver;
+}
+
+#create_icon .container-images .left-content #image img {
+    min-width: 20px;
+    min-height: 20px;
+    pointer-events: none;
+}
+
+#create_icon .container-images .left-content  #overlay-icon {
+    position: absolute;
+    border: 1px solid black;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+}
+
+#create_icon .container-images .right-content {
+    height: 100%;
+    width: 390px;
+    padding: 5px;
+    margin-left: 10px;
+    overflow: hidden;
+    background: #0000000a;
+}
+
+#create_icon .container-images .right-content .btns {
+    height: 50px;
+    padding: 5px;
+}
+
+#create_icon .container-images .right-content #lst-icons {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 50px);
+    overflow: hidden;
+    overflow-y: auto;
+}
+#create_icon .container-images .right-content #lst-icons >div {
+    width: 100%;
+    border-bottom: .5px solid silver;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+#create_icon .container-images .right-content #lst-icons >div >span {
+    margin-right: 20px;
+    color: red;
+    cursor: pointer;
+}

@@ -22,6 +22,7 @@ class SettingsTab extends PageAbstract {
 	 * @since 1.5.0
 	 */
 	public function __construct() {
+		parent::__construct();
 
 		add_action( 'wp_mail_smtp_admin_pages_settings_license_key', array( __CLASS__, 'display_license_key_field_content' ) );
 	}
@@ -553,7 +554,7 @@ class SettingsTab extends PageAbstract {
 	/**
 	 * @inheritdoc
 	 */
-	public function process_post( $data ) {
+	public function process_post( $data ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
 
 		$this->check_admin_referer();
 
@@ -618,6 +619,21 @@ class SettingsTab extends PageAbstract {
 			}
 		}
 
+		// Prevent redirect to setup wizard from settings page after successful auth.
+		if (
+			! empty( $data['mail']['mailer'] ) &&
+			in_array( $data['mail']['mailer'], [ 'gmail', 'outlook', 'zoho' ], true )
+		) {
+			$data[ $data['mail']['mailer'] ]['is_setup_wizard_auth'] = false;
+		}
+
+		/**
+		 * Filters mail settings before save.
+		 *
+		 * @since 2.2.1
+		 *
+		 * @param array $data Settings data.
+		 */
 		$data = apply_filters( 'wp_mail_smtp_settings_tab_process_post', $data );
 
 		// All the sanitization is done in Options class.

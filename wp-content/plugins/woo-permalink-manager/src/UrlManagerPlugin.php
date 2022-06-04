@@ -41,6 +41,19 @@ class UrlManagerPlugin
 
         add_action('init', [$this, 'loadTextDomain']);
         add_action('admin_init', [$this, 'checkRequirePlugins']);
+
+        premmerce_wpm_fs()->add_filter('freemius_pricing_js_path', [$this, 'cutomFreemiusPricingPage']);
+    }
+
+    /**
+     * Custom pricing page
+     */
+    public function cutomFreemiusPricingPage($default_pricing_js_path)
+    {
+        $pluginDir = $this->fileManager->getPluginDirectory();
+        $pricing_js_path = $pluginDir . '/assets/admin/js/pricing-page/freemius-pricing.js';
+
+        return $pricing_js_path;
     }
 
     /**

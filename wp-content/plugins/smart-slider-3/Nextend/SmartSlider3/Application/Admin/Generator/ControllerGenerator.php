@@ -51,6 +51,7 @@ class ControllerGenerator extends AbstractControllerAdmin {
 
                 $sources = $generatorGroup->getSources();
                 if (empty($sources)) {
+                    Notification::error($generatorGroup->getError());
                     $this->redirect($this->getUrlGeneratorCreate($sliderID, $groupData['group_id']));
                 }
 
@@ -216,7 +217,7 @@ class ControllerGenerator extends AbstractControllerAdmin {
                 } else {
                     $message = 'Something wrong with the credentials';
                 }
-                echo '<script>window.opener.N2Classes.Notification.error("' . htmlspecialchars($message) . '");self.close();</script>';
+                echo '<script>window.opener._N2.Notification.error("' . htmlspecialchars($message) . '");self.close();</script>';
             }
             PageFlow::exitApplication();
         }

@@ -473,9 +473,24 @@ function guaven_woos_positioner(guaven_woos_input) {
 }
 
 function guaven_woos_backend_preparer_direct(searchterm) {
-  jQuery("body").append('<form method="get" id="gws_hidden_form">' +
+  let _dk = getUrlParameter('_dk');
+  let _dv = getUrlParameter('_dv');
+  if( _dk || _dv ) {
+    let h_device = '';
+    if( _dk ) {
+      h_device = '<input name="_dk" value="pc" type="hidden">';
+    } else {
+      h_device = '<input name="_dv" value="mb" type="hidden">';
+    }
+    jQuery("body").append('<form method="get" id="gws_hidden_form">' +
+    '<input name="post_type" value="product" type="hidden">' +
+    h_device +
+    '<input name="s" id="s" value="' + searchterm + '"></form>');
+  } else {
+    jQuery("body").append('<form method="get" id="gws_hidden_form">' +
     '<input name="post_type" value="product" type="hidden">' +
     '<input name="s" id="s" value="' + searchterm + '"></form>');
+  }
   searchterm_formatted=gws_tempval(searchterm);
   searchterm_formatted_nofilter=gws_tempval(searchterm,'nofilter');
   jQuery("#gws_hidden_form #s").trigger("focus");
@@ -497,8 +512,24 @@ function guaven_woos_backend_preparer_direct(searchterm) {
     }).done(function(response) {
         if (response == 'ok'){gws_global_ret=1;jQuery("#gws_hidden_form").submit();}
   });
-  }, 300);
+  }, 10);
 }
+
+var getUrlParameter = function getUrlParameter(sParam) {
+  var sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+  for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+          return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+  }
+  return false;
+};
 
 function guaven_woos_backend_preparer(gws_this,gws_this_tempval,gws_this_tempval_nofilter){
   gws_this.children("input:submit").attr("disabled", "disabled");
@@ -658,8 +689,9 @@ function guaven_woos_finish_rendering(){
   guaven_woos_cfinalresult = '';
   if (guaven_woos.categories_enabled == 1) {
     guaven_woos_cfinalresult = guaven_woos_result_catadd();
-    if (guaven_woos_cfinalresult != '')
+    if (guaven_woos_cfinalresult != '') {
       guaven_woos_cfinalresult = "<ul class='guaven_woos_suggestion_catul'>" + guaven_woos_cfinalresult + "</ul>";
+    }
   }
 
   if (guaven_woos.backend == 3 && prids_object=='') {
@@ -668,15 +700,16 @@ function guaven_woos_finish_rendering(){
 
   guaven_show_all = '';
   if (guaven_woos.show_all_text != '') {
-    guaven_show_all = '<li class="guaven_woos_showallli"><a href="/?post_type=product&s=' + jQuery('input.search-field').val().trim() + '">' +
+    ///?s=' + jQuery('input#search').val().trim() + '&post_type=product
+    guaven_show_all = '<li class="guaven_woos_showallli"><a href="#">'+
       guaven_woos.show_all_text + '</a></li>';
   }
 
   if (typeof guaven_woos_display_in == "undefined") {
     guaven_woos_display_in=gws_define_suggestion_area(gws_current_input_object);
   }
-
-  jQuery('.guaven_woos_suggestion').html(guaven_woos_cfinalresult + "<ul class=\"guaven_woos_final_results\">" + guaven_woos_finalresult + guaven_show_all + "</ul>");
+  let dataSearch = guaven_woos_finalresult.replaceAll('----','</span>' ).replaceAll('---', '<span class="hidden">');
+  jQuery('.guaven_woos_suggestion').html(guaven_woos_cfinalresult + "<ul class=\"guaven_woos_final_results\">" + dataSearch + guaven_show_all + "</ul>");
   if(guaven_woos.utm_enabled == 1){
     jQuery('.guaven_woos_suggestion_list > a').each((i, el) => {
       el.href = guaven_woos_add_utm_parameters(el.href, guaven_woos_tempval); 
@@ -890,6 +923,18 @@ guaven_woos_tempval_space=guaven_woos_tempval.indexOf(" ");
       }
     }
   }
+  if( prids_object ) {
+    jQuery('#woo_search_ids').val(prids_object);
+  } else {
+    jQuery('#woo_search_ids').val('');
+  }
+  let urlPost = '/?s=' + jQuery('#search').val() + '&post_type=product';
+  if( jQuery('input[name=_dv]').length > 0 ) {
+    urlPost += '&_dv=mb';
+  } else if ( jQuery('input[name=_dk]').length > 0 ) {
+    urlPost += '&_dk=pc';
+  }
+  jQuery('.navbar-search').attr('action', urlPost);
 }
 
 function gws_get_unid() {

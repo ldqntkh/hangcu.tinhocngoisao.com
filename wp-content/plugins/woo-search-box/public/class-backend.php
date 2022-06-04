@@ -119,6 +119,10 @@ class Guaven_woo_search_backend
 
     public function find_posts($search_query_local)
     {
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
+
         $sanitize_cookie = '';
         $checkkeyword    = '';
         $guaven_woo_search_admin = new Guaven_woo_search_admin();
@@ -145,7 +149,7 @@ class Guaven_woo_search_backend
         } else {
             $sanitize_cookie_final = '';
         }
-
+        $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
         return array(
             $checkkeyword,
             $sanitize_cookie_final
@@ -215,16 +219,95 @@ class Guaven_woo_search_backend
 
     public function guaven_woos_pass_to_backend()
     {
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
         $sanitized_ids = preg_replace("/[^0-9,.]/", "", $_REQUEST["ids"]);
         if (!empty($sanitized_ids)) {
-          $clean_kw=$this->slug_formatting($_REQUEST["kw"]);
-          set_transient('gws_' .$clean_kw , $sanitized_ids, 12 * 3600);
-        } else set_transient('gws_' . $clean_kw,'0,0', 12 * 3600);
+            $clean_kw=$this->slug_formatting($_REQUEST["kw"]);
+            set_transient('gws_' .$clean_kw , $sanitized_ids, 12 * 3600);
+        } else {
+            set_transient('gws_' . $clean_kw,'0,0', 12 * 3600);
+        }
         echo 'ok';
+        $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
         die();
     }
 
     public function force_search_reload()
+    {
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache_previous = $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
+
+        $search_query_local=$this->search_query();
+        if (!empty($search_query_local) and !empty($_GET["post_type"]) and $_GET["post_type"] == 'product') {
+            if (get_option('guaven_woos_backend') != 3) {
+                return;
+            }
+            if( isset( $_REQUEST['woo_search_ids'] ) ) {
+                $sanitized_ids = preg_replace("/[^0-9,.]/", "", $_REQUEST['woo_search_ids']);
+                if (!empty($sanitized_ids)) {
+                    $clean_kw=$this->slug_formatting($_REQUEST["s"]);
+                    set_transient('gws_' .$clean_kw , $sanitized_ids, 12 * 3600);
+                } else {
+                    set_transient('gws_' . $clean_kw,'0,0', 12 * 3600);
+                }
+                unset( $_REQUEST['woo_search_ids'] );
+                // setup url
+                $url = home_url() . "/?s=" . $_POST["s"] . "&post_type=product";
+                if( $_REQUEST["_dk"] ) {
+                    $url .= '&_dk=pc';
+                } elseif ( $_REQUEST["_dv"] ) {
+                    $url .= '&_dv=mb';
+                }
+                $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
+                wp_redirect( $url, 301 );
+                die;
+            }
+
+            $transient_name=$this->slug_formatting($search_query_local);
+            $transient_name = 'gws_' . $transient_name;
+
+            if (get_transient($transient_name) == 'notuseinthiscase') {  
+                if( isset( $_REQUEST['woo_search_ids'] ) ) {
+                    $sanitized_ids = preg_replace("/[^0-9,.]/", "", $_REQUEST['woo_search_ids']);
+                    if (!empty($sanitized_ids)) {
+                        $clean_kw=$this->slug_formatting($_REQUEST["s"]);
+                        set_transient('gws_' .$clean_kw , $sanitized_ids, 12 * 3600);
+                    } else {
+                        set_transient('gws_' . $clean_kw,'0,0', 12 * 3600);
+                    }
+                    unset( $_REQUEST['woo_search_ids'] );
+                    // setup url
+                    $url = home_url() . "/?s=" . $_REQUEST["s"] . "&post_type=product";
+                    if( $_REQUEST["_dk"] ) {
+                        $url .= '&_dk=pc';
+                    } elseif ( $_REQUEST["_dv"] ) {
+                        $url .= '&_dv=mb';
+                    }
+                    $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
+                    wp_redirect( $url, 301 );
+                    die;
+                } else { ?>
+                    <style>body {display: none !important}</style>
+                    <script>
+                    jQuery(document).ready(function(){
+                    gws_custom_submission=setInterval(function(){
+                    if (typeof(guaven_woos)!="undefined" && typeof(guaven_woos_cache_keywords)!="undefined"){
+                        clearInterval(gws_custom_submission);
+                        guaven_woos_backend_preparer_direct('<?php echo ($this->character_remover(urldecode($search_query_local))); ?>');
+                        }
+                    },10);});
+                    </script>
+                <?php }
+                
+            }
+            $_wp_using_ext_object_cache = $_wp_using_ext_object_cache_previous; 
+        }
+    }
+
+    public function force_search_reload1()
     {
         $search_query_local=$this->search_query();
         if (!empty($search_query_local) and !empty($_GET["post_type"]) and $_GET["post_type"] == 'product') {
@@ -242,7 +325,7 @@ class Guaven_woo_search_backend
           clearInterval(gws_custom_submission);
           guaven_woos_backend_preparer_direct('<?php echo ($this->character_remover(urldecode($search_query_local))); ?>');
           }
-      },200);});
+      },10);});
       </script>
       <?php
             }

@@ -33,7 +33,8 @@ class Frontend
             add_action( 'wp_head', [ $this, 'addCanonical' ] );
         }
         #/premmerce_clear
-        if ( class_exists( 'SitePress' ) ) {
+        $isGetParamUrlFormat = apply_filters( 'wpml_setting', 0, 'language_negotiation_type' ) == '3';
+        if ( class_exists( 'SitePress' ) && $isGetParamUrlFormat ) {
             add_filter( 'icl_ls_languages', [ $this, 'modifyWpmlLanguageSwitcher' ], 20 );
         }
     }

@@ -3,10 +3,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import { getCurrencyFromPriceResponse } from '@woocommerce/price-format';
-import { useEffect, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useRef } from '@wordpress/element';
 import PaymentMethodLabel from '@woocommerce/base-components/cart-checkout/payment-method-label';
 import PaymentMethodIcons from '@woocommerce/base-components/cart-checkout/payment-method-icons';
 import { getSetting } from '@woocommerce/settings';
+import deprecated from '@wordpress/deprecated';
+import LoadingMask from '@woocommerce/base-components/loading-mask';
+import type { PaymentMethodInterface } from '@woocommerce/types';
 
 /**
  * Internal dependencies
@@ -20,11 +23,12 @@ import { usePaymentMethodDataContext } from '../../providers/cart-checkout/payme
 import { useShippingDataContext } from '../../providers/cart-checkout/shipping';
 import { useCustomerDataContext } from '../../providers/cart-checkout/customer';
 import { prepareTotalItems } from './utils';
+import { useShippingData } from '../shipping/use-shipping-data';
 
 /**
  * Returns am interface to use as payment method props.
  */
-export const usePaymentMethodInterface = (): Record< string, unknown > => {
+export const usePaymentMethodInterface = (): PaymentMethodInterface => {
 	const {
 		isCalculating,
 		isComplete,
@@ -47,23 +51,25 @@ export const usePaymentMethodInterface = (): Record< string, unknown > => {
 	const {
 		shippingErrorStatus,
 		shippingErrorTypes,
-		shippingRates,
-		shippingRatesLoading,
-		selectedRates,
-		setSelectedRates,
-		isSelectingRate,
 		onShippingRateSuccess,
 		onShippingRateFail,
 		onShippingRateSelectSuccess,
 		onShippingRateSelectFail,
-		needsShipping,
 	} = useShippingDataContext();
+	const {
+		shippingRates,
+		isLoadingRates,
+		selectedRates,
+		isSelectingRate,
+		selectShippingRate,
+		needsShipping,
+	} = useShippingData();
 	const {
 		billingData,
 		shippingAddress,
 		setShippingAddress,
 	} = useCustomerDataContext();
-	const { cartTotals } = useStoreCart();
+	const { cartItems, cartFees, cartTotals, extensions } = useStoreCart();
 	const { appliedCoupons } = useStoreCartCoupons();
 	const { noticeContexts, responseTypes } = useEmitResponse();
 	const currentCartTotals = useRef(
@@ -85,19 +91,40 @@ export const usePaymentMethodInterface = (): Record< string, unknown > => {
 		};
 	}, [ cartTotals, needsShipping ] );
 
+	const deprecatedSetExpressPaymentError = useCallback(
+		( errorMessage = '' ) => {
+			deprecated(
+				'setExpressPaymentError should only be used by Express Payment Methods (using the provided onError handler).',
+				{
+					alternative: '',
+					plugin: 'woocommerce-gutenberg-products-block',
+					link:
+						'https://github.com/woocommerce/woocommerce-gutenberg-products-block/pull/4228',
+				}
+			);
+			setExpressPaymentError( errorMessage );
+		},
+		[ setExpressPaymentError ]
+	);
+
 	return {
 		activePaymentMethod,
 		billing: {
+			appliedCoupons,
 			billingData,
 			cartTotal: currentCartTotal.current,
-			currency: getCurrencyFromPriceResponse( cartTotals ),
 			cartTotalItems: currentCartTotals.current,
+			currency: getCurrencyFromPriceResponse( cartTotals ),
+			customerId,
 			displayPricesIncludingTax: getSetting(
 				'displayCartPricesIncludingTax',
 				false
 			) as boolean,
-			appliedCoupons,
-			customerId,
+		},
+		cartData: {
+			cartItems,
+			cartFees,
+			extensions,
 		},
 		checkoutStatus: {
 			isCalculating,
@@ -106,37 +133,38 @@ export const usePaymentMethodInterface = (): Record< string, unknown > => {
 			isProcessing,
 		},
 		components: {
-			ValidationInputError,
+			LoadingMask,
 			PaymentMethodIcons,
 			PaymentMethodLabel,
+			ValidationInputError,
 		},
 		emitResponse: {
 			noticeContexts,
 			responseTypes,
 		},
 		eventRegistration: {
+			onCheckoutAfterProcessingWithError,
+			onCheckoutAfterProcessingWithSuccess,
 			onCheckoutBeforeProcessing,
 			onCheckoutValidationBeforeProcessing,
-			onCheckoutAfterProcessingWithSuccess,
-			onCheckoutAfterProcessingWithError,
-			onShippingRateSuccess,
-			onShippingRateFail,
-			onShippingRateSelectSuccess,
-			onShippingRateSelectFail,
 			onPaymentProcessing,
+			onShippingRateFail,
+			onShippingRateSelectFail,
+			onShippingRateSelectSuccess,
+			onShippingRateSuccess,
 		},
 		onSubmit,
 		paymentStatus: currentStatus,
-		setExpressPaymentError,
+		setExpressPaymentError: deprecatedSetExpressPaymentError,
 		shippingData: {
-			shippingRates,
-			shippingRatesLoading,
-			selectedRates,
-			setSelectedRates,
 			isSelectingRate,
-			shippingAddress,
-			setShippingAddress,
 			needsShipping,
+			selectedRates,
+			setSelectedRates: selectShippingRate,
+			setShippingAddress,
+			shippingAddress,
+			shippingRates,
+			shippingRatesLoading: isLoadingRates,
 		},
 		shippingStatus: {
 			shippingErrorStatus,

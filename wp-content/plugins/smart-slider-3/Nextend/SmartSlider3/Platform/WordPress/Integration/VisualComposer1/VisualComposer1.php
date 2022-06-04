@@ -32,6 +32,11 @@ class VisualComposer1 {
         ));
 
         add_action('vc_load_shortcode', array(
+            Shortcode::class,
+            'shortcodeModeToNormal'
+        ), -1000000);
+
+        add_action('vc_load_shortcode', array(
             $this,
             'forceShortcodeIframe'
         ));
@@ -112,7 +117,7 @@ class VisualComposer1 {
         HelperTinyMCE::getInstance()
                      ->addForced();
 
-        return '<input name="' . $settings['param_name'] . '" class="wpb_vc_param_value wpb-textinput ' . $settings['param_name'] . ' ' . $settings['type'] . '" type="text" value="' . $value . '" style="width:100px;vertical-align:middle;"/>
+        return '<input name="' . $settings['param_name'] . '" class="wpb_vc_param_value wpb-textinput ' . $settings['param_name'] . ' ' . $settings['type'] . '" type="text" value="' . $value . '" style="width:100px;vertical-align:middle;">
     <a href="#" onclick="NextendSmartSliderSelectModal(jQuery(this).siblings(\'input\')); return false;" class="vc_general vc_ui-button vc_ui-button-default vc_ui-button-shape-rounded vc_ui-button-fw" title="Select slider">Select slider</a>';
     }
 

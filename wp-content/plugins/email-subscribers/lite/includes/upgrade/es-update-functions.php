@@ -1357,7 +1357,7 @@ function ig_es_update_467_alter_contacts_table() {
 	
 	$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}ig_contacts" );
 
-	if ( ! in_array( 'country', $cols, true ) ) {
+	if ( ! in_array( 'country_code', $cols, true ) ) {
 		$wpdb->query(
 			"ALTER TABLE {$wpdb->prefix}ig_contacts
 			ADD COLUMN `country_code` varchar(50) NULL AFTER `ip_address`"
@@ -1406,6 +1406,8 @@ function ig_es_update_468_db_version() {
 }
 /* --------------------- ES 4.6.8(End)--------------------------- */
 
+/* --------------------- ES 4.6.9(Start)--------------------------- */
+
 /**
  * Add meta column in wc_guests table
  *
@@ -1434,3 +1436,122 @@ function ig_es_update_469_db_version() {
 }
 
 /* --------------------- ES 4.6.9(End)--------------------------- */
+
+/* --------------------- ES 4.6.13(Start)--------------------------- */
+
+/**
+ * Migrate sequence list settings into campaign rules
+ *
+ * @since 4.6.13
+ */
+function ig_es_migrate_4613_sequence_list_settings_into_campaign_rules() {
+	
+	$args = array(
+		'include_types' => array(
+			'sequence_message'
+		),
+	);
+
+	$sequence_campaigns = ES()->campaigns_db->get_all_campaigns( $args );
+	if ( ! empty( $sequence_campaigns ) ) {
+		foreach ( $sequence_campaigns as $campaign ) {
+			$campaign_id = $campaign['id'];
+			$list_ids    = $campaign['list_ids'];
+			if ( ! empty( $campaign_id ) && ! empty( $list_ids ) ) {
+				$list_ids      = explode( ',', $list_ids );
+				$campaign_meta = ! empty( $campaign['meta'] ) ? maybe_unserialize( $campaign['meta'] ) : array();
+				if ( empty( $campaign_meta['list_conditions'] ) ) {
+					$list_conditions = array();	
+					$list_conditions_data = array(
+						'field'    => '_lists__in',
+						'operator' => 'is',
+						'value'    => array(),
+					);
+					foreach ( $list_ids as $index => $list_id ) {
+						$list_conditions_data['value'][] = $list_id;
+					}
+					$list_conditions[][] = $list_conditions_data;
+					$campaign_meta['list_conditions'] = $list_conditions;
+					ES()->campaigns_db->update_campaign_meta( $campaign_id, $campaign_meta );
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Update DB version
+ *
+ * @since 4.6.13
+ */
+function ig_es_update_4613_db_version() {
+	ES_Install::update_db_version( '4.6.13' );
+}
+
+/* --------------------- ES 4.6.13(End)--------------------------- */
+
+/* --------------------- ES 4.7.8(Start)--------------------------- */
+
+/**
+ * Add index to contact id column in the ig_list_contacts table
+ *
+ * We are adding index to improve the response time of the select query
+ * e.g. Imrpoves performance of select query in ES_DB_Sending_Queue::do_insert_from_contacts_table() to get contact ids
+ * 
+ * @since 4.7.8
+ */
+function ig_es_add_index_to_list_contacts_table() {
+	global $wpdb;
+
+	$index_exists = $wpdb->get_row( "SHOW INDEX FROM {$wpdb->prefix}ig_lists_contacts WHERE column_name = 'contact_id' AND key_name = 'contact_id'" );
+
+	if ( is_null( $index_exists ) ) {
+		$wpdb->query( "ALTER TABLE {$wpdb->prefix}ig_lists_contacts 
+		ADD INDEX contact_id( contact_id );" );
+	}
+}
+
+/**
+ * Update DB version
+ *
+ * @since 4.7.8
+ */
+function ig_es_update_478_db_version() {
+	ES_Install::update_db_version( '4.7.8' );
+}
+
+/* --------------------- ES 4.7.8(End)--------------------------- */
+
+/* --------------------- ES 4.7.9(Start)--------------------------- */
+
+/**
+ * Add primary key column to actions table
+ *
+ * On some web hosts which uses db optimization services like Percona,
+ * we can't insert data into a table which don't have primay key column
+ * 
+ * @since 4.7.9
+ */
+function ig_es_add_primay_key_to_actions_table() {
+	global $wpdb;
+
+	$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}ig_actions" );
+
+	if ( ! in_array( 'id', $cols, true ) ) {
+		$wpdb->query( 
+			"ALTER TABLE {$wpdb->prefix}ig_actions 
+			ADD COLUMN id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;"
+		);
+	}
+}
+
+/**
+ * Update DB version
+ *
+ * @since 4.7.9
+ */
+function ig_es_update_479_db_version() {
+	ES_Install::update_db_version( '4.7.9' );
+}
+
+/* --------------------- ES 4.7.9(End)--------------------------- */

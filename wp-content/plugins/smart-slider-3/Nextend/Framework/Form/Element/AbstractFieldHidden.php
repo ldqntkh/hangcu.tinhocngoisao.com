@@ -33,6 +33,6 @@ class AbstractFieldHidden extends AbstractField {
             'value'        => $this->getValue(),
             'type'         => $this->type,
             'autocomplete' => 'off'
-        ), false);
+        ), false, false);
     }
 }

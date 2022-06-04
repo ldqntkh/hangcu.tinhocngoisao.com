@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     die;
 }
 
-define('GUAVEN_WOO_SEARCH_SCRIPT_VERSION',2.1300);
+define('GUAVEN_WOO_SEARCH_SCRIPT_VERSION',2.1200);
 define('GUAVEN_WOO_SEARCH_PLUGIN_PATH', plugin_dir_path(__FILE__));
 if (is_multisite()){
   $gws_home_url=home_url();

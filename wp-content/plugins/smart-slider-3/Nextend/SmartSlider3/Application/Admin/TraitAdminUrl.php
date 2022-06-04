@@ -30,12 +30,20 @@ trait TraitAdminUrl {
         ));
     }
 
-    public function getUrlDashboardOrderBy($orderBy, $direction) {
-        $args = array();
+    public function getUrlPaginator() {
 
-        $args[$orderBy] = $direction;
+        return $this->createAjaxUrl(array(
+            'sliders/pagination',
+        ));
+    }
 
-        return $this->createUrl(array(
+    public function getUrlDashboardOrderBy($orderBy, $direction, $page = null, $limit = null) {
+        $args              = array();
+        $args[$orderBy]    = $direction;
+        $args['pageIndex'] = $page;
+        $args['limit']     = $limit;
+
+        return $this->createAjaxUrl(array(
             'sliders/orderby',
             $args
         ), true);
@@ -521,7 +529,17 @@ trait TraitAdminUrl {
     public function getUrlSettingsClearCache() {
         return $this->createUrl(array(
             'settings/clearcache',
-        ), true);
+        ));
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getAjaxUrlSettingsClearCache() {
+        return $this->createAjaxUrl(array(
+            'settings/clearcache',
+        ));
     }
 
     /**

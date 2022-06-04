@@ -42,6 +42,7 @@ foreach ($generatorGroups as $generatorGroup) {
             $blockGeneratorBox->setLabel($generatorGroup->getLabel());
             $blockGeneratorBox->setButtonLabel(n2_('Choose'));
             $blockGeneratorBox->setDescription($generatorGroup->getDescription());
+            $blockGeneratorBox->setDocsLink($generatorGroup->getDocsLink());
 
             if ($generatorGroup->hasConfiguration()) {
                 $url = $this->getUrlGeneratorCheckConfiguration($generatorGroup->getName(), $this->getSliderID(), $this->groupID);

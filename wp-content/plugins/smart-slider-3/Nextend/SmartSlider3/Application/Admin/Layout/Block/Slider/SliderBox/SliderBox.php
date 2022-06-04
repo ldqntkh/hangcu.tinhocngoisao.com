@@ -12,9 +12,18 @@ use Nextend\Framework\Sanitize;
 <div class="n2_slider_manager__box n2_slider_box<?php echo $this->isGroup() ? ' n2_slider_box--group' : ' n2_slider_box--slider'; ?>"
      data-group="<?php echo $this->isGroup() ? '1' : '0'; ?>"
      data-title="<?php echo Sanitize::esc_attr($this->getSliderTitle()); ?>"
-     data-sliderid="<?php echo $this->getSliderID(); ?>">
+     data-sliderid="<?php echo $this->getSliderID(); ?>"
+     data-ordering="<?php echo $this->getOrdering(); ?>">
 
-    <div class="n2_slider_box__content" style="background-image: URL('<?php echo Sanitize::esc_attr($this->getThumbnail()); ?>');">
+    <?php
+    $thumbnailUrl   = Sanitize::esc_attr($this->getThumbnail());
+    $thumbnailStyle = '';
+    if (!empty($thumbnailUrl)) {
+        $thumbnailStyle = "background-image: url('" . $thumbnailUrl . "');";
+    }
+    ?>
+
+    <div class="n2_slider_box__content" style="<?php echo $thumbnailStyle; ?>">
         <?php
         if ($this->isThumbnailEmpty()):
             $icon = "ssi_64 ssi_64--image";
@@ -103,7 +112,7 @@ use Nextend\Framework\Sanitize;
     </div>
     <a class="n2_slide_box__screen_reader" href="<?php echo $this->getSimpleEditUrl(); ?>">
         <?php
-        echo n2_('Edit slider') . ': ' . Sanitize::esc_html($this->getSliderTitle());
+        echo n2_('Edit Slider') . ': ' . Sanitize::esc_html($this->getSliderTitle());
         ?>
     </a>
 </div>

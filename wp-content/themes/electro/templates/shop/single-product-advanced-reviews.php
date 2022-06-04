@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! comments_open() ) {
 	return;
 }
-var_dump(comments_open());
+
 ?>
 <div id="reviews" class="electro-advanced-reviews">
 	<div class="advanced-review row">

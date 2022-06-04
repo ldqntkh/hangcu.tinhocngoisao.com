@@ -33,7 +33,7 @@ class NavbarComponent extends React.Component {
 
             var data = new FormData();
             
-            data.append('action', 'gvn_logout_account');
+            data.append('action', 'hc_logout_account');
             let response = await axios.post(
                 hangcu_home_ajax,
                 data

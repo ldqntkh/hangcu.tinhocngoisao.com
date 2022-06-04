@@ -1,6 +1,6 @@
 'use strict';
 const $ = jQuery;
-const gvn_home_ajax= '/wp-admin/admin-ajax.php';
+const hc_home_ajax= '/wp-admin/admin-ajax.php';
 var productDetails = {
     xhr: null,
     init: function () {
@@ -94,7 +94,7 @@ var productDetails = {
         if( $('#reviews').length > 0 ) {
             $.ajax({
                 type: "post",
-                url: gvn_home_ajax,
+                url: hc_home_ajax,
                 data: {
                     action: "load_template_review_product",
                     product_id
@@ -122,7 +122,7 @@ var productDetails = {
     //     if( $('#reviews').length > 0 ) {
     //         $.ajax({
     //             type: "post",
-    //             url: gvn_home_ajax,
+    //             url: hc_home_ajax,
     //             data: {
     //                 action: "load_review_form",
     //                 product_id
@@ -146,7 +146,7 @@ var productDetails = {
     //     if( $('#reviews').length > 0 ) {
     //         $.ajax({
     //             type: "post",
-    //             url: gvn_home_ajax,
+    //             url: hc_home_ajax,
     //             data: {
     //                 action: "load_review_items",
     //                 product_id
@@ -179,7 +179,7 @@ var productDetails = {
                     
                     $.ajax({
                         type: "post",
-                        url: gvn_home_ajax,
+                        url: hc_home_ajax,
                         data: {
                             action: "load_review_items",
                             product_id,
@@ -668,10 +668,10 @@ var productDetails = {
             }
             productDetails.xhr = $.ajax({
                 type: 'POST',
-                url: gvn_home_ajax,
+                url: hc_home_ajax,
                 dataType: 'json',
                 data: {
-                    action: 'gvn_add_product_review',
+                    action: 'hc_add_product_review',
                     product_id: $('#product-review-id').val(),
                     review: $('form#commentform textarea#comment').val().trim(),
                     rating: e

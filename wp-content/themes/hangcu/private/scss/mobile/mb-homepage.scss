@@ -189,7 +189,7 @@ body.body-mobile {
                         justify-content: center;
                         align-items: center;
                         left: 14px;
-                        .gvn-left, .gvn-right {
+                        .hc-left, .hc-right {
                             width: 15px;
                             height: 15px;
                             border-top: 2px solid $arrow-border-color;
@@ -198,7 +198,7 @@ body.body-mobile {
                             margin-left: 7.5px;
                             
                         }
-                        .gvn-right {
+                        .hc-right {
                             margin-right: 7.5px;
                             margin-left: initial;
                             transform: rotate( 135deg );

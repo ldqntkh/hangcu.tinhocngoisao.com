@@ -370,8 +370,8 @@ const Share = {
     },
   
     initCarouselHeader: function() {
-      if( jQuery('#gvn-banner-header').length > 0 ) {
-        let banner = jQuery('#gvn-banner-header');
+      if( jQuery('#hc-banner-header').length > 0 ) {
+        let banner = jQuery('#hc-banner-header');
         // jQuery( '#page' ).css({
         //   "padding-top": "50px"
         // });
@@ -403,7 +403,7 @@ const Share = {
             dots: false,
             nav: true,
             scrollPerPage: true,
-            navText:["<i class='gvn-left'></i>","<i class='gvn-right'></i>"],
+            navText:["<i class='hc-left'></i>","<i class='hc-right'></i>"],
             responsive : {
               600 : {
                 items: 3
@@ -441,7 +441,7 @@ const Share = {
         // }, 0),
         
         let top = 0;
-        if( $('#gvn-banner-header') ) {
+        if( $('#hc-banner-header') ) {
           top += 60;
         }
         top += $(this).closest(".off-canvas-navbar-toggle-buttons").position().top + $('.header-logo-area').innerHeight();

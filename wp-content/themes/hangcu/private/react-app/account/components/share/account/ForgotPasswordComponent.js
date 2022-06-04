@@ -82,7 +82,7 @@ class ForgotPasswordComponent extends React.Component {
                             error_msg &&
                             <p className="error">{error_msg}</p>
                         }
-                        <div style={{marginTop: 20}}>
+                        <div style={{marginTop: 20, textAlign: 'center'}}>
                             <button onClick={this._getForgotPassword} type="button" className="btn-login">Lấy lại mật khẩu</button>
                         </div>
                     </form>

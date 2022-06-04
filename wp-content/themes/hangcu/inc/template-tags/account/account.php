@@ -203,9 +203,11 @@ if( !function_exists('customer_register_account') ) {
             $msg = __('Tên hiển thị không được để trống', 'hangcu');
         } else if( empty( $data_user['phonenumber'] ) ) {
             $msg = __('Số điện thoại không được để trống', 'hangcu');
-        } else if( empty( $data_user['verify_phone'] ) ) {
-            $msg = __('Vui lòng nhập mã OTP', 'hangcu');
-        } else if( empty( $data_user['email'] ) ) {
+        } 
+        // else if( empty( $data_user['verify_phone'] ) ) {
+        //     $msg = __('Vui lòng nhập mã OTP', 'hangcu');
+        // } 
+        else if( empty( $data_user['email'] ) ) {
             $msg = __('Email không được để trống', 'hangcu');
         } else if( empty( $data_user['password'] ) ) {
             $msg = __('Mật khẩu không được để trống', 'hangcu');
@@ -218,80 +220,54 @@ if( !function_exists('customer_register_account') ) {
             die;
         }
 
-        if (validPhoneNumberWithOtpCode(trim($data_user['phonenumber']), trim($data_user['verify_phone']))) {
-            $params = array(
-                'meta_key'     => 'customer_mobile_phone',
-                'meta_value'   => trim($data_user['phonenumber'])
-            );
-    
-            $user = get_users($params);
-            if ($user && !empty($user)) {
-                wp_send_json_error([
-                    "errMsg" => 'Số điện thoại đã tồn tại'
-                ]);
-                die;
-            }
-            $user = get_user_by( 'email', trim($data_user['email']) );
-            if ($user && !empty($user)) {
-                wp_send_json_error([
-                    "errMsg" => 'Email đã tồn tại'
-                ]);
-                die;
-            }
+        $params = array(
+            'meta_key'     => 'customer_mobile_phone',
+            'meta_value'   => trim($data_user['phonenumber'])
+        );
 
-            $user_id = wp_insert_user([
-                "user_login" => trim($data_user['phonenumber']),
-                "user_nicename" => trim($data_user['fullname']),
-                "display_name" => trim($data_user['fullname']),
-                "user_email" => trim($data_user['email']),
-                "user_pass" => trim($data_user['password'])
-            ]);
-            
-            if (is_wp_error($user_id)) {
-                wp_send_json_error([
-                    "success" => false,
-                    "errMsg"   => "Có lỗi khi tạo tài khoản. Vui lòng thử lại"
-                ]);
-                die;
-            } else {
-                update_field( 'customer_mobile_phone', $data_user['phonenumber'], 'user_'.$user_id );
-                $login = wp_signon([
-                    "user_login" => $data_user['phonenumber'],
-                    "user_password" => $data_user['password'],
-                    "remember" => true
-                ]);
-                
-                wp_send_json_success([
-                    "success" => true,
-                    "user" => $login
-                ]);
-                die;
-                die;
-            }
-        } else {
-            $errors = __('Mã xác thực không hợp lệ', 'hangcu');
+        $user = get_users($params);
+        if ($user && !empty($user)) {
             wp_send_json_error([
-                "errMsg" => $errors
+                "errMsg" => 'Số điện thoại đã tồn tại'
+            ]);
+            die;
+        }
+        $user = get_user_by( 'email', trim($data_user['email']) );
+        if ($user && !empty($user)) {
+            wp_send_json_error([
+                "errMsg" => 'Email đã tồn tại'
             ]);
             die;
         }
 
-        // login account
-        // $login = wp_signon([
-        //     "user_login" => $data_user['username'],
-        //     "user_password" => $data_user['password'],
-        //     "remember" => true
-        // ]);
-        // if (is_wp_error($login)) {
-        //     wp_send_json_error([
-        //         "success" => false,
-        //         "errMsg"   => "Tài khoản hoặc mật khẩu không chính xác"
-        //     ]);
-        //     die;
-        // } else {
-        //     wp_send_json_success([]);
-        //     die;
-        // }
+        $user_id = wp_insert_user([
+            "user_login" => trim($data_user['phonenumber']),
+            "user_nicename" => trim($data_user['fullname']),
+            "display_name" => trim($data_user['fullname']),
+            "user_email" => trim($data_user['email']),
+            "user_pass" => trim($data_user['password'])
+        ]);
+        
+        if (is_wp_error($user_id)) {
+            wp_send_json_error([
+                "success" => false,
+                "errMsg"   => "Có lỗi khi tạo tài khoản. Vui lòng thử lại"
+            ]);
+            die;
+        } else {
+            update_field( 'customer_mobile_phone', $data_user['phonenumber'], 'user_'.$user_id );
+            $login = wp_signon([
+                "user_login" => $data_user['phonenumber'],
+                "user_password" => $data_user['password'],
+                "remember" => true
+            ]);
+            
+            wp_send_json_success([
+                "success" => true,
+                "user" => $login
+            ]);
+            die;
+        }
     }
 }
 

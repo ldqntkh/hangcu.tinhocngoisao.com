@@ -64,7 +64,7 @@ class ListAddressComponent extends React.Component {
         try {
             document.body.classList.add('hangcu_loading');
             var data = new FormData();
-            data.append('action', 'gvn_get_list_address');
+            data.append('action', 'hc_get_list_address');
 
             let response = await axios.post(
                 hangcu_home_ajax,
@@ -418,7 +418,7 @@ class ListAddressComponent extends React.Component {
             document.body.classList.add('hangcu_loading');
             let full_address = `${addNewObject.billing_address_1}, ${addNewObject.billing_address_2_name}, ${addNewObject.billing_city_name}, ${addNewObject.billing_state_name}`;
             var data = new FormData();
-            data.append('action', 'gvn_add_new_address');
+            data.append('action', 'hc_add_new_address');
             data.append('add_new_saved_address_field', true);
             data.append('billing_last_name', addNewObject.billing_last_name);
             data.append('billing_phone', addNewObject.billing_phone);
@@ -705,7 +705,7 @@ class ListAddressComponent extends React.Component {
             document.body.classList.add('hangcu_loading');
             let full_address = `${editObject.billing_address_1}, ${editObject.billing_address_2_name}, ${editObject.billing_city_name}, ${editObject.billing_state_name}`;
             var data = new FormData();
-            data.append('action', 'gvn_update_address');
+            data.append('action', 'hc_update_address');
             data.append('key_edit_address', editObject.key_edit_address);
             data.append('add_new_saved_address_field', true);
             data.append('billing_last_name', editObject.billing_last_name);
@@ -801,7 +801,7 @@ class ListAddressComponent extends React.Component {
             document.body.classList.add('hangcu_loading');
             
             var data = new FormData();
-            data.append('action', 'gvn_delete_address');
+            data.append('action', 'hc_delete_address');
             data.append('delete-address', this.state.deleteKey);
 
             let response = await axios.post(

@@ -49,7 +49,7 @@ class ListOrderComponent extends React.Component {
             document.body.classList.add('hangcu_loading');
 
             var data = new FormData();
-            data.append('action', 'gvn_get_list_orders');
+            data.append('action', 'hc_get_list_orders');
             data.append('page', page);
 
             let response = await axios.post(
@@ -81,7 +81,7 @@ class ListOrderComponent extends React.Component {
             document.body.classList.add('hangcu_loading');
 
             var data = new FormData();
-            data.append('action', 'gvn_re_buy_order');
+            data.append('action', 'hc_re_buy_order');
             data.append('order_id', order_id);
 
             let response = await axios.post(

@@ -1,5 +1,5 @@
 body.body-desktop {
-    .gvn-custom-post {
+    .hc-custom-post {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
@@ -12,7 +12,7 @@ body.body-desktop {
 }
 
 
-.gvn-post-sidebar {
+.hc-post-sidebar {
     width: 322px;
     background: #FFFFFF;
     border-radius: 4px;
@@ -50,7 +50,7 @@ body.body-desktop {
         }
     }
 }
-.gvn-post-content {
+.hc-post-content {
     width: calc(100% - 332px);
     margin-left: 10px;
     background: #FFFFFF;
@@ -66,7 +66,7 @@ body.body-mobile.post-template-custom-post-template {
             padding: 0;
         }
     }
-    .gvn-custom-post {
+    .hc-custom-post {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -75,12 +75,12 @@ body.body-mobile.post-template-custom-post-template {
         margin-top: 0;
         margin-bottom: 0;
         width: 100%;
-        .gvn-post-sidebar {
+        .hc-post-sidebar {
             width: 100%;
             margin-top: 10px;
             border-radius: 0;
         }
-        .gvn-post-content {
+        .hc-post-content {
             width: 100%;
             margin-left: 0px;
             border-radius: 0;
@@ -89,7 +89,7 @@ body.body-mobile.post-template-custom-post-template {
 }
 
 
-.gvn-custom-post .gvn-post-content {
+.hc-custom-post .hc-post-content {
     h1 {
         font-size: 26px!important;
         font-weight: bold!important;

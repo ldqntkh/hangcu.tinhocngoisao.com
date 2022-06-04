@@ -90,7 +90,7 @@ class AccountInfoComponent extends React.Component {
 
             var data = new FormData();
             
-            data.append('action', 'gvn_update_account_info');
+            data.append('action', 'hc_update_account_info');
             data.append('display_name', display_name);
             if( is_change_pass ) {
                 data.append('current_pass', current_pass);

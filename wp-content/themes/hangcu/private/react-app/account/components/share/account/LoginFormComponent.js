@@ -273,85 +273,11 @@ class LoginFormComponent extends React.Component {
                         error &&
                         <p className="error">{error}</p>
                     }
-                    <div style={{marginTop: 20}}>
+                    <div style={{marginTop: 20, textAlign: 'center'}}>
                         <button onClick={this._loginAccount} type="button" className="btn-login">Đăng nhập</button>
                     </div>
                 </form>
-                <div className="or-social">
-                    <p>Hoặc tiếp tục bằng</p>
-                    <div>
-                        {/* <a href="#" onClick={this._checkLoginFacebook}
-                            rel="nofollow" aria-label="Đăng nhập với <b>Facebook</b>" 
-                            data-plugin="nsl" data-action="connect" 
-                            data-provider="facebook" data-popupwidth="475" 
-                            data-popupheight="175">
-                                <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/social_login/facebook.png" />
-                                <span>Facebook</span>
-                        </a> */}
-                        {
-                            !showLoginOldFb ?
-                            typeof facebookAppId != 'undefined' &&
-                            <aside id="login-facebook" style={{marginRight: 5, width: 60}}>
-                                <SocialButton
-                                    provider="facebook"
-                                    appId={facebookAppId}
-                                    onLoginSuccess={this.props.handleSocialLogin}
-                                    onLoginFailure={this.handleSocialFBLoginFailure}>
-                                    <a href="#"
-                                        rel="nofollow" aria-label="Đăng nhập với <b>Facebook</b>" 
-                                        data-plugin="nsl" data-action="connect" 
-                                        data-provider="facebook" data-popupwidth="475" 
-                                        data-popupheight="175">
-                                            <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/social_login/facebook.png" />
-                                            {/* <span>Facebook</span> */}
-                                    </a>
-                                </SocialButton>
-                            </aside>
-                            :
-                            <a href={`${login_account_url}?loginSocial=facebook&amp;redirect=${redirect_url}`} 
-                                rel="nofollow" aria-label="Đăng nhập với <b>Facebook</b>" 
-                                data-plugin="nsl" data-action="connect" 
-                                data-provider="facebook" data-popupwidth="475" 
-                                data-popupheight="175">
-                                    <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/social_login/facebook.png" />
-                                    {/* <span>Facebook</span> */}
-                            </a>
-                        }
-                        {
-                            !showLoginOldGg ?
-                            typeof googleAppId != 'undefined' &&
-                            <aside id="login-google" style={{marginLeft: 5, width: 60}}>
-                                <SocialButton
-                                    provider='google'
-                                    appId={googleAppId}
-                                    onLoginSuccess={this.props.handleSocialLogin}
-                                    onLoginFailure={this.handleSocialGGLoginFailure}
-                                    onLogoutSuccess={()=> console.log('gg login fail')}
-                                    onLogoutFailure={()=> console.log('gg login fail')}
-                                    scope={'https://www.googleapis.com/auth/userinfo.profile'}
-                                >
-                                        <a href={`#`}  rel="nofollow" 
-                                                aria-label="Đăng nhập với <b>Google</b>" 
-                                                data-plugin="nsl" data-action="connect" 
-                                                data-provider="google" data-popupwidth="600" data-popupheight="600">
-                                            <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/social_login/google.png" />
-                                            {/* <span>Google</span>         */}
-                                        </a>
-                                </SocialButton>
-                            </aside>
-                            :
-                            <a href={`${login_account_url}?loginSocial=google&amp;redirect=${redirect_url}`}  rel="nofollow" 
-                                    aria-label="Đăng nhập với <b>Google</b>" 
-                                    data-plugin="nsl" data-action="connect" 
-                                    data-provider="google" data-popupwidth="600" data-popupheight="600">
-                                <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/social_login/google.png" />
-                                {/* <span>Google</span>         */}
-                            </a>
-
-                        }
-                        
-                    </div>
-                </div>
+                
             </React.Fragment>
         )
     }

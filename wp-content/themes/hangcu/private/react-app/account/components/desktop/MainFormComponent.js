@@ -205,9 +205,6 @@ class MainFormComponent extends React.Component {
                                         setOtpForm={this.setOtpForm}/>
                                 }
                             </div>
-                            <div className="icon-control">
-                                <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/gbot-form-account.png"/>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -241,9 +238,6 @@ class MainFormComponent extends React.Component {
                                     <p><span onClick={()=> this._showFormForgotPassword(false)}>Quay lại</span></p> 
                                 </div>
                                 <ForgotPasswordComponent />
-                            </div>
-                            <div className="icon-control">
-                                <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/gbot-form-account.png"/>
                             </div>
                         </div>
                     </div>

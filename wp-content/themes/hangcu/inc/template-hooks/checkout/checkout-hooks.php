@@ -1,7 +1,7 @@
 <?php
 add_action( 'hangcu_custom_template_checkout_payment', 'hangcu_show_order_notes', 10 );
 add_action( 'woocommerce_checkout_order_review', 'woocommerce_checkout_coupon_form_js', 10 );
-add_action( 'hangcu_custom_template_checkout_payment', 'hangcu_vat_form', 10 );
+// add_action( 'hangcu_custom_template_checkout_payment', 'hangcu_vat_form', 10 );
 add_action('woocommerce_checkout_order_processed', 'hangcu_save_vat_info',20);
 add_action('woocommerce_checkout_order_processed', 'hangcu_save_tracking_at',20);
 add_action('woocommerce_checkout_order_processed', 'hangcu_save_depot_info',20);

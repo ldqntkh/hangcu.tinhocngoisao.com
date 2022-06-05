@@ -29,7 +29,8 @@
         }
     }
     header {
-        background-color: $background_color_header;
+        // background-color: $background_color_header;
+        background-color: #d3d3d361;
         .electro-navbar-inner {
             margin: 0;
         }
@@ -40,11 +41,12 @@
                 padding-bottom: 10px;
                 @media screen and (min-width: 768px) {
                     padding-bottom: 0px;
+                    flex-wrap: nowrap;
                 }
                 .header-logo-area {
                     min-width: 220px;
                     // width: 270px;
-                    height: 84px;
+                    // height: 84px;
                     padding: 0;
                     flex: initial;
                     // width: 100%;
@@ -71,7 +73,7 @@
                     // margin-left: 25px;
                     padding: 0;
                     max-width: 100%;
-                    min-width: 320px;
+                    // min-width: 320px;
                     width: 100%;
                     @media screen and (min-width: 768px) {
                         margin-left: 25px;
@@ -82,19 +84,30 @@
 
                     }
                     .input-search-field {
+                        position: relative;
                         input {
-                            background-color: $bg_gray_color;
+                            // background-color: $bg_gray_color;
                             border-radius: 0;
                             border-top-left-radius: $border-radius!important;
                             border-bottom-left-radius: $border-radius!important;
                             height: 40px;
                             box-sizing: border-box;
-                            padding-left: 15px;
+                            padding-left: 40px;
+                            border: 1px solid #e22128;
                         }
                         div.tt-menu {
                             width: 100%;
                             // padding: 0;
                             margin: 0;
+                        }
+                        i.ec-search {
+                            position: absolute;
+                            z-index: 10;
+                            color: red;
+                            font-weight: bold;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            left: 10px;
                         }
                     }
                     
@@ -129,9 +142,13 @@
 
                 .header-icons {
                     width: 150px;
-                    display: flex;
+                    // display: flex;
+                    display: none;
                     justify-content: flex-end;
                     align-items: center;
+                    @media screen and (min-width: 768px) {
+                        display: flex;
+                    }
                     @media screen and (min-width: 1200px) {
                         width: 350px;
                     }
@@ -378,7 +395,9 @@
                 }
             }
         }
-        
+        .navbar-toggle-hamburger {
+            display: none;
+        }
     }
 
     .electro-navbar {

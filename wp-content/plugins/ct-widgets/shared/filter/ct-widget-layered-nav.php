@@ -576,16 +576,11 @@ if ( class_exists( 'WC_Widget' ) ) {
             // List display.
             ?>
             <ul class="woocommerce-widget-layered-nav-list <?= $display_column ?>" data-height="<?= $data_height ?>" <?php 
-                if( $data_height > 0 ) {
-                    echo 'style=" height: '.$data_height.'px; overflow: hidden; margin-bottom: 10px "';
-                }
+                // if( $data_height > 0 ) {
+                //     echo 'style=" height: '.$data_height.'px; overflow: hidden; margin-bottom: 10px "';
+                // }
             ?>>
             <?php echo $output;
-            if( $data_height > 0 ) : 
-                $wg_title = strtolower($wg_title);
-            ?>
-                <a class="viewmore-filter" href="#" data-title="<?= __("Xem thêm ".$wg_title." khác", 'hangcu') ?>" data-height="<?= $data_height ?>"><?= "Xem thêm ".$wg_title." khác" ?><i class="icon-down"></i></a>
-            <?php endif;
             echo '</ul>';
 
             return $found;

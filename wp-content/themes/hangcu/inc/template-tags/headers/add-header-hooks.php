@@ -23,7 +23,7 @@ if( wp_is_mobile() ) {
 
 
 add_action( 'electro_header_mb_v2', 'electro_header_mb_v2_row_1', 20 );
-add_action( 'electro_header_mb_v2', 'electro_header_mb_v2_row_2', 20 );
+// add_action( 'electro_header_mb_v2', 'electro_header_mb_v2_row_2', 20 );
 add_action( 'electro_header_mb_v2_row_1', 'hc_handle_nav_menu', 20 );
 // add_action( 'electro_header_mb_v2_row_1',  'electro_off_canvas_nav',   20 );
 add_action( 'electro_header_mb_v2_row_1', 'electro_handheld_header_logo', 20 );

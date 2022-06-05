@@ -34,7 +34,7 @@
      */
     // do_action( 'electro_before_content' ); ?>
 
-    <div id="content" class="site-content" tabindex="-1" <?php if ( is_front_page() || is_home() ) echo ' style="margin-top: 100px" ' ?>>
+    <div id="content" class="site-content" tabindex="-1" <?php if ( is_front_page() || is_home() ) echo ' style="margin-top: 50px" ' ?>>
         <div class="container">
         <?php
         /**

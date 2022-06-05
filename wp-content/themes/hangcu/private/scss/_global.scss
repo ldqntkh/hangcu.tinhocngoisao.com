@@ -22,7 +22,14 @@ body {
         background: rgba(0,0,0,.7);
     }
 }
-body.body-desktop, body.body-mobile{ background-color: $background_color!important; }
+body.body-desktop, body.body-mobile{ 
+    background-color: #d3d3d361!important; 
+    #content >.container {
+        // border: 1px solid lightgray;
+        // border-top: 0;
+    }
+}
+
 body.body-desktop {
     
     .container {
@@ -92,20 +99,24 @@ a {
 }
 
 .container-breadcrumb {
-    background-color: $breadcrumb_bg_color;
+    // background-color: $breadcrumb_bg_color;
+    background-color: #e22128;
     .woocommerce-breadcrumb {
         margin: 0;
         height: 50px;
         line-height: 50px;
-        color: $breadcrumb_color;
+        // color: $breadcrumb_color;
         font-size: 13px;
+        color: white;
         a {
-            color: $breadcrumb_color;
+            // color: $breadcrumb_color;
+            color: white;
         }
         span.delimiter+a {
             padding: 0;
             background-color: transparent;
             border-radius: 0;
+            color: white;
         }
     }
 }

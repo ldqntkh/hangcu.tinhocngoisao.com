@@ -280,13 +280,13 @@
                 $url = add_query_arg( array(
                     's' => $_GET['s'],
                     'post_type' => $_GET['post_type'],
-                    '_dv' => 'mb'
+                    '_type' => 'mb'
                 ), home_url() );
             } else {
                 $url = add_query_arg( array(
                     's' => $_GET['s'],
                     'post_type' => $_GET['post_type'],
-                    '_dk' => 'pc'
+                    '_type' => 'pc'
                 ), home_url() );
             }
         } else {

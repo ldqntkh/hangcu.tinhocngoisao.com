@@ -16,36 +16,36 @@
                 left: 37px;
                 transform: translateY(-50%);
             }
-            &.payment_method_cod {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-cod.svg) center no-repeat;
-                }
-            }
-            &.payment_method_zlp {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-zalo-pay.svg) center no-repeat;
-                }
-            }
-            &.payment_method_zlp_atm {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-atm.svg) center no-repeat;
-                }
-            }
-            &.payment_method_zlp_cc {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-credit.svg) center no-repeat;
-                }
-            }
-            &.payment_method_sub_alepay {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/alepay.png) center no-repeat;
-                }
-            }
-            &.payment_method_hangcu_momo_payment {
-                &::before {
-                    background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-mo-mo.svg) center no-repeat;
-                }
-            }
+            // &.payment_method_cod {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-cod.svg) center no-repeat;
+            //     }
+            // }
+            // &.payment_method_zlp {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-zalo-pay.svg) center no-repeat;
+            //     }
+            // }
+            // &.payment_method_zlp_atm {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-atm.svg) center no-repeat;
+            //     }
+            // }
+            // &.payment_method_zlp_cc {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-credit.svg) center no-repeat;
+            //     }
+            // }
+            // &.payment_method_sub_alepay {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/alepay.png) center no-repeat;
+            //     }
+            // }
+            // &.payment_method_hangcu_momo_payment {
+            //     &::before {
+            //         background: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/payments/icon-payment-method-mo-mo.svg) center no-repeat;
+            //     }
+            // }
             &.wc_payment_method {
                 input {
                     display: none;
@@ -65,14 +65,15 @@
     
                 label {
                     position: relative;
-                    padding-left: 50px;
+                    // padding-left: 50px;
                     // @include truncate-text(1);
                     @media (max-width: 767px) {
                         display: block;
                     }
     
                     &:before {
-                        margin-left: -76px;
+                        // margin-left: -76px;
+                        margin-left: -26px;
                         width: 22px;
                         height: 22px;
                         position: absolute;

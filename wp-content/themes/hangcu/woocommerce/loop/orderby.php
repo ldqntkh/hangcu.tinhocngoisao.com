@@ -38,9 +38,9 @@ unset($catalog_orderby_options['relevance']);
 		
 		<?php
 			if( wp_is_mobile() ) {
-				echo '<input type="hidden" name="_dv" value="mb" />';
+				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
-				echo '<input type="hidden" name="_dk" value="pc" />';
+				echo '<input type="hidden" name="_type" value="pc" />';
 			}
 		?>
 		<?php wc_query_string_form_fields( null, array( 'orderby', 'submit', 'paged', 'product-page' ) ); ?>

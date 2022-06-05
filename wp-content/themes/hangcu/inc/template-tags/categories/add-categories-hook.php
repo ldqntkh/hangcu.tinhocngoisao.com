@@ -3,7 +3,7 @@
 /**
  * Rename "home" in breadcrumb
  */
-add_filter( 'woocommerce_get_breadcrumb', 'wcc_change_breadcrumb_home_text' );
+// add_filter( 'woocommerce_get_breadcrumb', 'wcc_change_breadcrumb_home_text' );
 add_filter( 'woocommerce_page_title', 'filter_woocommerce_page_title', 10, 1 );
 add_action( 'woocommerce_no_products_found', 'hangcu_no_products_found' );
 

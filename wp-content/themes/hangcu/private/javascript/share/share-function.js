@@ -449,7 +449,7 @@ const Share = {
         var topBS = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
         top = top - topBS;
         $('#desktop-small-menu').css({
-            top: top,
+            top: 0,
             left: 0,
             right: 0,
             height: 'auto',

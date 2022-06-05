@@ -45,7 +45,7 @@ body.body-mobile {
                 background-color: #ED1C24;
                 // transition: "all .5s";
                 .navbar-search {
-                    display: none;
+                    // display: none;
                 }
                 
                 .off-canvas-navbar-toggle-buttons {
@@ -125,7 +125,7 @@ body.body-mobile {
                     width: 100%;
                     z-index: 1000;
                     .header-logo {
-                        display: none;
+                        // display: none;
                     }
                     .navbar-search {
                         display: initial;
@@ -144,19 +144,30 @@ body.body-mobile {
             .input-group {
                 display: flex;
                 .input-search-field {
+                    position: relative;
                     input {
-                        background-color: $white;
+                        // background-color: $white;
                         border-radius: 0;
                         border-top-left-radius: $border-radius!important;
                         border-bottom-left-radius: $border-radius!important;
                         height: 40px;
                         box-sizing: border-box;
-                        padding-left: 15px;
+                        padding-left: 35px;
+                        border: 1px solid #e22128;
                     }
                     div.tt-menu {
                         width: 100%;
                         // padding: 0;
                         margin: 0;
+                    }
+                    i.ec-search {
+                        position: absolute;
+                        z-index: 10;
+                        color: red;
+                        font-weight: bold;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        left: 10px;
                     }
                 }
                 .input-group-btn {

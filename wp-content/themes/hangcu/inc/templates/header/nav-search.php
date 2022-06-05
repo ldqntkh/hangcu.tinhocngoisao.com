@@ -27,12 +27,13 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 	<div class="input-group">
     	<div class="input-search-field">
     		<input type="text" id="search" class="form-control search-field product-search-field" dir="<?php echo esc_attr( $dir_value ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" placeholder="<?= __('Bạn tìm gì…', 'hangcu') ?>" autocomplete="off" />
-    	</div>
+			<i class="ec ec-search"></i>	
+		</div>
 		<?php
 			if( wp_is_mobile() ) {
-				echo '<input type="hidden" name="_dv" value="mb" />';
+				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
-				echo '<input type="hidden" name="_dk" value="pc" />';
+				echo '<input type="hidden" name="_type" value="pc" />';
 			}
 			echo '<input type="hidden" id="woo_search_ids" name="woo_search_ids" value="" />';
 		?>
@@ -53,10 +54,6 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 			?>
 		</div>
 		<?php endif; ?>
-		<div class="input-group-btn">
-			<input type="hidden" id="search-param" name="post_type" value="product" />
-			<button type="submit" class="btn btn-secondary"><i class="ec ec-search"></i><?php if( !wp_is_mobile() ) {echo '<span>' . __('Tìm kiếm', 'hangcu') . '</span>';} ?></span></button>
-		</div>
 	</div>
 	<?php do_action( 'wpml_add_language_form_field' ); ?>
 </form>
@@ -67,9 +64,9 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 		<input type="text" id="search" class="search-field form-control" dir="<?php echo esc_attr( $dir_value ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" placeholder="<?php echo esc_attr( esc_html__( 'Search', 'electro' ) ); ?>" autocomplete="off" />
 		<?php
 			if( wp_is_mobile() ) {
-				echo '<input type="hidden" name="_dv" value="mb" />';
+				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
-				echo '<input type="hidden" name="_dk" value="pc" />';
+				echo '<input type="hidden" name="_type" value="pc" />';
 			}
 			echo '<input type="hidden" name="woo_search_ids" id="woo_search_ids" value="" />';
 		?>

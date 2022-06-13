@@ -71,7 +71,7 @@ class MainFormComponent extends React.Component {
         if( !flag ) {
             window.has_fragment_refresh = jQuery.ajax(window.fragment_refresh);
         }
-        
+
         let user_data = sessionStorage.getItem('user');
         if( user_data == null ) {
             try {
@@ -81,10 +81,10 @@ class MainFormComponent extends React.Component {
                     hangcu_home_ajax,
                     data
                 );
-                
+
                 let responseData = response.data.data || response.data;
                 if( responseData.success ) {
-                    
+
                     let dataUser = responseData.user;
                     if( !dataUser ) {
                         // hầu như ko xảy ra
@@ -101,7 +101,7 @@ class MainFormComponent extends React.Component {
                 document.body.classList.remove('hangcu_loading');
             }
         }
-        
+
     }
 
     setActionShowPopupOutSide = (url)=> {
@@ -130,7 +130,7 @@ class MainFormComponent extends React.Component {
             } else if(location.href.indexOf( 'redirect_to=' ) > 0) {
                 let url = location.href.split('redirect_to=');
                 url = url[1];
-                
+
                 window.location.href = url.replace('#', '') + '/?t=' + new Date().getTime();
             }
         } else if(user === false) {
@@ -140,7 +140,7 @@ class MainFormComponent extends React.Component {
             sessionStorage.removeItem('user');
             this.setState({ user });
         }
-        
+
     };
 
     _backToRegisterForm = ()=> {
@@ -163,8 +163,8 @@ class MainFormComponent extends React.Component {
                     {/* <div className={`header ${actionType == 'register' ? 'active' : ''}`}>
                         <a href="#" id="form-account-login" >Đăng nhập</a>
                         <a href="#" id="form-account-register" >Tạo tài khoản</a>
-                        
-                    </div> */} 
+
+                    </div> */}
                     <div className="body-content">
                         <div className="form-content">
                             <div className="form-controls">
@@ -175,7 +175,7 @@ class MainFormComponent extends React.Component {
                                             <h4>Xin chào,</h4>
                                             {
                                                 actionType == 'register' ?
-                                                <p><span onClick={()=> this.setState({ showPopup: true, actionType: 'login' })}>Đăng nhập</span> hoặc Tạo tài khoản</p> 
+                                                <p><span onClick={()=> this.setState({ showPopup: true, actionType: 'login' })}>Đăng nhập</span> hoặc Tạo tài khoản</p>
                                                 :
                                                 <p>Đăng nhập hoặc <span onClick={()=> this.setState({ showPopup: true, actionType: 'register' })}>Tạo tài khoản</span></p>
                                             }
@@ -183,24 +183,24 @@ class MainFormComponent extends React.Component {
                                         :
                                         <React.Fragment>
                                             <h4>Đăng ký tài khoản</h4>
-                                            <p><span onClick={this._backToRegisterForm}>Quay lại</span></p> 
+                                            <p><span onClick={this._backToRegisterForm}>Quay lại</span></p>
                                         </React.Fragment>
                                     }
-                                    
+
                                 </div>
                                 {
                                     actionType == 'login' ?
-                                    <LoginFormComponent 
+                                    <LoginFormComponent
                                         showLoginOldFb={showLoginOldFb}
                                         showLoginOldGg={showLoginOldGg}
-                                        redirectUrl={redirectUrl} 
+                                        redirectUrl={redirectUrl}
                                         handleSocialLogin={this.handleSocialLogin}
-                                        _showFormForgotPassword={this._showFormForgotPassword} 
+                                        _showFormForgotPassword={this._showFormForgotPassword}
                                         _setUserLogin={this._setUserLogin}/>
                                     :
-                                    <RegisterFormComponent 
-                                        ref={this.childRegisterForm} 
-                                        redirectUrl={redirectUrl} 
+                                    <RegisterFormComponent
+                                        ref={this.childRegisterForm}
+                                        redirectUrl={redirectUrl}
                                         _setUserLogin={this._setUserLogin}
                                         setOtpForm={this.setOtpForm}/>
                                 }
@@ -224,18 +224,18 @@ class MainFormComponent extends React.Component {
 
     _showFormForgot = ()=> {
         let {
-            
+
         } = this.state;
         return(
             <div id="popup-account">
                 <div className="form-account">
                     <span id="close-login-popup" className="electro-close-icon" onClick={this._closePopup}></span>
-                    
+
                     <div className="body-content">
                         <div className="form-content">
                             <div className="form-controls">
                                 <div className="heading-form">
-                                    <p><span onClick={()=> this._showFormForgotPassword(false)}>Quay lại</span></p> 
+                                    <p><span onClick={()=> this._showFormForgotPassword(false)}>Quay lại</span></p>
                                 </div>
                                 <ForgotPasswordComponent />
                             </div>
@@ -264,17 +264,17 @@ class MainFormComponent extends React.Component {
             }
             // access.access_token = response.accessToken;
             // access.expires_in = response.data_access_expiration_time;
-            
+
             let _response = await axios.post(url);
-            
+
             if( _response.data == "" || _response.data === "0" ) {
                 // create new account
 
                 var data = new FormData();
                 data.append('action', 'register_social_account');
-                data.append('user_id', profile.id); 
-                data.append('user_name', profile.name); 
-                data.append('user_email', profile.email); 
+                data.append('user_id', profile.id);
+                data.append('user_name', profile.name);
+                data.append('user_email', profile.email);
                 data.append('providerID', provider);
 
                 let responseRegister = await axios.post(
@@ -365,7 +365,7 @@ class MainFormComponent extends React.Component {
             showLoginOldFb: true
         })
     };
-    
+
     handleSocialGGLoginFailure = (err) => {
         // window.FB.api('/me/permissions', 'delete', null, () => window.FB.logout());
         // console.log(err);
@@ -374,7 +374,7 @@ class MainFormComponent extends React.Component {
         })
     };
 
-    
+
     _showToltipActions = ()=> {
         let {
             showPopup,
@@ -383,7 +383,7 @@ class MainFormComponent extends React.Component {
             showLoginOldFb,
             user
         } = this.state;
-        return( 
+        return(
             <React.Fragment>
                 {
                     user && user.data ?
@@ -406,7 +406,7 @@ class MainFormComponent extends React.Component {
                 }
 
                 {
-                    // !user && !showPopup && !showForgotForm && 
+                    // !user && !showPopup && !showForgotForm &&
                     // <div className="popup-navbar-account minimum">
                     //     <a id="login-account" href="#"  data-title="login" onClick={()=> this.setState({ showPopup: true, actionType: 'login' })}>Đăng nhập</a>
                     //     <a id="register-account" href="#" data-title="register" onClick={()=> this.setState({ showPopup: true, actionType: 'register' })}>Tạo tài khoản</a>
@@ -414,7 +414,7 @@ class MainFormComponent extends React.Component {
                     // show popup action user
                 }
             </React.Fragment>
-            
+
         )
     }
 

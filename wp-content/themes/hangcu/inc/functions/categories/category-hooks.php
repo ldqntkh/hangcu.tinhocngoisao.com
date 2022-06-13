@@ -56,7 +56,7 @@
     ?>
         <div class="group-tab-hot-deals">
             <ul class="nav nav-tabs" role="tablist">
-                <?php 
+                <?php
                     $discount_products = hangcu_get_products_by_cat($group_discount_shock);
                     if (!empty($group_discount_shock) && $discount_products && $discount_products->post_count > 0 ) : ?>
                     <li class="nav-item">
@@ -65,7 +65,7 @@
                         </a>
                     </li>
                 <?php endif; ?>
-                <?php 
+                <?php
                     $better_products = hangcu_get_products_by_cat($group_better_price);
                     if (!empty($group_better_price) && $better_products && $better_products->post_count > 0 ) : ?>
                     <li class="nav-item">
@@ -133,7 +133,7 @@
             while ( $products->have_posts() ) : $products->the_post();
                 wc_get_template_part( 'content', 'product' );
             endwhile;
-            $GLOBALS['post'] = $original_post; 
+            $GLOBALS['post'] = $original_post;
             return '<div class="woocommerce columns-5 "><ul data-view="grid" data-toggle="regular-products" class="products columns-5 columns__wide--5">' . ob_get_clean() . '</ul></div>';
         }
         return null;
@@ -142,7 +142,7 @@
     function hangcu_get_products_by_cat($cat_slug) {
         if ( !empty( $cat_slug ) ) {
             ob_start();
-  
+
             $query_args = array(
                 'posts_per_page' => -1,
                 'no_found_rows'  => 1,
@@ -151,7 +151,7 @@
                 'product_cat'       => $cat_slug,
                 'orderby'        => 'post__in',
             );
- 
+
             if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
                 $query_args['tax_query'] = array(
                     array(
@@ -162,7 +162,7 @@
                         ),
                     );
                 }
-    
+
             $products = new WP_Query( apply_filters( 'woocommerce_recently_viewed_products_widget_query_args', $query_args ) );
 
             wp_reset_query();
@@ -258,7 +258,7 @@
         if($cate && is_product_category() && wc_get_loop_prop( 'total' )){
             $defaults[count($defaults) - 1][0] = "<strong>".wc_get_loop_prop( 'total' )."&nbsp;&nbsp;</strong>".$defaults[count($defaults) - 1][0];
         }
-    
+
         return $defaults;
     }
 
@@ -293,7 +293,7 @@
             $category = get_queried_object();
             $url = get_category_link($category);
         }
-        
+
         $name = __('sản phẩm', 'hangcu');
 
         if ($cate && is_product_category()) {
@@ -305,11 +305,8 @@
         ?>
             <div class="not-found-product">
                 <img src="<?php echo get_option( CUSTOM_PREFERECE_GLOBAL )['config_not_found_image']; ?>"/>
-                <span class="content-not-found"><?php echo __('Chúng tôi không tìm thấy sản phẩm nào phù hợp với tiêu chí tìm kiếm', 'hangcu') ?></span>
+                <span class="content-not-found"><?php echo __('Tiêu chí tìm kiếm của bạn không phù hợp', 'hangcu') ?></span>
                 <?php if( is_search() ) : ?>
-                    <span class="content-contact">
-                        Nếu bạn cần hỗ trợ, vui lòng liên hệ tổng đài <a href="tel:18006975">1800 6975</a>
-                    </span>
                     <a class="go-home" href="<?= get_permalink( woocommerce_get_page_id( 'shop' ) ) ?>">Xem tất cả sản phẩm</a>
                 <?php else : ?>
                     <?php the_widget('CT_Layered_Nav_Filters'); ?>
@@ -378,7 +375,7 @@
                         $percent = ceil(100 -( $sale_price / $regular_price ) * 100);
                         $top_right_html = '<span class="top-right">'. $top_right_value .' ' . $percent . '%</span>';
                     }
-                    
+
                 }
             } else if( $top_right == 'qua-tang' ) {
                 $top_right_html = '<span class="top-right"><i class="fas fa-gift"></i>'. $top_right_value .'</span>';
@@ -457,25 +454,25 @@
         return $terms;
     }
 
-    // define the woocommerce_breadcrumb_main_term callback 
-    function filter_woocommerce_breadcrumb_main_term( $terms_0, $terms ) { 
+    // define the woocommerce_breadcrumb_main_term callback
+    function filter_woocommerce_breadcrumb_main_term( $terms_0, $terms ) {
         if ( count( $terms ) == 1 ) {
             return $terms_0;
-        } 
+        }
         else {
             if (get_term_meta( intval($terms_0->term_id), 'is_cat_select', true) !== '1') {
-                return $terms_0; 
+                return $terms_0;
             } else {
                 foreach( $terms as $term ) {
                     if (get_term_meta( intval($term->term_id), 'is_cat_select', true) !== '1') {
-                        return $term; 
+                        return $term;
                     }
                 }
             }
         }
         return $terms_0;
     };
-    
+
     // add_filter( 'walker_nav_menu_start_el', 'hangcu_display_menu_icon', 10, 4 );
     function hangcu_display_menu_icon( $item_output, $item, $depth, $args ) {
 
@@ -495,7 +492,7 @@
             return $item_output;
         } else {
             // $icon_image = get_field( 'menu_icon_image', $item->ID );
-    
+
             // // replace text in to element span
             // $item_output_text = str_replace( '<i class="icon-menu"></i>', '', $item_output );
             // $text = explode( '>', explode( '</a>', $item_output_text )[0] )[1];
@@ -514,7 +511,7 @@
 
             // try display icon with css
             $icon_image = get_field( 'menu_icon_class', $item->ID );
-    
+
             // replace text in to element span
             $item_output_text = str_replace( '<i class="icon-menu"></i>', '', $item_output );
             $text = explode( '>', explode( '</a>', $item_output_text )[0] )[1];

@@ -3,7 +3,7 @@ const $ = jQuery;
 const mbHeader = {
     init: function() {
         mbHeader.navMenuBar();
-        mbHeader.handleNavSticky();
+        // mbHeader.handleNavSticky();
         mbHeader.initSearchInputBlur();
     },
 
@@ -34,7 +34,7 @@ const mbHeader = {
                     $("body").toggleClass("off-canvas-active");
                 });
             }, 500);
-            
+
         });
     },
 
@@ -46,13 +46,13 @@ const mbHeader = {
                 $('body').addClass('fixed-header');
                 // show id form 1
                 $('.header-row-1 .product-search-field').attr('id', 'search');
-                $('.header-row-2 .product-search-field').attr('id', 'bksearch');
+                // $('.header-row-2 .product-search-field').attr('id', 'bksearch');
             } else if( top <= 100 ) {
                 $('#masthead .header-row-1').removeClass('fixed-header')
                 $('body').removeClass('fixed-header');
                 // show id form 2
                 $('.header-row-1 .product-search-field').attr('id', 'bksearch');
-                $('.header-row-2 .product-search-field').attr('id', 'search');
+                // $('.header-row-2 .product-search-field').attr('id', 'search');
             }
         }).trigger('scroll');
     },

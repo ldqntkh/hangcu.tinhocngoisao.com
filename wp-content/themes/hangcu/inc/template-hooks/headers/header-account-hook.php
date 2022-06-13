@@ -27,11 +27,12 @@ if ( ! function_exists( 'hc_header_user_account' ) ) {
 
         ?>
         <div class="header-icon">
-        <?php if( is_user_logged_in() && (is_cart() || is_checkout() || is_account_page())  ) : 
+        <?php if( is_user_logged_in() ) :
+        //&& (is_cart() || is_checkout() || is_account_page())
                 $current_user = wp_get_current_user();
                 $user_name = $current_user->display_name;
             ?>
-                
+
                 <div id="user-account" data-login="true">
                     <a href="<?= wc_get_page_permalink( 'myaccount' ) ?>">
                         <!-- <i class="icon-user"></i> -->
@@ -44,7 +45,7 @@ if ( ! function_exists( 'hc_header_user_account' ) ) {
                         </span>
                     </a>
                 </div>
-                
+
             <?php else : ?>
                 <div id="user-account-false" data-login="false">
                     <a href="<?= get_permalink( get_option('woocommerce_myaccount_page_id') ) ?>" type="login" id="login">

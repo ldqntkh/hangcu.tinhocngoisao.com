@@ -75,7 +75,7 @@ function hangcu_save_depot_info( $order_id ) {
         update_post_meta($order_id, 'depot_id', $depot_id);
         WC()->session->__unset( 'depot_id' );
     }
-   
+
 }
 
 function hangcu_validate_vat_info() {
@@ -105,7 +105,6 @@ function hangcu_validate_checkout() {
 function hangcu_empty_cart() {
 ?>
     <div class="hangcu-cart-empty">
-        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/empty-cart.png"/>
         <p class="text-center">
             <?php echo __( 'Chưa có sản phẩm nào trong giỏ hàng của bạn.', 'hangcu' ); ?>
         </p>
@@ -127,14 +126,14 @@ function conditional_custom_shipping_cost( $rates, $package ) {
         $config_enable_api_fee = get_option( CUSTOM_PREFERECE_PRM )['config_enable_api_fee'];
     }
     $shipping_fee = 0;
-    
+
     if ( $config_enable_api_fee && $config_enable_api_fee == 'true' ) {
         $config_api_get_shipping_fee = get_option( CUSTOM_PREFERECE_PRM )['config_api_get_shipping_fee'];
         $config_api_mapping_city = get_option( CUSTOM_PREFERECE_PRM )['config_api_mapping_city'];
-        
+
         if ( isset( $config_api_mapping_city ) && isset( $config_api_get_shipping_fee ) ) {
             parse_str($_POST['post_data'], $get_array);
-    
+
             if ( empty( $get_array['billing_state'] ) ) {
                 $get_array['billing_state'] = WC()->session->get('billing_state');
                 //WC()->session->__unset( 'billing_state' );
@@ -143,29 +142,29 @@ function conditional_custom_shipping_cost( $rates, $package ) {
                 $get_array['billing_address_2'] = WC()->session->get('billing_address_2');
                 //WC()->session->__unset( 'billing_address_2' );
             }
-            
+
             if ( isset( $get_array['billing_state'] ) && isset( $get_array['billing_address_2'] ) ) {
-                
+
                 $config_api_mapping_city        = $config_api_mapping_city.$get_array['billing_state'];
                 $config_api_get_shipping_fee    = $config_api_get_shipping_fee.$get_array['billing_address_2'];
-                
+
                 try {
                     $mapping_city = file_get_contents( $config_api_mapping_city  );
-    
+
                     $shipping_fee_depot = file_get_contents( $config_api_get_shipping_fee  );
-                    
+
                     if ( isset( $mapping_city ) && isset( $shipping_fee_depot ) ) {
                         $mapping_city = json_decode( $mapping_city );
                         $shipping_fee_depot = json_decode( $shipping_fee_depot );
-    
+
                         $depot_id = $mapping_city->data->depot_id;
-    
+
                         $shipping_fee = get_object_vars($shipping_fee_depot->data);
 
                         $shipping_fee = intval($shipping_fee['shipping_fee_depot_'.$depot_id]);
                         WC()->session->set( 'depot_id', $depot_id );
                     }
-            
+
                 } catch ( Exception $e ) {
                     $shipping_fee = 0;
                 }
@@ -201,7 +200,7 @@ if( !function_exists('check_valid_payment_methods') ) {
         if( isset(WC()->cart) ) {
             foreach ( WC()->cart->get_cart() as $cart_item ) {
                 $_product = $cart_item['data'];
-                
+
                 if( $_product->managing_stock() && $_product->backorders_allowed() ) {
                     $quantity = $cart_item['quantity'];
                     $stock = $_product->get_stock_quantity();
@@ -217,7 +216,7 @@ if( !function_exists('check_valid_payment_methods') ) {
                 }
             }
         }
-    
+
         return $available_gateways;
     }
 }
@@ -225,11 +224,11 @@ if( !function_exists('check_valid_payment_methods') ) {
 if( !function_exists( 'check_valid_payment_method_processing_order' ) ) {
     function check_valid_payment_method_processing_order( $order_id, $posted_data, $order ) {
         $payment_method = $order->get_payment_method();
-    
+
         if( isset(WC()->cart) ) {
             foreach ( WC()->cart->get_cart() as $cart_item ) {
                 $_product = $cart_item['data'];
-                
+
                 if( $_product->managing_stock() && $_product->backorders_allowed() ) {
                     $quantity = $cart_item['quantity'];
                     $stock = $_product->get_stock_quantity();
@@ -239,7 +238,7 @@ if( !function_exists( 'check_valid_payment_method_processing_order' ) ) {
                 }
             }
         }
-    
+
     }
 }
 

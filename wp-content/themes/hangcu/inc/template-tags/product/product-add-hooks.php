@@ -55,9 +55,9 @@ add_action( 'woocommerce_review_before_comment_meta',        'hc_wc_review_meta_
 add_action( 'hangcu_single_product_right_content',      'hangcu_product_storage',               10 );
 add_action( 'hangcu_single_product_right_content',      'hangcu_product_policy',                20 );
 add_action( 'hangcu_single_product_right_content',      'hangcu_product_old',                   30 );
-add_action( 'woocommerce_after_add_to_cart_form',       'hangcu_after_add_to_cart_form',        30 );
-add_action( 'woocommerce_after_add_to_cart_form',       'hangcu_after_add_to_cart_display_configuration',        40 );
-add_action( 'woocommerce_after_add_to_cart_form_compare',       'hangcu_after_add_to_cart_form_compare',        30 );
+// add_action( 'woocommerce_after_add_to_cart_form',       'hangcu_after_add_to_cart_form',        30 );
+// add_action( 'woocommerce_after_add_to_cart_form',       'hangcu_after_add_to_cart_display_configuration',        40 );
+// add_action( 'woocommerce_after_add_to_cart_form_compare',       'hangcu_after_add_to_cart_form_compare',        30 );
 add_action( 'hangcu_after_display_price',               'hangcu_after_price_display_installment', 10 );
 // add_action( 'woocommerce_after_single_product_summary', 'hangcu_output_product_right_content', 9 );
 // add_action( 'woocommerce_after_single_product_summary', 'hangcu_output_product_accessories', 8 );

@@ -56,7 +56,7 @@ class ListOrderComponent extends React.Component {
                 hangcu_home_ajax,
                 data
             );
-            
+
             if( response.data.success ) {
                 let orders = response.data.data.orders;
                 if( !orders || !orders.length ) {
@@ -65,7 +65,7 @@ class ListOrderComponent extends React.Component {
                     this.setState({ orders, total_order: response.data.data.total_order })
                 }
             } else {
-                
+
             }
 
         } catch (err) {
@@ -88,7 +88,7 @@ class ListOrderComponent extends React.Component {
                 hangcu_home_ajax,
                 data
             );
-            
+
             if( response.data.success ) {
                 // console.log(response.data)
                 location.href = response.data.data.redirect;
@@ -108,7 +108,7 @@ class ListOrderComponent extends React.Component {
         let {
             orders
         } = this.state;
-        
+
         let results = [];
 
         for( let i =0; i < orders.length; i++ ) {
@@ -173,7 +173,7 @@ class ListOrderComponent extends React.Component {
                 <Link to={'#'}>{1}</Link>
             </p> );
         } else {
-            
+
             let total_page = parseInt((total_order / 10)) + ( total_order % 10 != 0 ? 1 : 0 );
             if( total_page < 7 ) {
                 for( let i = 1; i <= total_page; i++ ) {
@@ -181,7 +181,7 @@ class ListOrderComponent extends React.Component {
                             <Link to={ i == page ? '#' : `/tai-khoan/orders/${i}` }>{i}</Link>
                         </p> )
                 }
-                
+
             } else {
                 let prevPage = page;
                 let preTotal = 0;
@@ -223,7 +223,7 @@ class ListOrderComponent extends React.Component {
                     </p>
                 );
             }
-            
+
         }
         if( !rs.length ) return null;
         return(
@@ -238,7 +238,6 @@ class ListOrderComponent extends React.Component {
     _renderEmptyOrder = ()=> {
         return (
             <div className="empty-order">
-                <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/empty-orders.png" />
                 <p>Đơn hàng trống, mua sắm ngay thôi</p>
                 <a href={shopUrl}>Đến cửa hàng</a>
             </div>
@@ -249,7 +248,7 @@ class ListOrderComponent extends React.Component {
         let {
             orders
         } = this.state;
-        
+
         return(
             <div className="order-container">
                 <h3>Quản lý đơn hàng</h3>
@@ -264,7 +263,7 @@ class ListOrderComponent extends React.Component {
                 {
                     orders.length > 0 && this._renderPaging()
                 }
-                
+
             </div>
         );
     }

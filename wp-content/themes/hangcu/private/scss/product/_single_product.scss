@@ -83,14 +83,14 @@
                                 padding: 9px 15px;
                                 margin: 0;
                             }
-    
+
                             > ul {
                                 margin-bottom: 0;
                                 // list-style: none;
                                 padding: 10px;
                                 padding-left: 20px;
                                 list-style: none;
-    
+
                                 > li {
                                     line-height: 30px;
                                     position: relative;
@@ -189,7 +189,7 @@
                     .wares_qty_num, .button-minus , .button-plus {
                         display: none;
                     }
-                    
+
                     .single_add_to_cart_button.button {
                         // display: none;
                         overflow: hidden;
@@ -303,12 +303,12 @@
                         position: relative;
                         transition: all 0.5s;
                     }
-            
+
                     &.show-more-content {
                         max-height: initial;
                         transition: all 0.5s;
                     }
-            
+
                     .btn-show-more-content {
                         display: flex;
                         justify-content: center;
@@ -571,7 +571,7 @@
                                 transform: translateY(-50%);
                             }
                         }
-                        
+
                         @media screen and (min-width: 640px ){
                             padding: 0 10px;
                         }
@@ -610,7 +610,7 @@
                                     padding-left: 10px;
                                 }
                             }
-                            
+
                             .woocommerce-LoopProduct-link {
                                 width: 100%;
                                 display: flex;
@@ -643,7 +643,7 @@
                                         }
                                     }
                                 }
-                                
+
                             }
                         }
                     }
@@ -902,7 +902,7 @@
                                     font-size: 22px;
                                 }
                             }
-    
+
                             del {
                                 color: #414141;
                                 margin: 0;
@@ -1083,7 +1083,7 @@
                 font-weight: 600;
                 background-color: #EDEDED;
                 padding: 9px 15px;
-                
+
             }
 
             > ul {
@@ -1364,7 +1364,7 @@
                     line-height: 24px;
                     font-weight: 500;
                     margin: 0px 0px 8px;
-                    color: rgb(36,36,36);       
+                    color: rgb(36,36,36);
                 }
                 p {
                     font-size: 13px;
@@ -1819,7 +1819,7 @@
                 margin: 0;
                 padding: 5px 10px;
                 width: 100%;
-                overflow-y: auto;
+                overflow-x: auto;
                 z-index: 1;
                 li {
                     display: flex;
@@ -1829,6 +1829,7 @@
                     margin: 0 1px;
                     overflow: hidden;
                     width: 92px;
+                    min-width: 92px;
                     height: 92px;
                     &.slick-active {
                         img {
@@ -1854,7 +1855,7 @@
                 }
             }
 
-            
+
         }
         #youtube-video-item {
             .youtube-video-item-dot {
@@ -1883,7 +1884,7 @@
                         font-size: 100px;
                         opacity: .8;
                     }
-                    
+
                 }
                 .slick-list {
                     height: calc(100% - 100px);
@@ -1907,6 +1908,7 @@
                 .slick-dots {
                     li {
                         width: 90px;
+                        min-width: 90px;
                         height: 100%;
                         padding: 0;
                         img {
@@ -1942,7 +1944,7 @@
                     }
                 }
             }
-            
+
         }
         #video-frame {
             position: absolute;
@@ -2047,7 +2049,7 @@ body.single {
                     display: block;
                     transform: unset;
                 }
-                
+
                 &::before, &::after {
                     width: 15px;
                     margin: 0;
@@ -2124,7 +2126,7 @@ body.single {
                     border: 1px solid rgb(242, 242, 242);
                 }
             }
-            
+
         }
         .woocommerce-pagination {
             ul {

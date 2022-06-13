@@ -11,7 +11,7 @@ const Share = {
       this.initMobileFooterClick();
       this.initDesktopShowMenu();
       this.initSubmitFormNewsletter();
-      
+
 
       $(document).on('click', '.guaven_woos_showallli a', function(e) {
         e.preventDefault();
@@ -39,7 +39,7 @@ const Share = {
             overflow: 'hidden'
           });
         });
-        
+
         $('#search').blur( function() {
           $('body').css({
             overflow: 'initial'
@@ -59,7 +59,7 @@ const Share = {
           if( $('#woo_search_ids').val().trim() == '' ) {
             return false;
           } else {
-            
+
             let form = document.createElement('form');
             form.setAttribute('method', 'post');
             form.setAttribute('action', $('form.navbar-search').attr('action'));
@@ -80,7 +80,7 @@ const Share = {
             form.submit();
           }
         }, 100);
-        
+
       });
 
     //   window.fragment_refresh = $.ajax({
@@ -101,18 +101,18 @@ const Share = {
     //             $.each( data.fragments, function( key, value ) {
     //                 $( key ).replaceWith( value );
     //             });
-    
+
     //             if ( window.sessionStorage ) {
     //                 sessionStorage.setItem( fragment_name, JSON.stringify( data.fragments ) );
     //                 localStorage.setItem( cart_hash_key, data.cart_hash );
     //                 sessionStorage.setItem( cart_hash_key, data.cart_hash );
     //                 // set_cart_hash( data.cart_hash );
-    
+
     //                 if ( data.cart_hash ) {
     //                 sessionStorage.setItem( 'wc_cart_created', ( new Date() ).getTime() );
     //                 }
     //             }
-    
+
     //             $( document.body ).trigger( '' );
     //         } else {
     //             window.fragment_refresh = $.ajax({
@@ -132,23 +132,23 @@ const Share = {
     //                         $.each( data.fragments, function( key, value ) {
     //                             $( key ).replaceWith( value );
     //                         });
-                
+
     //                         if ( window.sessionStorage ) {
     //                             sessionStorage.setItem( fragment_name, JSON.stringify( data.fragments ) );
     //                             localStorage.setItem( cart_hash_key, data.cart_hash );
     //                             sessionStorage.setItem( cart_hash_key, data.cart_hash );
     //                             // set_cart_hash( data.cart_hash );
-                
+
     //                             if ( data.cart_hash ) {
     //                             sessionStorage.setItem( 'wc_cart_created', ( new Date() ).getTime() );
     //                             }
     //                         }
-                
+
     //                         $( document.body ).trigger( '' );
     //                     }
     //                 },
     //                 error: function (response, errorStatus, errorMsg) {
-                        
+
     //                 },
     //                 complete: function() {
     //                     window.has_fragment_refresh = null;
@@ -157,7 +157,7 @@ const Share = {
     //         }
     //     },
     //     error: function (response, errorStatus, errorMsg) {
-            
+
     //     },
     //     complete: function() {
     //         window.has_fragment_refresh = null;
@@ -174,22 +174,22 @@ const Share = {
         },
         success: function( data ) {
             if ( data && data.fragments ) {
-     
+
                 $.each( data.fragments, function( key, value ) {
                     $( key ).replaceWith( value );
                 });
-     
+
                 if ( window.sessionStorage ) {
                     sessionStorage.setItem( fragment_name, JSON.stringify( data.fragments ) );
                     localStorage.setItem( cart_hash_key, data.cart_hash );
 			              sessionStorage.setItem( cart_hash_key, data.cart_hash );
                     // set_cart_hash( data.cart_hash );
-     
+
                     if ( data.cart_hash ) {
                       sessionStorage.setItem( 'wc_cart_created', ( new Date() ).getTime() );
                     }
                 }
-     
+
                 $( document.body ).trigger( '' );
             }
         },
@@ -197,7 +197,7 @@ const Share = {
           window.has_fragment_refresh = null;
         }
       };
-      
+
       // this.initCartTotal();
     },
 
@@ -236,7 +236,7 @@ const Share = {
         jQuery("html, body").stop().animate({ scrollTop: jQuery(selector).offset().top }, 700, 'swing');
       }
     },
-  
+
     customizePrice: function() {
       if (typeof jQuery == 'function' && jQuery(".electro-price.customize-price").length > 0){
         jQuery(function(){
@@ -245,11 +245,11 @@ const Share = {
             if ( jQuery(obj).attr('data-product-id') !== 'undefined' )
               product_ids.push(jQuery(obj).attr('data-product-id'));
           });
-    
+
           if ( product_ids.length === 0 ) return;
           //jQuery(".electro-price.customize-price").css({"filter": "blur(5px)", "pointer-events": "none"});
-          
-    
+
+
           jQuery.ajax({
             url: '/wp-json/rest_api/v1/getproductprice',
             method: 'POST',
@@ -258,12 +258,12 @@ const Share = {
             },
             success: function (res) {
               let products = res.data;
-              
+
               let product_ids = Object.keys( products );
               for( let i = 0; i < product_ids.length; i++ ) {
                 let id = product_ids[i];
                 let item = products[id];
-                
+
                 if ( item['_sale_price'] ) {
                   jQuery(jQuery('.productct-' + id).find('ins bdi')).html( item['_sale_price'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '<span class="woocommerce-Price-currencySymbol">₫</span>' );
                   jQuery(jQuery('.productct-' + id).find('del bdi')).html( item['_regular_price'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '<span class="woocommerce-Price-currencySymbol">₫</span>' );
@@ -274,8 +274,8 @@ const Share = {
               }
             },
             error: function (err) {
-              
-            }, 
+
+            },
             complete: function() {
               //jQuery(".electro-price.customize-price").trigger('swift-performance-ajaxify-item-done');
               //jQuery(".electro-price.customize-price").css({"filter": "none", "pointer-events": "unset"});
@@ -284,7 +284,7 @@ const Share = {
         });
       }
     },
-  
+
     getviewedproduct: function() {
       let element = jQuery("#getviewedproduct");
       if ( element && element.length > 0 ) {
@@ -304,9 +304,9 @@ const Share = {
             if (res.data && res.data !== '') {
               element.html( res.data );
               var $owl = jQuery('#getviewedproduct .owl-carousel').owlCarousel(JSON.parse(jQuery('#getviewedproduct [data-carousel-options]').attr('data-carousel-options')));
-  
+
               $owl.trigger('refresh.owl.carousel');
-  
+
               // Owl Carousel
               jQuery( '#getviewedproduct .slider-next' ).on( 'click', function(e) {
                 e.preventDefault();
@@ -314,7 +314,7 @@ const Share = {
                 owl.trigger( 'next.owl.carousel' );
                 return false;
               });
-  
+
               jQuery( '#getviewedproduct .slider-prev' ).on( 'click', function(e) {
                 e.preventDefault();
                 var owl = jQuery( jQuery( this ).data( 'target' ) + ' .owl-carousel' );
@@ -322,11 +322,11 @@ const Share = {
                 return false;
               });
             }
-            
+
           },
           error: function (err) {
-            
-          }, 
+
+          },
           complete: function() {
             // jQuery(document).trigger('triggerItemHeight');
             function resizeFrame() {
@@ -339,16 +339,16 @@ const Share = {
               }, 1000)
             }
             resizeFrame();
-  
+
             jQuery(window).resize(function(){
               resizeFrame();
             });
           }
         });
       }
-      
+
     },
-  
+
     getChatOption: function() {
       setTimeout(function() {
         jQuery.ajax({
@@ -360,15 +360,15 @@ const Share = {
             }
           },
           error: function (err) {
-            
-          }, 
+
+          },
           complete: function() {
-            
+
           }
-        });    
+        });
       }, 2000);
     },
-  
+
     initCarouselHeader: function() {
       if( jQuery('#hc-banner-header').length > 0 ) {
         let banner = jQuery('#hc-banner-header');
@@ -439,7 +439,7 @@ const Share = {
         // $(this).parents(".stuck").length > 0 && $("html, body").animate({
         //     scrollTop: $("body")
         // }, 0),
-        
+
         let top = 0;
         if( $('#hc-banner-header') ) {
           top += 60;
@@ -491,7 +491,6 @@ const Share = {
                               <span id="close-newsletter-popup" class="electro-close-icon"></span>
                               <div class="body-content">
                                 <div class="form-content">
-                                    <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/email-newsletter.jpg" alt="" />
                                     <div>
                                       <strong>Đăng kí nhận email thành công!</strong>
                                       <p>Cảm ơn bạn đã đăng kí nhận bản tin của GEARVN.</p>
@@ -514,5 +513,5 @@ const Share = {
       })
     }
   };
-  
+
   module.exports = Share;

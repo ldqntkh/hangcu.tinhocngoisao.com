@@ -44,3 +44,5 @@ yarn.lock
 launch.json
 
 .DS_Store
+
+node_modules/

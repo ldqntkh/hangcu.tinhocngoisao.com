@@ -17,7 +17,12 @@ function hc_header_mini_cart_icon() {
     ?><div class="header-icon header-icon__cart <?php if ( ! $disable_header_cart_dropdown ): ?>animate-dropdown dropdown<?php endif; ?>">
         <a href="<?php echo esc_url( $cart_link ); ?>" <?php if ( ! $disable_header_cart_dropdown ): ?>data-toggle="dropdown"<?php endif; ?>>
             <i class="ec ec-shopping-bag"></i>
-            <span class="cart-title"><?= __("Giỏ hàng") ?> <?php echo WC()->cart->get_cart_contents_count(); ?> </span>
+            <span class="cart-title">
+                <?php 
+                    if( !electro_detect_is_mobile() ) echo __("Giỏ hàng", 'hangcu');
+                ?>
+                <?php echo WC()->cart->get_cart_contents_count(); ?> 
+            </span>
         </a>
         
         

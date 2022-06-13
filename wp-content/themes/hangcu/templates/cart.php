@@ -2,7 +2,7 @@
 /**
  * Template Name: CT giỏ hàng
  */
-if( wp_is_mobile() ) {
+if( electro_detect_is_mobile() ) {
     get_header('mb-cart');
     do_action( 'electro_before_header_mb' );
 } else {

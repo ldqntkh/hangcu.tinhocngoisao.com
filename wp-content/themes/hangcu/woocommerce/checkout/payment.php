@@ -50,7 +50,7 @@ if ( ! is_ajax() ) {
 
 		<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-		<?php if( wp_is_mobile() ) : ?>
+		<?php if( electro_detect_is_mobile() ) : ?>
 			<div class="process-checkout">
 				<div class="order-total">
 					<strong><?php esc_html_e( 'Thành tiền', 'hangcu' ); ?></strong>

@@ -505,13 +505,13 @@ if ( class_exists( 'WC_Widget' ) ) {
                     $link      = apply_filters( 'woocommerce_layered_nav_link', $link, $term, $taxonomy );
                     
                     if( !strpos($link, '?') ) {
-                        if( wp_is_mobile() ) {
+                        if( electro_detect_is_mobile() ) {
                             $link .= '?_dv=mb';
                         } else {
                             $link .= '?_dk=pc';
                         }
                     } else {
-                        if( wp_is_mobile() ) {
+                        if( electro_detect_is_mobile() ) {
                             $link .= '&_dv=mb';
                         } else {
                             $link .= '&_dk=pc';

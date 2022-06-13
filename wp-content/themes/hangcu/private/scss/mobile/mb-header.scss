@@ -15,16 +15,16 @@ body.body-mobile {
             //     height: 600px;
             // }
             .bg-red {
-                background-image: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/bg-header-mb.png);
-                background-position: center top;
-                background-repeat: no-repeat;
-                background-size: 100% 250px;
-                height: 400px;
-                background-color: $white;
-                @media screen and (min-width: 768px) {
-                    height: 800px;
-                    background-size: 100% 300px;
-                }
+                // background-image: url(/wp-content/themes/hangcu-electro-child-v1/assets/images/bg-header-mb.png);
+                // background-position: center top;
+                // background-repeat: no-repeat;
+                // background-size: 100% 250px;
+                // height: 400px;
+                // background-color: $white;
+                // @media screen and (min-width: 768px) {
+                //     height: 800px;
+                //     background-size: 100% 300px;
+                // }
                 // @media screen and (min-width: 1200px) {
                 //     height: 400px;
                 // }
@@ -82,12 +82,13 @@ body.body-mobile {
                         width: 40px;
                         height: 40px;
                         i.ec-shopping-bag {
-                            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAaCAYAAACgoey0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAH6SURBVHgBvZZdTsJAEMdnFuqD8cEj9AZ6A/EE6gUUTyBGK4mYsBhRPhM4AXADuIByBG4A3qAvImlp11kQw0e/CFv/SdN2d2d/O9vZ6eCjYaQRMQ/LcpzrYr3ehxjFXqvVtmZZp4uLoB3G2BXELFxv4JnM4VTThi7ALcQggWh+W1YfvTqfDOODbimIR0IwdsG8esjbDsQkATAqlss9T/CebXdpXSaolwDEgnzwBPNGw6SV9UA5lbytVDq+4Pko0QbV3F9vA8Ga4wxUbveyt4Fgud0EVhVkK94GguejoQtKqKvehoJnaXP37d7wNhQ8N9ttu728lUqGGiKOkLyWqQ62FPp4GwlMf64zgma8Vh2bcnd3qZxhDCEGBX9jxDRdHP4TzLNZnaAnX5alPHVKoV9H7v6+TeAjisomKJAMzrdK5S8vJAMG9hOz0wAnoALsup+wlJAwaDAVBDfkdUrQcdIYK/ByeQQRlM/nwR6P00yeCGmbSBR4qbRi6/uNnx4eZAHYoARyTqtLT123BdGh1zRxa2FrO857hkqqSGBptNaSonpMhxDheIw06eVKG4C+r2l6NDCA6dEQnr2E8LRdly+YgqGw/t6Qv8owHRwIqtmeZY5eNNF7k8rowfKwwODK0lnWptNjmsTcpsDnnMNkMtGTtn1MwWm+1Gobtj/vyuDE1ftIyQAAAABJRU5ErkJggg==') center no-repeat;
+                            // background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAaCAYAAACgoey0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAH6SURBVHgBvZZdTsJAEMdnFuqD8cEj9AZ6A/EE6gUUTyBGK4mYsBhRPhM4AXADuIByBG4A3qAvImlp11kQw0e/CFv/SdN2d2d/O9vZ6eCjYaQRMQ/LcpzrYr3ehxjFXqvVtmZZp4uLoB3G2BXELFxv4JnM4VTThi7ALcQggWh+W1YfvTqfDOODbimIR0IwdsG8esjbDsQkATAqlss9T/CebXdpXSaolwDEgnzwBPNGw6SV9UA5lbytVDq+4Pko0QbV3F9vA8Ga4wxUbveyt4Fgud0EVhVkK94GguejoQtKqKvehoJnaXP37d7wNhQ8N9ttu728lUqGGiKOkLyWqQ62FPp4GwlMf64zgma8Vh2bcnd3qZxhDCEGBX9jxDRdHP4TzLNZnaAnX5alPHVKoV9H7v6+TeAjisomKJAMzrdK5S8vJAMG9hOz0wAnoALsup+wlJAwaDAVBDfkdUrQcdIYK/ByeQQRlM/nwR6P00yeCGmbSBR4qbRi6/uNnx4eZAHYoARyTqtLT123BdGh1zRxa2FrO857hkqqSGBptNaSonpMhxDheIw06eVKG4C+r2l6NDCA6dEQnr2E8LRdly+YgqGw/t6Qv8owHRwIqtmeZY5eNNF7k8rowfKwwODK0lnWptNjmsTcpsDnnMNkMtGTtn1MwWm+1Gobtj/vyuDE1ftIyQAAAABJRU5ErkJggg==') center no-repeat;
                             width: 28px;
                             height: 28px;
-                            &::after, &::before {
-                                content: '';
-                            }
+                            // &::after, &::before {
+                            //     content: '';
+                            // }
+                            color: white;
                             margin-right: 8px;
                             filter: brightness(0) invert(1);
                         }
@@ -114,7 +115,11 @@ body.body-mobile {
                             }
                         }
                         .cart-title {
-                            display: none;
+                            // display: none;
+                            position: absolute;
+                            top: 0;
+                            color: white;
+                            left: 20px;
                         }
                     }
                 }
@@ -187,9 +192,9 @@ body.body-mobile {
         }
 
         &.content-homepage {
-            height: 110px;
+            // height: 110px;
             .bg-header-mb {
-                height: 110px;
+                // height: 110px;
             }
         }
     }

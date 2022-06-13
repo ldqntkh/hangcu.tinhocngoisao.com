@@ -13,7 +13,7 @@ add_action( 'electro_navbar_v2',   'hc_departments_menu', 10 );
 add_action( 'electro_header_icons', 'hc_header_mini_cart_icon', 90 );
 add_action( 'electro_header_icons', 'hc_header_user_account',   80 );
 
-if( wp_is_mobile() ) {
+if( electro_detect_is_mobile() ) {
     add_action( 'hc_header_checkout', 'hc_mb_checkout_step', 20 );
 } else {
     add_action( 'hc_header_checkout', 'electro_header_logo_area', 10 );

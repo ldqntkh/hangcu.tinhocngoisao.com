@@ -518,7 +518,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 			<div class="header-links">
 
 				<?php 
-					if( !wp_is_mobile() && !empty( $categories_slug ) ) {
+					if( !electro_detect_is_mobile() && !empty( $categories_slug ) ) {
 						$cats_slug = explode( ',', $categories_slug );
 						for( $i = 0; $i < count( $cats_slug ); $i++ ) :
 							$catObj = $category = get_term_by( 'slug', $cats_slug[$i], 'product_cat' );
@@ -531,7 +531,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 					}
 				?>
 
-				<?php if( !wp_is_mobile() && !empty( $all_link_url ) && !empty( $all_link_text ) ) : ?>
+				<?php if( !electro_detect_is_mobile() && !empty( $all_link_url ) && !empty( $all_link_text ) ) : ?>
 					<a href="<?= $all_link_url ?>"><?= $all_link_text ?></a>
 				<?php endif; ?>
 			</div>
@@ -671,7 +671,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 
 			<?php
 			endif; 
-				if( wp_is_mobile() ) : 
+				if( electro_detect_is_mobile() ) : 
 			?>
 
 			<div class="footer-links">

@@ -276,7 +276,7 @@
         $cate = get_queried_object();
 
         if( is_search() ) {
-            if( wp_is_mobile() ) {
+            if( electro_detect_is_mobile() ) {
                 $url = add_query_arg( array(
                     's' => $_GET['s'],
                     'post_type' => $_GET['post_type'],

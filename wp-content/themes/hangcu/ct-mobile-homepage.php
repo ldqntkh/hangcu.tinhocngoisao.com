@@ -5,7 +5,7 @@
  *
  * @package electro-child
  */
-// if( !wp_is_mobile() ) {
+// if( !electro_detect_is_mobile() ) {
 //     wp_redirect(home_url(), 301);
 //     die;
 // }

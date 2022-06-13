@@ -9,6 +9,16 @@ wp_deregister_script('jquery');
 wp_register_script('jquery', '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js', false, null);
 wp_enqueue_script('jquery');
 
+if ( ! function_exists( 'electro_detect_is_mobile' ) ) {
+    function electro_detect_is_mobile() {
+        require_once get_template_directory() . '/inc/classes/class-mobile-detect.php';
+
+        $detect = new Mobile_Detect();
+        $is_mobile_tablet = ( $detect->isMobile() || $detect->isTablet() );
+        return $is_mobile_tablet;
+    }
+}
+
 // init inc folder
 include_once ( INC_PATH . '/init.php' );
 

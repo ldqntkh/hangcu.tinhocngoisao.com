@@ -278,12 +278,12 @@ class MainMBFormComponent extends React.Component {
         } = this.state;
         return(
             <div className="form-account-not-login">
-                <div className="header">
+                {/* <div className="header">
                     <div className="go-back" onClick={()=> location.href='/'}></div>
                     <div className="bg-img">
                         <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/bg-account-login.png"/>
                     </div>
-                </div>
+                </div> */}
                 <div className="form-content">
                     {
                         !otpForm ?
@@ -337,12 +337,12 @@ class MainMBFormComponent extends React.Component {
         } = this.state;
         return(
             <div className="form-account-not-login">
-                <div className="header">
+                {/* <div className="header">
                     <div className="go-back" onClick={()=> location.href='/'}></div>
                     <div className="bg-img">
                         <img src="/wp-content/themes/hangcu-electro-child-v1/assets/images/bg-account-login.png"/>
                     </div>
-                </div>
+                </div> */}
                 <div className="body-content">
                     <div className="form-content">
                         <div className="form-controls">

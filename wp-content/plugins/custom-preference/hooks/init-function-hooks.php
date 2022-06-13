@@ -1,7 +1,7 @@
 <?php
 if( !function_exists('hangcu_render_banner_header') ) {
     function hangcu_render_banner_header() {
-        if( wp_is_mobile() ) return null;
+        if( electro_detect_is_mobile() ) return null;
         $enable_header_promotion = isset(get_option( CUSTOM_PREFERECE_HEADER_PROMOTION )['enable_header_promotion']) ? get_option( CUSTOM_PREFERECE_HEADER_PROMOTION )['enable_header_promotion'] : '';
         if ($enable_header_promotion != 'on') {
             return null;

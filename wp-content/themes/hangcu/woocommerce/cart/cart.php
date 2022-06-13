@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 do_action( 'woocommerce_before_cart' ); 
 
-	if( wp_is_mobile() ) {
+	if( electro_detect_is_mobile() ) {
 		require THEME_PATH . '/woocommerce/cart/cart-mb.php';
 	} else {
 		require THEME_PATH . '/woocommerce/cart/cart-pc.php';

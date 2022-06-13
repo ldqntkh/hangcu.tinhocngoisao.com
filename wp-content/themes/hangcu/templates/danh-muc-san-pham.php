@@ -2,7 +2,7 @@
 /**
  * Template Name: CT danh mục sản phẩm
  */
-// if( !wp_is_mobile() ) {
+// if( !electro_detect_is_mobile() ) {
 //     wp_redirect(home_url(), 301);
 //     die;
 // }

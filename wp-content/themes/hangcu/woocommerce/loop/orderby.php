@@ -37,7 +37,7 @@ unset($catalog_orderby_options['relevance']);
 		<input type="hidden" name="paged" value="1" />
 		
 		<?php
-			if( wp_is_mobile() ) {
+			if( electro_detect_is_mobile() ) {
 				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
 				echo '<input type="hidden" name="_type" value="pc" />';

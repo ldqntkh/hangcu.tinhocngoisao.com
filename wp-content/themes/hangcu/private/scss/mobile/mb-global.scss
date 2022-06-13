@@ -8,6 +8,11 @@ body.body-mobile{
             }
         }
     }
+    &.woocommerce-order-received {
+        .container-breadcrumb {
+            display: none;
+        }
+    }
     #content {
         padding-top: 20px;
         margin-top: 50px!important;

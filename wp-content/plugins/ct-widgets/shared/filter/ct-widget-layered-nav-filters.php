@@ -84,13 +84,13 @@ if ( class_exists( 'WC_Widget' ) ) {
 							//     . '" href="' . esc_url( $link ) . '">' . esc_html( $term->name ) . '</a>
 							//     </li>';
 							if( !strpos($link, '?') ) {
-								if( wp_is_mobile() ) {
+								if( electro_detect_is_mobile() ) {
 									$link .= '?_dv=mb';
 								} else {
 									$link .= '?_dk=pc';
 								}
 							} else {
-								if( wp_is_mobile() ) {
+								if( electro_detect_is_mobile() ) {
 									$link .= '&_dv=mb';
 								} else {
 									$link .= '&_dk=pc';
@@ -139,7 +139,7 @@ if ( class_exists( 'WC_Widget' ) ) {
 				if ( $num_count >= 2) {
 					// $category = get_category( get_query_var( 'cat' ) );
 					if( is_search() ) {
-						if( wp_is_mobile() ) {
+						if( electro_detect_is_mobile() ) {
 							$link = add_query_arg( array(
 								's' => $_GET['s'],
 								'post_type' => $_GET['post_type'],

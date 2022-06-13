@@ -2,7 +2,7 @@
 /**
  * Template Name: Thanh toán
  */
-    $isMobile = wp_is_mobile() ? '-mobile' : '';
+    $isMobile = electro_detect_is_mobile() ? '-mobile' : '';
     $checkout_step = 2; // with 1 is login
     require_once( 'checkout/lib/checkout-address-form.php' );
 
@@ -81,7 +81,7 @@
                     // }
                 }
                 
-                $mb_type = wp_is_mobile() ? 'mb-' : '';
+                $mb_type = electro_detect_is_mobile() ? 'mb-' : '';
                 
                    
                 switch( $checkout_step ) {

@@ -76,7 +76,7 @@ if( !function_exists( 'show_only_products_with_specific_metakey' ) ) {
 
 if( !function_exists( 'show_popup_product_addcart' ) ) {
     function show_popup_product_addcart() {
-        if( wp_is_mobile() ) : 
+        if( electro_detect_is_mobile() ) : 
             global $product;
     
         ?>

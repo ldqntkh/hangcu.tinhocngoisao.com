@@ -27,7 +27,7 @@ while ( have_posts() ) :
     $content_sidebar .= '</ul>';
     // var_dump($ids);
     echo '<div class="hc-custom-post">';
-    if( wp_is_mobile() ) : ?>
+    if( electro_detect_is_mobile() ) : ?>
         <div class="hc-post-content">
             <?php 
                 echo '<h1>' .get_the_title($current_post_id). '</h1>';

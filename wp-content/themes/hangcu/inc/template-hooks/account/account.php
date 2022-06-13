@@ -38,7 +38,7 @@ add_action( 'wp_footer', function () {
     // if( $user_id <= 0 ) {
       
     // }
-    if( wp_is_mobile() ) {
+    if( electro_detect_is_mobile() ) {
       $script_account = get_stylesheet_directory_uri(). '/assets/javascript/react-mb-account.js';
     } else {
       $script_account = get_stylesheet_directory_uri(). '/assets/javascript/react-account.js';

@@ -30,7 +30,7 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 			<i class="ec ec-search"></i>	
 		</div>
 		<?php
-			if( wp_is_mobile() ) {
+			if( electro_detect_is_mobile() ) {
 				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
 				echo '<input type="hidden" name="_type" value="pc" />';
@@ -63,7 +63,7 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 		<label class="sr-only screen-reader-text" for="search"><?php echo esc_html__( 'Search for:', 'electro' );?></label>
 		<input type="text" id="search" class="search-field form-control" dir="<?php echo esc_attr( $dir_value ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" placeholder="<?php echo esc_attr( esc_html__( 'Search', 'electro' ) ); ?>" autocomplete="off" />
 		<?php
-			if( wp_is_mobile() ) {
+			if( electro_detect_is_mobile() ) {
 				echo '<input type="hidden" name="_type" value="mb" />';
 			} else {
 				echo '<input type="hidden" name="_type" value="pc" />';
@@ -71,7 +71,7 @@ $navbar_search_dropdown_text = apply_filters( 'electro_navbar_search_dropdown_te
 			echo '<input type="hidden" name="woo_search_ids" id="woo_search_ids" value="" />';
 		?>
 		<div class="input-group-btn">
-			<button type="submit" class="btn btn-secondary"><i class="ec ec-search"></i><?php if( !wp_is_mobile() ) {echo '<span>' . __('Tìm kiếm', 'hangcu') . '</span>';} ?></button>
+			<button type="submit" class="btn btn-secondary"><i class="ec ec-search"></i><?php if( !electro_detect_is_mobile() ) {echo '<span>' . __('Tìm kiếm', 'hangcu') . '</span>';} ?></button>
 		</div>
 	</div>
 	<?php do_action( 'wpml_add_language_form_field' ); ?>

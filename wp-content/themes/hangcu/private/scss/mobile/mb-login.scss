@@ -1,8 +1,11 @@
 #user-not-login {
-    min-height: 100vh;
+    // min-height: 100vh;
     background-color: white;
-    
+    max-width: 500px;
+    width: 100%;
+    margin: 10px auto;
     .form-account-not-login {
+        // margin-top: 100px;
         .header {
             .go-back {
                 position: absolute;
@@ -20,6 +23,7 @@
                     width: 100%;
                 }
             }
+            display: none;
         }
         .form-content {
             padding: 16px;
@@ -81,7 +85,7 @@
                 font-size: 18px;
                 color: rgb(36, 36, 36);
                 outline: none;
-                font-weight: 600;
+                // font-weight: 600;
             }
         }
         p.error {
@@ -155,6 +159,16 @@
                     width: 58px;
                 }
             }
+        }
+    }
+}
+
+body.body-mobile {
+    #user-not-login {
+        min-height: 100vh;
+        margin: 0 auto;
+        .form-account-not-login {
+            margin-top: 100px;
         }
     }
 }

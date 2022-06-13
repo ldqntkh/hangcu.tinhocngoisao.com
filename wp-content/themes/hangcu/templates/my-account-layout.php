@@ -46,16 +46,17 @@ if ( !is_user_logged_in() && ! empty( $_GET['show-reset-form'] ) ) {
 }
 
 if( !is_user_logged_in() ) {
-    if( !wp_is_mobile() ) {
-        // desktop sẽ chỉ dùng popup
-        wp_redirect(home_url(), 301);
-        die;
-    } else {
-        // include form login
-        include_once('account/mb-not-login.php');
-    }
+    // if( !electro_detect_is_mobile() ) {
+    //     // desktop sẽ chỉ dùng popup
+    //     wp_redirect(home_url(), 301);
+    //     die;
+    // } else {
+    //     // include form login
+    //     include_once('account/mb-not-login.php');
+    // }
+    include_once('account/mb-not-login.php');
 } else {
-    if( !wp_is_mobile() ) {
+    if( !electro_detect_is_mobile() ) {
         get_header();
 
         // echo do_shortcode('[woocommerce_my_account]');

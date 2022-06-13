@@ -46,7 +46,8 @@ if ( ! function_exists( 'hc_header_user_account' ) ) {
                 </div>
                 
             <?php else : ?>
-                <div id="user-account" data-login="false">
+                <div id="user-account-false" data-login="false">
+                    <a href="<?= get_permalink( get_option('woocommerce_myaccount_page_id') ) ?>" type="login" id="login">
                     <aside >
                         <!-- <i class="icon-user"></i> -->
                         <i class="ec ec-user"></i>
@@ -55,6 +56,7 @@ if ( ! function_exists( 'hc_header_user_account' ) ) {
                             <span class="icon-down"><?= __("Tài khoản", "hangcu") ?><i class="arrow-down"></i></span>
                         </span>
                     </aside>
+                    </a>
                 </div>
                 <!-- login form area -->
             <?php endif; ?>

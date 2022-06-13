@@ -1,5 +1,5 @@
 <?php
-get_header('checkout');
+get_header();
 $order = wc_get_order( $wp->query_vars['order-received'] );?>
 
 <div class="checkout-thank w-100">
@@ -13,16 +13,11 @@ $order = wc_get_order( $wp->query_vars['order-received'] );?>
             ?>
             <div class="text-center w-100">
                 <h4><?php echo __('Đơn hàng không tồn tại', 'hangcu'); ?></h4>
-                <?php if( !wp_is_mobile() ) : ?>
+                <?php if( !electro_detect_is_mobile() ) : ?>
                     <a href="/"><?php echo __('Quay về trang chủ', 'hangcu'); ?></a>
                 <?php endif; ?>
             </div>
             <?php
     endif;?>
    
-    <?php if( wp_is_mobile() ) : ?>
-        <div class="go-home">
-            <a href="/"><?php echo __('Quay Về Trang Chủ', 'hangcu'); ?></a>
-        </div>
-    <?php endif; ?>
 </div>

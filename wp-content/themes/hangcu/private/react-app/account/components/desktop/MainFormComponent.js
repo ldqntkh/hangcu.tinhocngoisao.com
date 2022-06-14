@@ -105,10 +105,11 @@ class MainFormComponent extends React.Component {
     }
 
     setActionShowPopupOutSide = (url)=> {
-        this.setState({
-            showPopup: true,
-            redirectUrl: url
-        })
+        // this.setState({
+        //     showPopup: true,
+        //     redirectUrl: url
+        // })
+        location.href = '/tai-khoan?redirect_to=' + url;
     }
 
     setOtpForm = (status = false) => {

@@ -14,7 +14,7 @@
         }
     }
     .form-account {
-        
+
         .header {
             height: 50px;
             height: 50px;
@@ -95,11 +95,11 @@
                     }
                     .heading-form {
                         margin-bottom: 20px;
-                        
+
                     }
                     form {
                         &.register {
-                            
+
                         }
                         input {
                             border-radius: 0px;
@@ -146,7 +146,7 @@
                             // margin: 30px 0px 10px;
                             outline: none;
                             border-radius: 4px;
-                            background: rgb(255, 66, 78);
+                            background: red;
                             padding: 13px 20px;
                             // width: 100%;
                             color: rgb(255, 255, 255);
@@ -189,7 +189,7 @@
                             background-color: #c6c5c5;
                             top: 50%;
                             position: absolute;
-                        } 
+                        }
                         &::before {
                             left: 0;
                         }
@@ -418,7 +418,7 @@ body.page-template-my-account-layout {
                         background-size: 25px 25px;
                     }
                 }
-                
+
                 &:hover, &.active {
                     color: #ED1C24;
                     .icon-user {
@@ -759,7 +759,7 @@ body.page-template-my-account-layout {
                                 }
                             }
                         }
-                        
+
                     }
 
                     .order-total {
@@ -952,7 +952,7 @@ body.page-template-my-account-layout {
                             align-items: center;
                             a {
                                 &.edit {
-                                    
+
                                 }
                                 &.delete {
                                     color: #ED1C24;
@@ -1006,10 +1006,10 @@ body.page-template-my-account-layout {
         }
         .input-cancel-notes {
             textarea {
-                border-color: #EDEDED; 
+                border-color: #EDEDED;
             }
         }
-        
+
         .btns {
             text-align: right;
             padding: 15px 0;

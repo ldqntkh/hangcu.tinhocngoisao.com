@@ -19,17 +19,18 @@ const account = {
             if( data_user ) {
                 data_user = JSON.parse( data_user );
             }
-            if(!data_user || !data_user.data) {
+            if(!data_user || !data_user.data.ID || !data_user.ID) {
                 $('.electro-overlay.electro-close-off-canvas').trigger('click');
                 e.preventDefault();
                 let link = $(this).attr('href');
                 // account.redirect_link = link;
                 // account.showPopupAccount();
-                if( window.mainComponentLoginAccount ) {
-                    if( !link ) link = location.href;
-                    window.mainComponentLoginAccount.setActionShowPopupOutSide( link )
-                }
-                return false; 
+                if( !link ) link = location.href;
+                // window.mainComponentLoginAccount.setActionShowPopupOutSide( link )
+
+                sessionStorage.removeItem('user');
+                location.href = '/tai-khoan?redirect_to=' + link;
+                return false;
             }
         });
 
@@ -39,18 +40,20 @@ const account = {
             if( data_user ) {
                 data_user = JSON.parse( data_user );
             }
-            if(!data_user || !data_user.data) {
+            if(!data_user || !data_user.data.ID || !data_user.ID) {
                 e.preventDefault();
-                if( window.mainComponentLoginAccount ) {
-                    window.mainComponentLoginAccount.setActionShowPopupOutSide( location.href + '#reviews' );
-                } else {
-                    $('#review_form_wrapper').css({
-                        display: 'none',
-                        opacity : 0
-                    });
-                }
-                
-                return false; 
+                // if( window.mainComponentLoginAccount ) {
+                //     // window.mainComponentLoginAccount.setActionShowPopupOutSide( location.href + '#reviews' );
+
+                // } else {
+                //     $('#review_form_wrapper').css({
+                //         display: 'none',
+                //         opacity : 0
+                //     });
+                // }
+                sessionStorage.removeItem('user');
+                location.href = '/tai-khoan?redirect_to=' + location.href + '#reviews';
+                return false;
             }
         })
 

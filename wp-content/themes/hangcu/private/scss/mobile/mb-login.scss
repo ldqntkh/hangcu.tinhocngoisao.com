@@ -95,7 +95,7 @@
             // margin: 30px 0px 10px;
             outline: none;
             border-radius: 4px;
-            background: rgb(255, 66, 78);
+            background: red;
             padding: 13px 0px;
             width: 100%;
             color: rgb(255, 255, 255);
@@ -127,7 +127,7 @@
                 @media screen and (min-width: 768px) {
                     width: 35%;
                 }
-            } 
+            }
             &::before {
                 left: 0;
             }

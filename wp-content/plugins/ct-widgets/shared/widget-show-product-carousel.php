@@ -57,7 +57,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
         /*Widget Backend*/
         public function form( $instance ) {
             $instance = wp_parse_args( (array) $instance, $this->defaults);
-            
+
 			// $hc_widget_title = esc_attr( $instance['hc_widget_title'] );
 			// $hc_widget_description = esc_attr( $instance['hc_widget_description'] );
 			// $hc_widget_class = esc_attr( $instance['hc_widget_class'] );
@@ -86,12 +86,12 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 			$categories_slug = esc_attr( $instance['categories_slug'] );
 
 	        $choices = hc_get_image_sizes_options();
-	        
+
 			echo "<p>Tiêu đề <input class='widefat' type='text' name='".$this->get_field_name('header_title')."' value='".$header_title."' /></p>";
 			?>
             <p>
 				<label for="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>"><?php _e( 'Backgroud image header:' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>" name="<?php echo $this->get_field_name( 'header_bg_image_url' ); ?>" type="text" 
+				<input class="widefat" id="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>" name="<?php echo $this->get_field_name( 'header_bg_image_url' ); ?>" type="text"
 						value="<?php echo esc_url( $header_bg_image_url ); ?>" />
 				<button class="upload_image_button button button-primary">Upload Image</button>
 			</p>
@@ -112,9 +112,9 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 			        ?>
                 </select>
             </p>
-			
 
-			<?php 
+
+			<?php
 				echo "<p>Class name <input class='widefat' type='text' name='".$this->get_field_name('hc_widget_class')."' value='".$hc_widget_class."' /></p>";
 				echo "<p>Custom css <textarea class='widefat' type='text' name='".$this->get_field_name('custom_css')."'>" .$custom_css. "</textarea></p>";
 				echo "<p>Background Color <input class='widefat' type='text' name='".$this->get_field_name('bg_color')."' value='".$bg_color."' /></p>";
@@ -133,7 +133,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 			        ?>
                 </select>
             </p>
-            
+
             <p class="wc-product-cat wc-select">
                 <label for="<?php echo esc_attr( $this->get_field_id('hc_wc_product_cat') ); ?>">
                     <?php esc_html_e('Select Category', 'hangcu'); ?>
@@ -426,18 +426,18 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 		        'post_type'      => 'product',
 		        'no_found_rows'  => 1,
 		        'order'          => $order,
-		        'meta_query' => array( 
+		        'meta_query' => array(
 					array('relation' => 'AND'),
 					// array(
 					// 	'key'     => '_stock_status',
 					// 	'value'   => 'outofstock',
 					// 	'compare' => '!=',
 					// ),
-					array(
-						'key'     => 'stop_selling',
-						'value'   => '0',
-						'compare' => '=',
-					)
+					// array(
+					// 	'key'     => 'stop_selling',
+					// 	'value'   => '0',
+					// 	'compare' => '=',
+					// )
 			 	),
 		        'tax_query'      => array(
 			        'relation' => 'AND',
@@ -513,7 +513,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 		        default :
 			        $query_args['orderby']  = 'date';
 	        }
-			
+
             $hc_featured_query = new WP_Query( $query_args );
 			if( !empty( $bg_color ) ) {
 				$custom_css = 'background-color: ' . $bg_color . ';' . $custom_css;
@@ -521,7 +521,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 
 			ob_start(); ?>
 			<div class="header-links">
-				<?php 
+				<?php
 					if( !empty( $categories_slug ) ) {
 						$cats_slug = explode( ',', $categories_slug );
 						for( $i = 0; $i < count( $cats_slug ); $i++ ) :
@@ -543,7 +543,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 			<?php
 			$output_header = ob_get_contents();
 			ob_end_clean();
-			
+
             if ($hc_featured_query->have_posts()) : ?>
 				<asside id='widget_hangcu_list_product' class="<?= $hc_widget_class ?>" style="<?= $custom_css ?>">
 					<div class="list_product">
@@ -559,14 +559,14 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 								<?= $output_header ?>
 							</div>
 						<?php endif; ?>
-						
-						<div class="lst-product-body <?php 
+
+						<div class="lst-product-body <?php
 							if( !empty($bg_color) ) echo ' has-bg';
 							if( $display_type == 'carousel' ) echo ' owl-carousel';
 							elseif( $display_type == 'scroll' ) echo ' vertical-scroll';
 							else echo ' no-carousel';
 						?>">
-						<?php 
+						<?php
 							$hc_list_classes = 'single-list';
 							if( 1 == $column_number ){
 								$hc_list_classes .= " acme-col-1";
@@ -586,7 +586,7 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 							ob_start();
 							$hc_featured_index = 1;
 							while ( $hc_featured_query->have_posts() ) :$hc_featured_query->the_post();
-								
+
 								if( 'carousel' != $display_type ){
 									// if( 1 != $hc_featured_index && $hc_featured_index % $column_number == 1 ){
 									// 	echo "<!--<div class='clearfix'></div>-->";
@@ -609,11 +609,11 @@ if ( ! class_exists( 'HC_Products_Carousel' ) ) {
 								// $hc_featured_index++;
 							endwhile;
 							$output = ob_get_contents();
-							ob_end_clean();		
+							ob_end_clean();
 							echo $output;
-							
+
 							// $args['section_args']['products_html'] = $output ;
-				
+
 							// electro_products_carousel( $args['section_args'], $args['carousel_args'] );
 
 						?>

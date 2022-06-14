@@ -1,7 +1,7 @@
 
 // @font-face {
 //     font-family: "Lato, Arial,sans-serif";
-//     src: 
+//     src:
 //         url('../font/Lato-Black.ttf') format('truetype'),
 //         url('../font/Lato-BlackItalic.ttf') format('truetype'),
 //         url('../font/Lato-Bold.ttf') format('truetype'),
@@ -22,8 +22,8 @@ body {
         background: rgba(0,0,0,.7);
     }
 }
-body.body-desktop, body.body-mobile{ 
-    background-color: #d3d3d361!important; 
+body.body-desktop, body.body-mobile{
+    background-color: #d3d3d361!important;
     #content >.container {
         // border: 1px solid lightgray;
         // border-top: 0;
@@ -31,7 +31,7 @@ body.body-desktop, body.body-mobile{
 }
 
 body.body-desktop {
-    
+
     .container {
         .site-content-inner {
             margin: 0;
@@ -236,7 +236,7 @@ body.body-mobile {
         left: 0!important;
         background-color: rgba(0,0,0,.7);
         height: 100%;
-        // top: 100px!important;
+        top: 60px!important;
         position: fixed;
         .guaven_woos_final_results {
             background-color: $white;
@@ -263,7 +263,7 @@ body.body-desktop {
         .guaven_woos_suggestion_list {
             min-height: 60px;
             border-bottom: 1px dotted silver;
-            
+
             .guaven_woos_titlediv {
                 >span {
                     font-weight: bold;

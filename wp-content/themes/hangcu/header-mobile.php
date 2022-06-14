@@ -28,16 +28,16 @@
      */
     do_action( 'electro_before_header_mb' ); ?>
 
-    <header id="masthead" class="header-v2 stick-this site-header 
+    <header id="masthead" class="header-v2 stick-this site-header
                                 <?php if ( is_front_page() || is_home() ) echo ' content-homepage ' ?>
                                 <?php if ( ! apply_filters( 'electro_show_header_support_info', true ) ) { echo esc_attr( ' no-header-support-info' ); } ?>">
         <div class="bg-header-mb">
-            <?php 
+            <?php
                 if ( is_front_page() || is_home() ) {
                     echo '<div class="bg-red"></div>';
                 }
             ?>
-            
+
             <div class="bg-content-header">
                 <?php
                 /**
@@ -71,7 +71,7 @@
      */
     do_action( 'electro_before_content' ); ?>
 
-    <div id="content" class="site-content" tabindex="-1" <?php if ( is_front_page() || is_home() ) echo ' style="margin-top: 100px" ' ?>>
+    <div id="content" class="site-content" tabindex="-1" >
         <div class="container">
         <?php
         /**

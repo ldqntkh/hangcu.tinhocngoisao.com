@@ -1,10 +1,11 @@
 body.body-mobile {
     header#masthead {
         height: 60px;
-        position: absolute;
+        position: fixed;
+        z-index: 10000;
         top: 0;
         width: 100%;
-        // z-index: 0; 
+        // z-index: 0;
         .bg-header-mb {
             // position: absolute;
             // width: 100%;
@@ -47,7 +48,7 @@ body.body-mobile {
                 .navbar-search {
                     // display: none;
                 }
-                
+
                 .off-canvas-navbar-toggle-buttons {
                     width: 40px;
                     height: 40px;
@@ -66,7 +67,7 @@ body.body-mobile {
 
                 .header-logo {
                     width: initial;
-                    max-height: 50px; 
+                    max-height: 50px;
                     margin: 0!important;
                     // overflow: hidden;
                     img {
@@ -139,7 +140,7 @@ body.body-mobile {
             }
             .header-row-2 {
                 height: 50px;
-                
+
             }
         }
 

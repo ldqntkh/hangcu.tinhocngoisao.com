@@ -57,7 +57,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
         /*Widget Backend*/
         public function form( $instance ) {
             $instance = wp_parse_args( (array) $instance, $this->defaults);
-            
+
 			// $hc_widget_title = esc_attr( $instance['hc_widget_title'] );
 			// $hc_widget_description = esc_attr( $instance['hc_widget_description'] );
 			// $hc_widget_class = esc_attr( $instance['hc_widget_class'] );
@@ -86,12 +86,12 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
             $special_product_ids = esc_attr( $instance['special_product_ids'] );
 
 	        $choices = hc_get_image_sizes_options();
-	        
+
 			echo "<p>Tiêu đề <input class='widefat' type='text' name='".$this->get_field_name('header_title')."' value='".$header_title."' /></p>";
 			?>
             <p>
 				<label for="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>"><?php _e( 'Backgroud image header:' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>" name="<?php echo $this->get_field_name( 'header_bg_image_url' ); ?>" type="text" 
+				<input class="widefat" id="<?php echo $this->get_field_id( 'header_bg_image_url' ); ?>" name="<?php echo $this->get_field_name( 'header_bg_image_url' ); ?>" type="text"
 						value="<?php echo esc_url( $header_bg_image_url ); ?>" />
 				<button class="upload_image_button button button-primary">Upload Image</button>
 			</p>
@@ -113,7 +113,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
                 </select>
             </p>
 
-			<?php 
+			<?php
 				echo "<p>Class name <input class='widefat' type='text' name='".$this->get_field_name('hc_widget_class')."' value='".$hc_widget_class."' /></p>";
 				echo "<p>Custom css <textarea class='widefat' type='text' name='".$this->get_field_name('custom_css')."'>" .$custom_css. "</textarea></p>";
 				echo "<p>Background Color <input class='widefat' type='text' name='".$this->get_field_name('bg_color')."' value='".$bg_color."' /></p>";
@@ -395,7 +395,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 			$header_bg_image_position = esc_attr( $instance[ 'header_bg_image_position' ] );
 			$categories_slug = esc_attr( $instance['categories_slug'] );
             $special_product_ids = esc_attr( $instance['special_product_ids'] );
-            
+
 	        $product_visibility_term_ids = wc_get_product_visibility_term_ids();
 
 	        /**
@@ -427,11 +427,11 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 					// 	'value'   => 'outofstock',
 					// 	'compare' => '!=',
 					// ),
-					array(
-						'key'     => 'stop_selling',
-						'value'   => '0',
-						'compare' => '=',
-					)
+					// array(
+					// 	'key'     => 'stop_selling',
+					// 	'value'   => '0',
+					// 	'compare' => '=',
+					// )
 				),
                 'post__not_in'   => $exclude_pr_ids,
 		        'tax_query'      => array(
@@ -508,7 +508,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 		        default :
 			        $query_args['orderby']  = 'date';
 	        }
-			
+
             $hc_featured_query = new WP_Query( $query_args );
 			if( !empty( $bg_color ) ) {
 				$custom_css = 'background-color: ' . $bg_color . ';' . $custom_css;
@@ -517,7 +517,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 			ob_start(); ?>
 			<div class="header-links">
 
-				<?php 
+				<?php
 					if( !electro_detect_is_mobile() && !empty( $categories_slug ) ) {
 						$cats_slug = explode( ',', $categories_slug );
 						for( $i = 0; $i < count( $cats_slug ); $i++ ) :
@@ -539,7 +539,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 			<?php
 			$output_header = ob_get_contents();
 			ob_end_clean();
-			
+
             if ($hc_featured_query->have_posts()) : ?>
 				<asside id='widget_hangcu_list_product' class="special_block <?= $hc_widget_class ?>" style="<?= $custom_css ?>">
 					<div class="list_product">
@@ -555,11 +555,11 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 								<?= $output_header ?>
 							</div>
 						<?php endif; ?>
-                        
-						<div class="lst-product-body no-carousel <?php 
+
+						<div class="lst-product-body no-carousel <?php
 							if( !empty($bg_color) ) echo ' has-bg';
 						?>">
-						<?php 
+						<?php
                             $output_pds = [];
                             $hc_list_classes = 'single-list';
                             if( 1 == $column_number ){
@@ -577,11 +577,11 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
                             else{
                                 $hc_list_classes .= " acme-col-5";
                             }
-							
+
 							$hc_featured_index = 1;
-                            
+
 							while ( $hc_featured_query->have_posts() ) :$hc_featured_query->the_post();
-								
+
 								// if( 1 != $hc_featured_index && $hc_featured_index % $column_number == 1 ){
                                 //     echo "<!--<div class='clearfix'></div>-->";
                                 // }
@@ -602,7 +602,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 								<?php
 								// $hc_featured_index++;
                                 $output = ob_get_contents();
-							    ob_end_clean();		
+							    ob_end_clean();
                                 $output_pds[] = $output;
 							endwhile;
 
@@ -616,7 +616,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
                                 if( $product ) :
                                 $GLOBALS['product'] = $product;
                                 ob_start();
-                            ?>      
+                            ?>
                                 <div class="special-product <?php echo esc_attr( $hc_list_classes ); ?>">
 									<ul class="post-container products">
 										<?php
@@ -632,7 +632,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
                                 <?php
 								// $hc_featured_index++;
                                 $output = ob_get_contents();
-							    ob_end_clean();		
+							    ob_end_clean();
                                 $output_special_pd[] = $output;
                                 endif;
                             }
@@ -659,9 +659,9 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
                                     echo $output_pds[$i];
                                 }
                             }
-							
+
 							// $args['section_args']['products_html'] = $output ;
-				
+
 							// electro_products_carousel( $args['section_args'], $args['carousel_args'] );
 
 						?>
@@ -670,8 +670,8 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 				</asside>
 
 			<?php
-			endif; 
-				if( electro_detect_is_mobile() ) : 
+			endif;
+				if( electro_detect_is_mobile() ) :
 			?>
 
 			<div class="footer-links">
@@ -681,7 +681,7 @@ if ( ! class_exists( 'HC_Special_Products' ) ) {
 			</div>
 
 			<?php
-			endif; 
+			endif;
 	        wp_reset_postdata();
         }
     } // Class HC_Special_Products ends here

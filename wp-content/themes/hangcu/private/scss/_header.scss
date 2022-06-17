@@ -110,7 +110,7 @@
                             left: 10px;
                         }
                     }
-                    
+
                     .input-group-btn {
                         width: 60px;
                         height: 40px;
@@ -128,7 +128,7 @@
                             justify-content: center;
                             align-items: center;
                             display: flex;
-                            
+
                             span {
                                 display: none;
                                 margin-left: 10px;
@@ -165,7 +165,7 @@
                             @media screen and (min-width: 1200px) {
                                 min-width: 150px;
                             }
-                            
+
                             >aside {
                                 cursor: pointer;
                             }
@@ -217,7 +217,7 @@
                                     }
                                 }
                             }
-                            
+
                             .popup-navbar-account {
                                 display: flex;
                                 flex-direction: column;
@@ -288,7 +288,7 @@
                                             &.btn-facebook {
                                                 background-color: rgb(59, 89, 152)!important;
                                                 position: relative;
-                                                
+
                                             }
                                             img {
                                                 margin: 0 5px;
@@ -398,7 +398,7 @@
                 }
             }
         }
-       
+
     }
 
     .electro-navbar {
@@ -502,14 +502,14 @@
                 .departments-menu-v2-title+.dropdown-menu li.menu-item-has-children .dropdown-menu {
                     background: #FFFFFF;
                     // box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
-                    // border-radius: 8px;
+                    // border-radius: 4px;
                     // border-color: rgba(0, 0, 0, 0.25);
                     // border-top-left-radius: 0;
                     // border-bottom-left-radius: 0;
                     // top: -2px;
                     // left: calc(100% + 1px);
                     // min-height: 100%;
-                    // box-sizing: content-box;   
+                    // box-sizing: content-box;
                     padding: 0;
                 }
 
@@ -526,7 +526,7 @@
                     }
                     #menu-all-departments-menu {
                         background-color: white;
-                        
+
                     }
                 }
             }
@@ -558,7 +558,7 @@
                             i {
                                 filter: brightness(0) invert(1);
                             }
-                            
+
                         }
                     }
                 }
@@ -588,7 +588,7 @@ body.has-slider-promotion {
     // overflow: hidden;
     // width: 100%;
     // z-index: 9999;
-    
+
     .item {
         width: 100%;
         height: 100%;
@@ -605,7 +605,7 @@ body.has-slider-promotion {
                 width: 1280px;
             }
         }
-        
+
     }
 }
 
@@ -669,7 +669,7 @@ body.has-slider-promotion {
             }
         }
     }
-    
+
 }
 
 .tooltip-minicart-pc {

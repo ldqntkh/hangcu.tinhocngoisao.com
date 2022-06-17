@@ -135,7 +135,8 @@ a {
         }
     }
     .icon-menu {
-        width: 25px;
+        min-width: 25px;
+        max-width: 40px;
         height: 25px;
         display: inline-block;
         padding: 0!important;
@@ -405,7 +406,7 @@ body {
     padding: 14px 16px;
     text-align: center;
     transition-duration: 0.2s;
-    border-radius: 8px;
+    border-radius: 4px;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     visibility: visible;

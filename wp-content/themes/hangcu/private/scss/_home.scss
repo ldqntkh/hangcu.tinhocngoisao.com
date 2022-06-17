@@ -60,7 +60,7 @@
 #widget_hangcu_brands {
     .brands {
         background: #FFFFFF;
-        border-radius: 8px;
+        border-radius: 4px;
         height: 216px;
         overflow: hidden;
         .brand-header {
@@ -106,7 +106,7 @@
                         width: calc(100%/8);
                         min-width: 95px;
                         margin: 4px;
-                        border-radius: 8px;
+                        border-radius: 4px;
                         text-align: center;
                         height: 75px;
                         justify-content: center;
@@ -127,7 +127,7 @@
                         &:hover {
                             background: #FFFFFF;
                             box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-                            border-radius: 8px;
+                            border-radius: 4px;
                         }
                     }
                     .brand-item-name {
@@ -155,9 +155,9 @@
 
 #widget_hangcu_list_product {
     background: $bg_widget_home_color;
-    border-radius: 8px;
+    border-radius: 4px;
     .list_product {
-        border-radius: 8px;
+        border-radius: 4px;
         .lst-product-header {
             position: relative;
             height: 45px;
@@ -457,7 +457,7 @@
                     .product-outer {
                         .product-inner {
                             background-color: white;
-                            border-radius: 8px;
+                            border-radius: 4px;
                         }
                     }
                 }

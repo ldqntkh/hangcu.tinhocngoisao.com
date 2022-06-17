@@ -31,29 +31,29 @@
                     margin: 0;
                     position: relative;
                     padding: 5px 0;
-        
+
                     @media (min-width: 1200px) {
                         width: calc(100% - 115px);
                         -webkit-box-pack: justify;
                         -ms-flex-pack: justify;
                         justify-content: space-between;
                     }
-        
+
                     .input-radio {
                         .label-sort {
                             display: inline-block;
                             vertical-align: middle;
                             display: none;
-        
+
                             @media (min-width: 576px) {
                                 display: inline-block;
                             }
-        
+
                             @media (min-width: 992px) {
                                 margin-right: 20px;
                             }
                         }
-        
+
                         label {
                             display: none;
                             @media (min-width: 992px) {
@@ -62,29 +62,29 @@
                             }
                         }
                     }
-        
+
                     form {
                         @media (min-width: 992px) {
                             display: none;
                         }
-        
+
                         select.orderby {
                             display: block;
                             width: 100%;
                         }
                     }
-        
+
                     .filter-products {
                         width: 50px;
                         height: 50px;
                         position: absolute;
                         top: 1px;
                         right: 1px;
-        
+
                         @media screen and (min-width: 768px) {
                             display: none;
                         }
-        
+
                         svg {
                             color: $header_bg_color;
                             font-size: 25px;
@@ -92,7 +92,7 @@
                         }
                     }
                 }
-        
+
                 input[type="radio"] {
                     & + label {
                         position: relative;
@@ -115,7 +115,7 @@
                             transform: translateY(-50%);
                         }
                     }
-        
+
                     &:checked + label {
                         // background: $main_color;
                         // color: $white;
@@ -132,7 +132,7 @@
                         }
                     }
                 }
-        
+
                 input[type="radio"],
                 input[type="checkbox"] {
                     display: none;
@@ -188,7 +188,7 @@
                             display: none;
                         }
                         .product-outer {
-                            
+
                             .product-inner {
                                 padding: 10px!important;
                                 box-shadow: none!important;
@@ -297,7 +297,7 @@
                                         // }
                                     }
                                 }
-                            } 
+                            }
                         }
                     }
                 }
@@ -337,7 +337,7 @@
                                 }
                             }
                             .product-outer {
-                                
+
                                 .product-inner {
                                     padding: 10px!important;
                                     box-shadow: none!important;
@@ -446,12 +446,12 @@
                                             // }
                                         }
                                     }
-                                } 
+                                }
                             }
                         }
                     }
                 }
-                
+
             }
 
             #sidebar {
@@ -757,7 +757,7 @@ body.post-type-archive {
         -ms-flex-align: center;
         align-items: center;
         background-color: white;
-        border-radius: 8px;
+        border-radius: 4px;
         padding: 50px 0;
         > img {
             width: 100%;
@@ -859,7 +859,7 @@ body.post-type-archive {
                     display: none;
                 }
             }
-    
+
             .count {
                 display: none;
             }
@@ -974,17 +974,17 @@ body {
                     font-size: 10px;
                 }
             }
-        
+
             &__footer {
                 .hangcu-rating {
                     margin-bottom: 7px;
                     font-size: 12px;
                     min-height: 23px;
                     overflow: hidden;
-        
+
                     .total-rating {
                         position: relative;
-        
+
                         &:after {
                             content: "\53";
                             color: #fed700;
@@ -993,7 +993,7 @@ body {
                         }
                     }
                 }
-        
+
                 .gift-description {
                     line-height: 17px;
                     font-size: 12px;

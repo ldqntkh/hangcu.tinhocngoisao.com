@@ -19,8 +19,8 @@ body.body-desktop {
                 }
             }
         }
-    
-        
+
+
         input {
             border-radius: $border-radius;
         }
@@ -204,7 +204,7 @@ body.body-desktop {
                         max-width: 100%;
                         flex: 0 0 100%;
                         margin: 0;
-                        
+
                         table {
                             margin-top: 1.236rem;
 
@@ -289,12 +289,12 @@ body.body-desktop {
                         @media screen and ( min-width: 768px ) {
                             margin-right: 10px;
                         }
-                        
+
                     }
                 }
             }
         }
-        
+
     }
 }
 
@@ -315,7 +315,7 @@ body.body-desktop {
         font-weight: 600;
         padding: 0 10px;
     }
-    
+
 }
 body {
     .return-to-shop {
@@ -328,7 +328,7 @@ body {
             border: 1px solid #C6C5C5;
             background: #fff;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 4px;
         }
     }
 }

@@ -98,7 +98,7 @@ body.body-mobile {
                         width: 170px;
                         padding: 10px;
                         background: $white;
-                        border-radius: 8px;
+                        border-radius: 4px;
                         @media screen and (min-width: 768px) {
                             width: 200px;
                         }
@@ -222,7 +222,7 @@ body.body-mobile {
                         .product-outer {
                             .product-inner {
                                 background-color: white;
-                                border-radius: 8px;
+                                border-radius: 4px;
                             }
                         }
                     }
@@ -250,7 +250,7 @@ body.body-mobile {
                             width: 100%;
                             padding: 10px;
                             background: $white;
-                            border-radius: 8px;
+                            border-radius: 4px;
                             // @media screen and (min-width: 768px) {
                             //     width: 200px;
                             // }
@@ -357,7 +357,7 @@ body.body-mobile {
                             .product-outer {
                                 .product-inner {
                                     background-color: white;
-                                    border-radius: 8px;
+                                    border-radius: 4px;
                                 }
                             }
                         }

@@ -2,13 +2,13 @@ body.error404.body-desktop {
     .container-breadcrumb {
         display: none;
     }
-} 
+}
 body.error404.body-mobile {
     .container-breadcrumb {
         opacity: 0;
         margin-top: 40px;
     }
-} 
+}
 body.error404 {
     .site-content {
         margin: 0;
@@ -31,7 +31,7 @@ body.error404 {
                 max-width: 90%;
                 height: auto;
             }
-            
+
         }
     }
     .info-contact {
@@ -64,7 +64,7 @@ body.error404 {
             background: #fff;
             color: #797777;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 4px;
             display: block;
             width: 200px;
             margin: 0 auto;

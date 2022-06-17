@@ -16,7 +16,10 @@ jQuery(document).ready(function(){
 
   if ( typeof icondata !== 'undefined' ) {
     imageUrl = icondata.image_url;
-    icons = icondata.icons;
+    if( icondata.icons ) {
+      icons = icondata.icons;
+    }
+
     initSelectImage( imageUrl );
     renderListIcon();
   }
@@ -24,7 +27,7 @@ jQuery(document).ready(function(){
   $('.select-icon-btn').click(function(e) {
     $(this).addClass('selected');
     e.preventDefault();
-    var image = wp.media({ 
+    var image = wp.media({
         title: 'Upload Image',
         multiple: false
     }).open()
@@ -92,7 +95,7 @@ jQuery(document).ready(function(){
   })
 
   $('body').on('click', '.btn-save-config', function() {
-   
+
     if ( saving ) return;
     // if (Object.keys(icons).length === 0) return;
     saving = true;
@@ -114,7 +117,7 @@ jQuery(document).ready(function(){
       error: function (err) {
         window.alert('Đã có lỗi khi lưu danh sách Icons. Vui lòng thử lại.')
         console.log(err);
-      }, 
+      },
       complete: function() {
         saving = false;
         that.val('Lưu');
@@ -139,7 +142,7 @@ jQuery(document).ready(function(){
           alert('Tên class đã tồn tại. Vui lòng chọn tên khác.');
         } else {
           flag = false;
-          
+
           icons[classname] = css;
           renderListIcon();
         }
@@ -156,7 +159,7 @@ jQuery(document).ready(function(){
     let keys = Object.keys(icons);
     rightContent.html('')
     for(let i = 0; i < keys.length; i++) {
-      rightContent.append(`<div style="width: 100%;"><i style="${icons[keys[i]]}"></i><span class_id="${keys[i]}" class="btn-remove-icon">${keys[i]} | Xóa</span></div>`);  
+      rightContent.append(`<div style="width: 100%;"><i style="${icons[keys[i]]}"></i><span class_id="${keys[i]}" class="btn-remove-icon">${keys[i]} | Xóa</span></div>`);
     }
 
   }
